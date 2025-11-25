@@ -81,6 +81,24 @@ Catalog:
       status: published
       primary: true
 
+    - urn: "urn:knowledge:koda:agents:transformer:1.0.0"
+      title: "KODA Transformer Agent"
+      description: "Specialist for document transformation and KODA artifact auditing"
+      file: "agents/koda-transformer/agent_koda_transformer.yaml"
+      status: published
+
+    - urn: "urn:knowledge:koda:agents:smith:1.0.0"
+      title: "KODA Smith Agent"
+      description: "Specialist for building KODA-compliant agent definitions"
+      file: "agents/koda-smith/agent_koda_smith.yaml"
+      status: published
+
+    - urn: "urn:knowledge:koda:agents:guardian:1.0.0"
+      title: "KODA Guardian Agent"
+      description: "Representative, defender, and evangelist of the KODA Framework"
+      file: "agents/koda-guardian/agent_koda_guardian.yaml"
+      status: published
+
   Domains: []
     # Future domain-specific knowledge bases will be registered here
     # Example:
@@ -90,9 +108,9 @@ Catalog:
     #   status: draft
 
 Statistics:
-  total_artifacts: 12
+  total_artifacts: 15
   core_guides: 10
   schemas: 1
-  agents: 1
+  agents: 4
   domains: 0
   last_updated: "2025-11-25"

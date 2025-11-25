@@ -34,6 +34,7 @@ Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-07-06
 Modification-Date: 2025-11-25
+Version-Notes: Added Source_Of_Truth_Pattern, KB_Less_Agents documentation for LLM_NATIVE and WEB_AUGMENTED policies
 Source: GUIDE-KODA-HUB-MASTER-01
 Ctx: Master guide for federated knowledge hub management
 
@@ -357,19 +358,79 @@ Naming_Conventions:
 
 Catalog:
   ID: GUIDE-KODA-HUB-CATALOG-01
-  Purp: Master inventory for discovery and impact analysis.
+  Purp: Master inventory for discovery, resolution, and impact analysis.
   File: catalog/catalog_master_{namespace}.yml
+  
+  Source_Of_Truth_Pattern:
+    ID: CATALOG-SOURCE-OF-TRUTH-01
+    Def: The catalog is the authoritative source for URN-to-file resolution within a namespace.
+    Principle: "Catalog First, Static Fallback"
+    Role: SOURCE_OF_TRUTH
+    Applies_To: KB-based agents only (EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, HYBRID_WEB_KB)
+    
+    KB_Less_Agents:
+      ID: CATALOG-KB-LESS-01
+      Def: Agents with LLM_NATIVE or WEB_AUGMENTED policies do not require catalog.
+      Policies:
+        - LLM_NATIVE: Uses only LLM pre-trained knowledge. No artifacts, no catalog.
+        - WEB_AUGMENTED: Uses web search for real-time data. No artifacts, no catalog.
+      Catalog_Requirement: NONE
+      Note: These agents still registered in catalog under Agents section, but have no source_artifacts.
+    
+    Resolution_Flow:
+      - Step: "1. Agent receives URN to resolve"
+      - Step: "2. Agent queries catalog for URN entry"
+      - Step: "3. Catalog returns file path from entry"
+      - Step: "4. Agent accesses content via file path"
+      - Step: "5. If catalog unavailable, fallback to static routing"
+    
+    Agent_Integration:
+      Manifest_Declaration: |
+        _manifest:
+          dependencies:
+            catalog:
+              urn: "urn:knowledge:{namespace}:catalog:master:1.0.0"
+              file: "catalog/catalog_master_{namespace}.yml"
+              role: SOURCE_OF_TRUTH
+      
+      Knowledge_Rules_Declaration: |
+        knowledge_base_interaction_and_governance_rules:
+          catalog_resolution:
+            catalog_urn: "urn:knowledge:{namespace}:catalog:master:1.0.0"
+            resolution_strategy: CATALOG_FIRST
+            fallback: STATIC_ROUTING
+            instructions: |
+              1. Para resolver cualquier URN, PRIMERO consultar el catálogo
+              2. El catálogo contiene: URN -> file path -> contenido
+              3. Solo usar routing_map estático si catálogo no disponible
+              4. Validar que URN existe en catálogo antes de citar
+      
+      Cognitive_Model_Declaration: |
+        CM-CATALOG-RESOLVER:
+          _meta: { expose: false }
+          purpose: "Resolver URNs consultando el catálogo como fuente de verdad"
+          process:
+            - "1. Recibir URN a resolver"
+            - "2. Buscar en catalog.Core_Guides[], catalog.Schemas[], catalog.Agents[], catalog.Domains[]"
+            - "3. Extraer 'file' del registro encontrado"
+            - "4. Retornar path para acceso al contenido"
+    
+    Benefits:
+      - Single_Source: Catalog is the only place to update URN mappings
+      - Consistency: All agents resolve URNs the same way
+      - Auditability: Catalog provides complete artifact inventory
+      - Maintainability: Adding artifacts requires only catalog update
   
   Federation_Model:
     Def: Each namespace maintains its OWN catalog. No central catalog.
     Rationale:
       - Ownership: Each org controls their inventory
       - Independence: No single point of failure
-      - Discovery: Cross-repo discovery via resolver, not catalog
+      - Discovery: Cross-repo discovery via resolver, then catalog
     
     Cross_Repo_Discovery:
-      Method: Resolve URN via .knowledge-resolver.yml, then read remote catalog
-      Ex: To discover gorenuble artifacts, resolve any gorenuble URN, find catalog path
+      Method: Resolve namespace via .knowledge-resolver.yml, then query remote catalog
+      Ex: To discover gorenuble artifacts, resolve namespace path, read catalog/catalog_master_gorenuble.yml
 
   Entry_Schema:
     urn: Full URN
