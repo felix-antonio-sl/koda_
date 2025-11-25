@@ -11,15 +11,15 @@ namespaces:
 
 resolution_rules:
   # Core guides
-  "urn:knowledge:gorenuble:core:quickstart:*": "./guide_core_000_quickstart_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-spec:*": "./guide_core_001_koda-spec_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-transform:*": "./guide_core_002_koda-transform_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-hub-master:*": "./guide_core_003_koda-hub-master_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-life-master:*": "./guide_core_004_koda-life-master_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-agent-spec:*": "./guide_core_005_koda-agent-spec_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-agent-construct:*": "./guide_core_006_koda-agent-construct_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-test-spec:*": "./guide_core_007_koda-test-spec_koda.yml"
-  "urn:knowledge:gorenuble:core:schema-versioning:*": "./guide_core_008_schema-versioning_koda.yml"
+  "urn:knowledge:gorenuble:core:quickstart:*": "./knowledge/core/guide_core_000_quickstart_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-spec:*": "./knowledge/core/guide_core_001_koda-spec_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-transform:*": "./knowledge/core/guide_core_002_koda-transform_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-hub-master:*": "./knowledge/core/guide_core_003_koda-hub-master_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-life-master:*": "./knowledge/core/guide_core_004_koda-life-master_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-agent-spec:*": "./knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-agent-construct:*": "./knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-test-spec:*": "./knowledge/core/guide_core_007_koda-test-spec_koda.yml"
+  "urn:knowledge:gorenuble:core:schema-versioning:*": "./knowledge/core/guide_core_008_schema-versioning_koda.yml"
   
   # Schema
   "urn:knowledge:gorenuble:core:koda-agent-schema:*": "./schemas/koda-agent-schema-1.0.0.json"
@@ -29,10 +29,12 @@ resolution_rules:
 
 # Directory structure conventions
 directories:
-  core: "./"
+  knowledge: "./knowledge/"
+  core: "./knowledge/core/"
+  domains: "./knowledge/domains/"
   schemas: "./schemas/"
   agents: "./agents/"
-  domains: "./domains/"
+  catalog: "./catalog/"
   staging: "./staging/"
   sources: "./sources/"
 

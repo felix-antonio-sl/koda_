@@ -18,10 +18,27 @@ This corpus contains the foundational artifacts for **Agent Engineering** using 
 
 **New to the framework?** Start with the Quickstart guide:
 ```
-guide_core_000_quickstart_koda.yml → Build your first agent in 30 minutes
+knowledge/core/guide_core_000_quickstart_koda.yml → Build your first agent in 30 minutes
+```
+
+## Repository Structure
+
+```
+KODA/
+├── knowledge/               # All knowledge artifacts
+│   ├── core/               # Framework specifications
+│   │   └── guide_core_*.yml
+│   └── domains/            # Domain-specific KBs
+├── agents/                 # Agent definitions
+├── schemas/                # JSON Schemas
+├── catalog/                # Artifact registry
+├── sources/                # Source materials
+└── staging/                # Work-in-progress (gitignored)
 ```
 
 ## Artifact Inventory
+
+All core guides located in `knowledge/core/`:
 
 | # | File | URN | Purpose |
 |---|------|-----|---------|

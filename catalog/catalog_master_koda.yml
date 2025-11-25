@@ -19,47 +19,47 @@ Catalog:
   Core_Guides:
     - urn: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
       title: "KODA Quickstart Guide"
-      file: "guide_core_000_quickstart_koda.yml"
+      file: "knowledge/core/guide_core_000_quickstart_koda.yml"
       status: published
       
     - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
       title: "KODA/Spec Specification"
-      file: "guide_core_001_koda-spec_koda.yml"
+      file: "knowledge/core/guide_core_001_koda-spec_koda.yml"
       status: published
       
     - urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
       title: "KODA Transformation Methodology"
-      file: "guide_core_002_koda-transform_koda.yml"
+      file: "knowledge/core/guide_core_002_koda-transform_koda.yml"
       status: published
       
     - urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
       title: "KODA/Hub Management Guide"
-      file: "guide_core_003_koda-hub-master_koda.yml"
+      file: "knowledge/core/guide_core_003_koda-hub-master_koda.yml"
       status: published
       
     - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
       title: "KODA/Life Management Guide"
-      file: "guide_core_004_koda-life-master_koda.yml"
+      file: "knowledge/core/guide_core_004_koda-life-master_koda.yml"
       status: published
       
     - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
       title: "KODA/Agent Protocol Specification"
-      file: "guide_core_005_koda-agent-spec_koda.yml"
+      file: "knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
       status: published
       
     - urn: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
       title: "KODA/Agent Construction Methodology"
-      file: "guide_core_006_koda-agent-construct_koda.yml"
+      file: "knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
       status: published
       
     - urn: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
       title: "KODA/Test Framework Specification"
-      file: "guide_core_007_koda-test-spec_koda.yml"
+      file: "knowledge/core/guide_core_007_koda-test-spec_koda.yml"
       status: published
       
     - urn: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
       title: "Schema Versioning Policy"
-      file: "guide_core_008_schema-versioning_koda.yml"
+      file: "knowledge/core/guide_core_008_schema-versioning_koda.yml"
       status: published
 
   Schemas:
