@@ -4,7 +4,7 @@
 ---
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:agents:koda-architect:1.0.0"
+  urn: "urn:knowledge:sanixai:agents:koda-architect:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,15 +15,15 @@ _manifest:
     canonical_url: "file://agents/knowledge-architect/agent_koda_architect.yaml"
   dependencies:
     requires:
-      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
+      - urn: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-agent-construct:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:schema-versioning:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:quickstart:1.0.0"
   provenance:
     created_by: "FS"
     created_at: "2025-11-25"
@@ -74,16 +74,16 @@ knowledge_base_interaction_and_governance_rules:
   usage_policy_and_source_management:
     policy: EXCLUSIVE_USE
     source_artifacts:
-      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-schema:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
+      - urn: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-agent-construct:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:schema-versioning:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:quickstart:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-agent-schema:1.0.0"
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
   citation_formatting:
     style: OFFICIAL_SOURCE_NAME
@@ -187,25 +187,25 @@ private_internal_reasoning_processes:
     _meta: { expose: false }
     routing_map:
       - query_category: "Formato KODA/Spec, keywords, estructura YAML, principios de densidad"
-        route_to: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
+        route_to: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
       - query_category: "Transformar documentos, 4 fases, telegrafización, deduplicación, métricas TER/FS/RD"
-        route_to: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
       - query_category: "Knowledge Hub, URNs, manifiestos, catálogo, federación, directorios"
-        route_to: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
       - query_category: "Ciclo de vida agentes, 5 fases KODA/Life, Git, patrones arquitectónicos"
-        route_to: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
       - query_category: "Especificación KODA/Agent, 7 principios, namespaces, Guard Set, lexicon"
-        route_to: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
       - query_category: "Construir agentes, 5 fases construcción, anti-patrones, checklist validación"
-        route_to: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:koda-agent-construct:1.0.0"
       - query_category: "Testing agentes, KODA/Test, pruebas adversariales, seguridad, regresión"
-        route_to: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
       - query_category: "Versionado schemas, compatibilidad, migración, breaking changes"
-        route_to: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:schema-versioning:1.0.0"
       - query_category: "Inicio rápido, primer agente, templates mínimos, errores comunes"
-        route_to: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:quickstart:1.0.0"
       - query_category: "Validación JSON Schema, estructura agent.yaml"
-        route_to: "urn:knowledge:gorenuble:core:koda-agent-schema:1.0.0"
+        route_to: "urn:knowledge:sanixai:core:koda-agent-schema:1.0.0"
 
   CM-INTENT-ANALYZER:
     _meta: { expose: false }
@@ -383,12 +383,12 @@ few_shot_behavior_examples:
       
       **Ejemplo:**
       ```
-      urn:knowledge:gorenuble:core:koda-spec:1.1.0
+      urn:knowledge:sanixai:core:koda-spec:1.1.0
       ```
       
       | Componente | Valor | Significado |
       |------------|-------|-------------|
-      | namespace | `gorenuble` | Tu organización |
+      | namespace | `sanixai` | Tu organización |
       | domain | `core` | Categoría temática |
       | artifact-id | `koda-spec` | ID del artefacto |
       | version | `1.1.0` | Versión semántica |

@@ -44,15 +44,15 @@ All core guides located in `knowledge/core/`:
 
 | # | File | URN | Purpose |
 |---|------|-----|---------|
-| 000 | `guide_core_000_quickstart_koda.yml` | `urn:knowledge:gorenuble:core:quickstart:1.0.0` | **Quick start guide (START HERE)** |
-| 001 | `guide_core_001_koda-spec_koda.yml` | `urn:knowledge:gorenuble:core:koda-spec:1.1.0` | KODA/Spec format specification (ROOT) |
-| 002 | `guide_core_002_koda-transform_koda.yml` | `urn:knowledge:gorenuble:core:koda-transform:1.0.0` | KODA/Spec transformation methodology |
-| 003 | `guide_core_003_koda-hub-master_koda.yml` | `urn:knowledge:gorenuble:core:koda-hub-master:1.0.0` | KODA/Hub Management |
-| 004 | `guide_core_004_koda-life-master_koda.yml` | `urn:knowledge:gorenuble:core:koda-life-master:1.0.0` | KODA/Life Management |
-| 005 | `guide_core_005_koda-agent-spec_koda.yml` | `urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0` | KODA/Agent Protocol spec |
-| 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0` | KODA/Agent construction methodology |
-| 007 | `guide_core_007_koda-test-spec_koda.yml` | `urn:knowledge:gorenuble:core:koda-test-spec:1.0.0` | KODA/Test Framework |
-| 008 | `guide_core_008_schema-versioning_koda.yml` | `urn:knowledge:gorenuble:core:schema-versioning:1.0.0` | Schema versioning policy |
+| 000 | `guide_core_000_quickstart_koda.yml` | `urn:knowledge:sanixai:core:quickstart:1.0.0` | **Quick start guide (START HERE)** |
+| 001 | `guide_core_001_koda-spec_koda.yml` | `urn:knowledge:sanixai:core:koda-spec:1.1.0` | KODA/Spec format specification (ROOT) |
+| 002 | `guide_core_002_koda-transform_koda.yml` | `urn:knowledge:sanixai:core:koda-transform:1.0.0` | KODA/Spec transformation methodology |
+| 003 | `guide_core_003_koda-hub-master_koda.yml` | `urn:knowledge:sanixai:core:koda-hub-master:1.0.0` | KODA/Hub Management |
+| 004 | `guide_core_004_koda-life-master_koda.yml` | `urn:knowledge:sanixai:core:koda-life-master:1.0.0` | KODA/Life Management |
+| 005 | `guide_core_005_koda-agent-spec_koda.yml` | `urn:knowledge:sanixai:core:koda-agent-spec:1.0.0` | KODA/Agent Protocol spec |
+| 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:sanixai:core:koda-agent-construct:1.0.0` | KODA/Agent construction methodology |
+| 007 | `guide_core_007_koda-test-spec_koda.yml` | `urn:knowledge:sanixai:core:koda-test-spec:1.0.0` | KODA/Test Framework |
+| 008 | `guide_core_008_schema-versioning_koda.yml` | `urn:knowledge:sanixai:core:schema-versioning:1.0.0` | Schema versioning policy |
 
 ### Schema Files
 

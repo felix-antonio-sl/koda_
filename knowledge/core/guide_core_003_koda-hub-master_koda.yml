@@ -3,7 +3,7 @@
 # Federated, Cross-Repository Knowledge Management
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
+  urn: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,9 +15,9 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
         reason: "Agent lifecycle integration"
-      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-spec:1.0.0"
         reason: "Structural format specification"
   provenance:
     created_by: "FS"
@@ -86,7 +86,7 @@ Philosophy:
     - ID: PRINCIPLE-KODA-LIFE-INTEGRATION
       Name: KODA/Life Integration
       Def: Implements knowledge layer of KODA/Life framework.
-      Ctx: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+      Ctx: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
 
     - ID: PRINCIPLE-FEDERATION
       Name: Federated Addressability
@@ -105,21 +105,62 @@ URN_Scheme:
   Components:
     - Component: namespace
       Def: Organization publishing artifact.
-      Ex: gorenuble, acme-corp
+      Ex: sanixai, gorenuble, fxsl
     - Component: domain
       Def: Thematic domain.
-      Ex: core, procurement, gore_nuble
+      Ex: core, agents, procurement
     - Component: artifact-id
       Def: Unique ID in kebab-case.
       Ex: koda-hub-master, circular-33
     - Component: version
       Def: Semantic version or latest/stable.
 
-  Examples:
-    - "urn:knowledge:gorenuble:core:koda-hub-master:2.0.0"
-    - "urn:knowledge:gorenuble:procurement:circular-33:latest"
+  Official_Namespaces:
+    ID: GUIDE-KODA-HUB-NAMESPACES-01
+    Purp: Registry of official KODA ecosystem namespaces.
+    
+    Registry:
+      - Namespace: sanixai
+        Owner: "SANIXAI"
+        Type: "Profesional/Comercial"
+        Scope: "Framework KODA, productos comerciales, agentes oficiales"
+        Repository: "github.com/sanixai/KODA"
+        License: "CC-BY-4.0"
+        Domains:
+          - core: "Framework KODA (spec, transform, hub, life, agent, test)"
+          - agents: "Agentes oficiales KODA"
+          - products: "Productos comerciales"
+          - templates: "Templates reutilizables"
 
-  Validation_Pattern: "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
+      - Namespace: gorenuble
+        Owner: "Gobierno Regional de Ñuble"
+        Type: "Institucional/Público"
+        Scope: "Conocimiento institucional GORE Ñuble"
+        Repository: "github.com/gore-nuble/knowledge-hub"
+        License: "Uso institucional"
+        Domains:
+          - normativa: "Leyes, circulares, reglamentos"
+          - procesos: "Procedimientos institucionales"
+          - servicios: "Servicios ciudadanos"
+          - agents: "Agentes institucionales"
+
+      - Namespace: fxsl
+        Owner: "Félix Sanhueza (Personal)"
+        Type: "Privado/Personal"
+        Scope: "Proyectos personales, experimentación, aprendizaje"
+        Repository: "github.com/fxsl/private-kb (privado)"
+        License: "Propietario"
+        Domains:
+          - experiments: "Experimentos y prototipos"
+          - learning: "Notas de aprendizaje"
+          - personal: "Proyectos personales"
+
+  Examples:
+    - "urn:knowledge:sanixai:core:koda-hub-master:2.0.0"
+    - "urn:knowledge:gorenuble:normativa:circular-33:1.0.0"
+    - "urn:knowledge:fxsl:experiments:llm-testing:0.1.0"
+
+  Validation_Pattern: "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
 
 # =============================================================================
 # 3. ARTIFACT MANIFEST
@@ -179,25 +220,111 @@ Architecture:
       Purp: Local URN resolution overrides.
 
 # =============================================================================
-# 5. NAMING CONVENTION
+# 5. NAMING CONVENTIONS
 # =============================================================================
 
-Naming:
+Naming_Conventions:
   ID: GUIDE-KODA-HUB-NAMING-01
-  Purp: Machine-readable artifact filenames.
-  Pattern: "{tipo}_{dominio}_{id-num}_{descripcion}_{formato}.yml"
+  Purp: Consistent naming across all KODA artifacts and structures.
 
-  Components:
-    - tipo: kb (knowledge base) | guide (meta-document)
-    - dominio: core | gn | custom
-    - id-num: 3-digit sequential (001, 002)
-    - descripcion: 2-4 words kebab-case
-    - formato: sts
-    - Extension: .yml
+  Directory_Structure:
+    ID: NAMING-DIRECTORIES-01
+    Rules:
+      - Element: Organizations (top-level)
+        Convention: lowercase
+        Ex: "sanixai/, gorenuble/, fxsl/"
+      - Element: Repositories
+        Convention: kebab-case
+        Ex: "knowledge-hub/, private-kb/"
+      - Element: Acronyms/Brands
+        Convention: UPPERCASE
+        Ex: "KODA/"
+        Note: Exception for well-known acronyms that are brand names
+    
+    Canonical_Layout: |
+      ~/Developer/
+      ├── sanixai/                 # lowercase (organization)
+      │   ├── KODA/                # UPPERCASE (acronym/brand)
+      │   └── knowledge-hub/       # kebab-case (repo)
+      ├── gorenuble/               # lowercase (organization)
+      │   └── knowledge-hub/       # kebab-case (repo)
+      └── fxsl/                    # lowercase (organization)
+          └── private-kb/          # kebab-case (repo)
 
-  Examples:
-    - kb_gn_001_contexto-regional_sts.yml
-    - guide_core_003_koda-hub-master_sts.yml
+  File_Naming:
+    ID: NAMING-FILES-01
+    Rules:
+      - Element: Knowledge artifacts
+        Convention: snake_case
+        Pattern: "{tipo}_{dominio}_{id-num}_{descripcion}_koda.yml"
+        Ex: "guide_core_003_koda-hub-master_koda.yml"
+      - Element: Agent definitions
+        Convention: snake_case
+        Ex: "agent_koda_architect.yaml"
+      - Element: JSON Schemas
+        Convention: kebab-case
+        Ex: "koda-agent-schema-1.0.0.json"
+    
+    File_Pattern_Components:
+      - tipo: "kb | guide | agent | schema"
+      - dominio: "core | agents | {custom}"
+      - id-num: "3-digit sequential (001, 002, 003)"
+      - descripcion: "2-4 words in kebab-case"
+      - formato: "koda (standard KODA format)"
+      - extension: ".yml | .yaml | .json"
+
+  URN_Naming:
+    ID: NAMING-URN-01
+    Format: "urn:knowledge:{namespace}:{domain}:{artifact-id}:{version}"
+    Rules:
+      - Component: namespace
+        Convention: lowercase
+        Ex: "sanixai, gorenuble, fxsl"
+      - Component: domain
+        Convention: snake_case (if multi-word)
+        Ex: "core, agents, gore_nuble"
+      - Component: artifact-id
+        Convention: kebab-case
+        Ex: "koda-spec, circular-33"
+      - Component: version
+        Convention: semver or keyword
+        Ex: "1.0.0, latest, stable"
+
+  YAML_Internal_Naming:
+    ID: NAMING-YAML-01
+    Rules:
+      - Element: Top-level namespaces
+        Convention: snake_case
+        Ex: "agent_identity_and_global_configuration"
+      - Element: IDs
+        Convention: UPPER-KEBAB
+        Ex: "KODA-SPEC-01, GUIDE-KODA-HUB-NAMING-01"
+      - Element: State IDs
+        Convention: S-UPPER-KEBAB
+        Ex: "S-DISPATCHER, S-TRANSFORMER, S-END"
+      - Element: Cognitive Model IDs
+        Convention: CM-UPPER-KEBAB
+        Ex: "CM-KB-GUIDANCE, CM-CONTEXT-MANAGER"
+      - Element: Workflow IDs
+        Convention: WF-UPPER-KEBAB
+        Ex: "WF-KODA-ARCHITECT, WF-ADVISORY"
+
+  Summary_Table: |
+    | Element              | Convention    | Example                          |
+    |----------------------|---------------|----------------------------------|
+    | Organizations        | lowercase     | sanixai/, gorenuble/             |
+    | Repositories         | kebab-case    | knowledge-hub/, private-kb/      |
+    | Acronyms/Brands      | UPPERCASE     | KODA/                            |
+    | Knowledge files      | snake_case    | guide_core_001_koda-spec.yml     |
+    | Agent files          | snake_case    | agent_koda_architect.yaml        |
+    | JSON Schemas         | kebab-case    | koda-agent-schema-1.0.0.json     |
+    | URN namespace        | lowercase     | sanixai, gorenuble               |
+    | URN domain           | snake_case    | core, gore_nuble                 |
+    | URN artifact-id      | kebab-case    | koda-spec, circular-33           |
+    | YAML top-level keys  | snake_case    | agent_identity_and_global_config |
+    | IDs                  | UPPER-KEBAB   | KODA-SPEC-01                     |
+    | State IDs            | S-UPPER-KEBAB | S-DISPATCHER                     |
+    | CM IDs               | CM-UPPER-KEBAB| CM-KB-GUIDANCE                   |
 
 # =============================================================================
 # 6. KNOWLEDGE CATALOG
@@ -233,31 +360,120 @@ Resolver:
 
   Flow:
     - Parse URN components
-    - Check local override (.knowledge-resolver.yml)
-    - Lookup namespace registry
-    - Resolve to URL(s)
+    - Check local path (type: local)
+    - If not found and fallback defined, try remote URL
     - Fetch & validate signature
     - Cache locally with TTL
 
   Config_File: .knowledge-resolver.yml
-  Config_Schema:
-    namespaces:
-      gorenuble:
-        type: local
-        base_path: "./knowledge/"
-      external:
-        type: remote
-        endpoint: "https://api.example.io/resolve"
-    overrides:
-      "urn:knowledge:gorenuble:core:*": "./knowledge/core/"
-    cache:
-      enabled: true
-      ttl_seconds: 86400
+  
+  Namespace_Types:
+    - ID: TYPE-LOCAL
+      Name: Local
+      Def: Resolve from local filesystem path.
+      Fields:
+        - type: "local"
+        - base_path: Relative or absolute path to repository root
+        - fallback: Optional remote URL if local not found
+        - description: Human-readable description
+      Ex: |
+        sanixai:
+          type: local
+          base_path: "./"
+          description: "SANIXAI - KODA Framework"
+
+    - ID: TYPE-REMOTE
+      Name: Remote
+      Def: Resolve from remote HTTP endpoint.
+      Fields:
+        - type: "remote"
+        - endpoint: Base URL for resolution
+        - description: Human-readable description
+      Ex: |
+        external-org:
+          type: remote
+          endpoint: "https://raw.githubusercontent.com/org/repo/main/"
+          description: "External organization KB"
+
+    - ID: TYPE-HYBRID
+      Name: Hybrid (Local + Fallback)
+      Def: Try local first, fallback to remote if not found.
+      Purp: Development flexibility with production reliability.
+      Fields:
+        - type: "local"
+        - base_path: Local path (organization-based structure)
+        - fallback: Remote URL for when local unavailable
+        - description: Human-readable description
+      Ex: |
+        gorenuble:
+          type: local
+          base_path: "../../gorenuble/knowledge-hub/"
+          fallback: "https://raw.githubusercontent.com/gorenuble/knowledge-hub/main/"
+          description: "Gobierno Regional de Ñuble"
+      Rec: Use for multi-repo architectures with organization-based directory structure.
+
+  Multi_Repo_Architecture:
+    ID: GUIDE-KODA-HUB-MULTI-REPO-01
+    Purp: Federated knowledge across multiple Git repositories.
+    
+    Pattern: Organization-Based Directory Structure
+    Def: Group repositories by organization under ~/Developer/.
+    Layout: |
+      ~/Developer/
+      ├── sanixai/                   # SANIXAI organization
+      │   ├── KODA/                  # Framework (this repo)
+      │   ├── products/              # Commercial products
+      │   └── clients/               # Client projects
+      ├── gorenuble/                 # GORE Ñuble organization
+      │   └── knowledge-hub/         # Institutional KB
+      └── fxsl/                      # Personal organization
+          └── private-kb/            # Experiments & learning
+    
+    Resolver_Config: |
+      namespaces:
+        sanixai:
+          type: local
+          base_path: "./"
+          description: "SANIXAI - KODA Framework y productos comerciales"
+        
+        gorenuble:
+          type: local
+          base_path: "../../gorenuble/knowledge-hub/"
+          fallback: "https://raw.githubusercontent.com/gorenuble/knowledge-hub/main/"
+          description: "Gobierno Regional de Ñuble"
+        
+        fxsl:
+          type: local
+          base_path: "../../fxsl/private-kb/"
+          fallback: "https://raw.githubusercontent.com/fxsl/private-kb/main/"
+          description: "FXSL - Proyectos personales"
+    
+    Resolution_Logic:
+      - Step: 1. Parse namespace from URN
+      - Step: 2. Lookup namespace in resolver config
+      - Step: 3. If type=local, try base_path
+      - Step: 4. If not found and fallback exists, try fallback URL
+      - Step: 5. Cache result according to cache.ttl_seconds
+      - Step: 6. Return content or error
+
+    Deployment_Contexts:
+      - Context: Development
+        Config: Local paths to cloned sibling repos
+        Benefit: Fast, offline-capable, editable
+      
+      - Context: CI/CD
+        Config: Remote fallback URLs only
+        Benefit: No need to clone all repos
+      
+      - Context: Production Agents
+        Config: Remote with aggressive caching
+        Benefit: Always available, version-controlled
 
   Modes:
     - strict: All URNs must resolve. Fail otherwise.
     - graceful: Use cache if URN fails. Warn if stale.
     - offline: Local + cache only. No network.
+    - hybrid: Try local, fallback to remote, cache result.
 
 # =============================================================================
 # 8. AGENT KB COMPOSITION
@@ -273,11 +489,11 @@ Agent_Composition:
         RESOLUTION_MODE: graceful
         SOURCE_ARTIFACTS:
           - path: "knowledge/domains/gn/kb_gn_001.yml"  # Local
-          - urn: "urn:knowledge:gorenuble:core:koda-life-master:latest"  # Federated
+          - urn: "urn:knowledge:sanixai:core:koda-life-master:latest"  # Federated
             required: true
           - urn: "urn:knowledge:external:legal:gdpr:2.0.0"  # Cross-repo
             cache_ttl: 604800
-          - urn: "urn:knowledge:gorenuble:procurement:circular-33:1.0.0"
+          - urn: "urn:knowledge:sanixai:procurement:circular-33:1.0.0"
             local_override: "./staging/circular-33-wip.yml"  # Dev override
 
 # =============================================================================

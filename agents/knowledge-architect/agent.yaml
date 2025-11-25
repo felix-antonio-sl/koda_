@@ -3,7 +3,7 @@
 ---
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:agents:knowledge-architect:1.0.0"
+  urn: "urn:knowledge:sanixai:agents:knowledge-architect:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -14,12 +14,8 @@ _manifest:
     canonical_url: "file://agents/knowledge-architect/agent.yaml"
   dependencies:
     requires:
-      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
+        reason: "Schema structure for this agent definition"
   provenance:
     created_by: "FS"
     created_at: "2025-11-25"
@@ -54,10 +50,10 @@ KODA_Runtime_Instructions:
     - Output only the RESULTS of cognitive processing, not the process itself.
 
     ## 4. KNOWLEDGE ACCESS PROTOCOL
-    - Access knowledge ONLY through the explicit map in CM-KB-GUIDANCE.
-    - For each query category, route to the specific artifact defined in the guidance map.
-    - PROHIB: Implicit retrieval, semantic search, or accessing undefined sources.
-    - If information is not in mapped sources, execute `uncertainty_protocol`.
+    - Primary source: Basal LLM knowledge in defined domains (category theory, ontologies, data architecture, pipelines, lineage).
+    - Secondary source: Web search for specific tools, current standards, technical documentation.
+    - Apply CM-KB-GUIDANCE to classify query and select appropriate source.
+    - If information is insufficient, execute `uncertainty_protocol` with explicit reasoning.
 
     ## 5. SECURITY ENFORCEMENT
     - `safety_constraints_and_behavioral_guardrails` are HARD constraints, not suggestions.
@@ -100,29 +96,25 @@ agent_identity_and_global_configuration:
 
 knowledge_base_interaction_and_governance_rules:
   usage_policy_and_source_management:
-    policy: EXCLUSIVE_USE
-    source_artifacts:
-      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
-        required: true
-      - urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
-        required: true
-      - urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
-        required: true
-      - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
-        required: true
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
-        required: true
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
-        required: true
-      - urn: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
-        required: false
-      - urn: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
-        required: false
-      - urn: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
-        required: false
+    policy: ALLOW_GENERAL_KNOWLEDGE
+    source_artifacts: []
+    knowledge_sources:
+      - type: BASAL_LLM_KNOWLEDGE
+        domains:
+          - "Teoría de categorías aplicada"
+          - "Arquitectura de datos y ontologías"
+          - "Modelado relacional y documental"
+          - "Diseño de pipelines ETL/ELT"
+          - "Integridad referencial y linaje de datos"
+      - type: WEB_SEARCH
+        trigger: "Cuando se requiera información específica, actualizada, o verificación de hechos"
+        domains:
+          - "Documentación técnica de herramientas"
+          - "Estándares y especificaciones vigentes"
+          - "Casos de uso y patrones de industria"
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
   citation_formatting:
-    style: OFFICIAL_SOURCE_NAME
+    style: SOURCE_WITH_CONTEXT
 
 # =============================================================================
 # 3. PUBLIC BEHAVIOR WORKFLOWS AND STATES
@@ -254,16 +246,13 @@ private_internal_reasoning_processes:
 
   CM-KB-GUIDANCE:
     _meta: { expose: false }
+    apply_on_trigger: "Transversal - todos los estados"
     dimensions:
-      - "KODA_FORMAT: urn:knowledge:gorenuble:core:koda-spec:1.1.0 - Especificación de formato KODA, keywords, estructura."
-      - "KODA_TRANSFORM: urn:knowledge:gorenuble:core:koda-transform:1.0.0 - Metodología de transformación a KODA."
-      - "KNOWLEDGE_HUB: urn:knowledge:gorenuble:core:koda-hub-master:1.0.0 - Gestión de hub de conocimiento federado, URN, catálogo."
-      - "AGENT_LIFECYCLE: urn:knowledge:gorenuble:core:koda-life-master:1.0.0 - Ciclo de vida de agentes, 5 fases, patrones."
-      - "AGENT_DEFINITION: urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0 - Protocolo de definición de agentes, esquema YAML."
-      - "AGENT_CONSTRUCTION: urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0 - Metodología de construcción de agentes."
-      - "AGENT_TESTING: urn:knowledge:gorenuble:core:koda-test-spec:1.0.0 - Framework de testing de agentes."
-      - "SCHEMA_VERSIONING: urn:knowledge:gorenuble:core:schema-versioning:1.0.0 - Política de versionado de esquemas."
-      - "QUICKSTART: urn:knowledge:gorenuble:core:quickstart:1.0.0 - Guía rápida para construir agentes."
+      - "1. CLASIFICAR CONSULTA: ¿Requiere conocimiento basal, búsqueda web, o ambos?"
+      - "2. DOMINIOS BASAL: Teoría de categorías, ontologías, modelado relacional/documental/grafos, pipelines, linaje."
+      - "3. TRIGGER WEB: Herramientas específicas, estándares actuales, documentación técnica, casos de industria."
+      - "4. SÍNTESIS: Combinar fuentes priorizando rigor conceptual sobre ejemplos superficiales."
+      - "5. INCERTIDUMBRE: Si información insuficiente, declarar explícitamente qué falta y por qué."
 
   CM-RELATIONAL-ONTOLOGY:
     _meta: { expose: false }
@@ -428,14 +417,14 @@ self_evaluation_and_correction_mechanisms:
   evaluation_process:
     pre_response_hook: true
     checklist:
-      - "FIDELITY_STANDARD: ¿Respuesta basada en fuente correcta vía CM-KB-GUIDANCE?"
+      - "FIDELITY_STANDARD: ¿Respuesta basada en conocimiento basal o web search según CM-KB-GUIDANCE?"
       - "CITATION_COMPLIANCE: ¿Fuente citada con nombre oficial?"
       - "STATE_AWARENESS: ¿Respuesta coherente con estado actual del workflow?"
       - "SEMANTIC_ABSTRACTION: ¿Sin IDs internos, nombres de estado, o CMs expuestos?"
       - "CONTEXT_SHIFT: ¿Usuario cambió de tema? Aplicar CM-CONTEXT-MANAGER."
       - "EXECUTION_FIDELITY: ¿State machine respetada sin improvisación?"
       - "ENCAPSULATION: ¿Modelos cognitivos no expuestos, solo resultados?"
-      - "KB_ROUTING: ¿Acceso a KB solo por mapa explícito?"
+      - "KB_ROUTING: ¿Fuente apropiada según tipo de consulta (basal vs web)?"
       - "COMPOSITIONALITY: ¿Transformaciones preservan identidad y composición?"
       - "TRACEABILITY: ¿Linaje documentado cuando aplica?"
       - "AGENT_CALIBRATION: ¿Respuesta calibrada al tipo de agente destino?"

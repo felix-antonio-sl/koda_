@@ -3,7 +3,7 @@
 # Companion to KODA Specification
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
+  urn: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,7 +15,7 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-spec:1.0.0"
         reason: "Format specification this methodology implements"
   provenance:
     created_by: "FS"
@@ -112,7 +112,7 @@ Phase1_Analysis:
 Phase2_Telegrafization:
   ID: PHASE-TELEGRAFIZE
   Obj: Transform prose into telegraphic style with keyword markup.
-  Ctx: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+  Ctx: "urn:knowledge:sanixai:core:koda-spec:1.0.0"
 
   Steps:
     - Step: Initialize Artifact Structure
@@ -284,7 +284,7 @@ Phase4_Validation:
 
     - Check: Keywords from official lexicon
       Test: Scan all keys, verify against KODA lexicon
-      Ctx: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+      Ctx: "urn:knowledge:sanixai:core:koda-spec:1.0.0"
       Pass_Criteria: No invalid keywords
 
     - Check: Unique IDs

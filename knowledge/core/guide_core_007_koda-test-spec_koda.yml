@@ -3,7 +3,7 @@
 # Standardized testing methodology for KODA-compliant agents
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
+  urn: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,9 +15,9 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
         reason: "Agent definition schema"
-      - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+      - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
         reason: "Lifecycle integration (Phase 4)"
   provenance:
     created_by: "FS"

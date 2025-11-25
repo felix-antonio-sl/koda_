@@ -4,29 +4,44 @@
 version: "1.0.0"
 
 namespaces:
-  gorenuble:
+  # SANIXAI - Organización profesional (este repositorio)
+  sanixai:
     type: local
     base_path: "./"
-    description: "Primary KODA namespace"
+    description: "SANIXAI - KODA Framework y productos comerciales"
+
+  # GORENUBLE - Gobierno Regional de Ñuble (repositorio institucional)
+  gorenuble:
+    type: local
+    base_path: "../../gorenuble/knowledge-hub/"
+    fallback: "https://raw.githubusercontent.com/gorenuble/knowledge-hub/main/"
+    description: "Gobierno Regional de Ñuble - Conocimiento institucional"
+
+  # FXSL - Personal/Privado (repositorio privado)
+  fxsl:
+    type: local
+    base_path: "../../fxsl/private-kb/"
+    fallback: "https://raw.githubusercontent.com/fxsl/private-kb/main/"
+    description: "FXSL - Proyectos personales y experimentación"
 
 resolution_rules:
   # Core guides
-  "urn:knowledge:gorenuble:core:quickstart:*": "./knowledge/core/guide_core_000_quickstart_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-spec:*": "./knowledge/core/guide_core_001_koda-spec_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-transform:*": "./knowledge/core/guide_core_002_koda-transform_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-hub-master:*": "./knowledge/core/guide_core_003_koda-hub-master_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-life-master:*": "./knowledge/core/guide_core_004_koda-life-master_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-agent-spec:*": "./knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-agent-construct:*": "./knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
-  "urn:knowledge:gorenuble:core:koda-test-spec:*": "./knowledge/core/guide_core_007_koda-test-spec_koda.yml"
-  "urn:knowledge:gorenuble:core:schema-versioning:*": "./knowledge/core/guide_core_008_schema-versioning_koda.yml"
+  "urn:knowledge:sanixai:core:quickstart:*": "./knowledge/core/guide_core_000_quickstart_koda.yml"
+  "urn:knowledge:sanixai:core:koda-spec:*": "./knowledge/core/guide_core_001_koda-spec_koda.yml"
+  "urn:knowledge:sanixai:core:koda-transform:*": "./knowledge/core/guide_core_002_koda-transform_koda.yml"
+  "urn:knowledge:sanixai:core:koda-hub-master:*": "./knowledge/core/guide_core_003_koda-hub-master_koda.yml"
+  "urn:knowledge:sanixai:core:koda-life-master:*": "./knowledge/core/guide_core_004_koda-life-master_koda.yml"
+  "urn:knowledge:sanixai:core:koda-agent-spec:*": "./knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
+  "urn:knowledge:sanixai:core:koda-agent-construct:*": "./knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
+  "urn:knowledge:sanixai:core:koda-test-spec:*": "./knowledge/core/guide_core_007_koda-test-spec_koda.yml"
+  "urn:knowledge:sanixai:core:schema-versioning:*": "./knowledge/core/guide_core_008_schema-versioning_koda.yml"
   
   # Schema
-  "urn:knowledge:gorenuble:core:koda-agent-schema:*": "./schemas/koda-agent-schema-1.0.0.json"
+  "urn:knowledge:sanixai:core:koda-agent-schema:*": "./schemas/koda-agent-schema-1.0.0.json"
   
   # Agents
-  "urn:knowledge:gorenuble:agents:koda-architect:*": "./agents/knowledge-architect/agent_koda_architect.yaml"
-  "urn:knowledge:gorenuble:agents:knowledge-architect:*": "./agents/knowledge-architect/agent.yaml"
+  "urn:knowledge:sanixai:agents:koda-architect:*": "./agents/knowledge-architect/agent_koda_architect.yaml"
+  "urn:knowledge:sanixai:agents:knowledge-architect:*": "./agents/knowledge-architect/agent.yaml"
 
 # Directory structure conventions
 directories:

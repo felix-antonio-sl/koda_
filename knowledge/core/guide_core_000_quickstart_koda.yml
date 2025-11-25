@@ -3,7 +3,7 @@
 # Fast-track guide to building your first KODA-compliant agent
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
+  urn: "urn:knowledge:sanixai:core:quickstart:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -402,16 +402,16 @@ Next_Steps:
 
   After_First_Agent:
     - Step: "Read full KODA-AGENT-SPEC for advanced features"
-      Ctx_Required: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+      Ctx_Required: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
       
     - Step: "Learn transformation methodology for KB creation"
-      Ctx_Required: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
+      Ctx_Required: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
       
     - Step: "Understand full lifecycle for production agents"
-      Ctx_Required: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+      Ctx_Required: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
       
     - Step: "Set up testing framework"
-      Ctx_Required: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
+      Ctx_Required: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
 
   Advanced_Patterns:
     - Pattern: "Multi-state workflows with complex routing"

@@ -2,7 +2,7 @@
 # Central inventory of all KODA artifacts
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:catalog:master:1.0.0"
+  urn: "urn:knowledge:sanixai:catalog:master:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -17,66 +17,66 @@ Status: Published
 
 Catalog:
   Core_Guides:
-    - urn: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:quickstart:1.0.0"
       title: "KODA Quickstart Guide"
       file: "knowledge/core/guide_core_000_quickstart_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
+    - urn: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
       title: "KODA/Spec Specification"
       file: "knowledge/core/guide_core_001_koda-spec_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
       title: "KODA Transformation Methodology"
       file: "knowledge/core/guide_core_002_koda-transform_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
       title: "KODA/Hub Management Guide"
       file: "knowledge/core/guide_core_003_koda-hub-master_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
       title: "KODA/Life Management Guide"
       file: "knowledge/core/guide_core_004_koda-life-master_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
       title: "KODA/Agent Protocol Specification"
       file: "knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:koda-agent-construct:1.0.0"
       title: "KODA/Agent Construction Methodology"
       file: "knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
       title: "KODA/Test Framework Specification"
       file: "knowledge/core/guide_core_007_koda-test-spec_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:schema-versioning:1.0.0"
       title: "Schema Versioning Policy"
       file: "knowledge/core/guide_core_008_schema-versioning_koda.yml"
       status: published
 
   Schemas:
-    - urn: "urn:knowledge:gorenuble:core:koda-agent-schema:1.0.0"
+    - urn: "urn:knowledge:sanixai:core:koda-agent-schema:1.0.0"
       title: "KODA/Agent JSON Schema"
       file: "schemas/koda-agent-schema-1.0.0.json"
       status: published
 
   Agents:
-    - urn: "urn:knowledge:gorenuble:agents:koda-architect:1.0.0"
+    - urn: "urn:knowledge:sanixai:agents:koda-architect:1.0.0"
       title: "KODA Architect Agent"
       description: "Official agent embodying the KODA Framework"
       file: "agents/knowledge-architect/agent_koda_architect.yaml"
       status: published
       primary: true
       
-    - urn: "urn:knowledge:gorenuble:agents:knowledge-architect:1.0.0"
+    - urn: "urn:knowledge:sanixai:agents:knowledge-architect:1.0.0"
       title: "Compositional Knowledge Architect Agent"
       description: "Specialized agent for knowledge architecture and data modeling"
       file: "agents/knowledge-architect/agent.yaml"
@@ -85,7 +85,7 @@ Catalog:
   Domains: []
     # Future domain-specific knowledge bases will be registered here
     # Example:
-    # - urn: "urn:knowledge:gorenuble:legal:contracts:1.0.0"
+    # - urn: "urn:knowledge:sanixai:legal:contracts:1.0.0"
     #   title: "Contracts Knowledge Base"
     #   file: "domains/legal/kb_legal_001_contracts_koda.yml"
     #   status: draft
