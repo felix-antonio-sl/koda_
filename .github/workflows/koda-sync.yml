@@ -1,0 +1,313 @@
+# KODA Federation Sync Workflow
+# Periodically checks for upstream updates and federation health
+# Spec: urn:knowledge:koda:core:federation:1.0.0
+
+name: KODA Federation Sync
+
+on:
+  schedule:
+    # Run weekly on Monday at 6:00 AM UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    # Allow manual triggering
+    inputs:
+      force_check:
+        description: 'Force check even if recently synced'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  sync:
+    name: Federation Sync Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyyaml requests
+
+      - name: Fetch federation registry
+        id: registry
+        run: |
+          echo "🔍 Fetching federation registry..."
+          python3 << 'EOF'
+          import yaml
+          import requests
+          import os
+
+          registry_url = "https://raw.githubusercontent.com/koda-framework/koda/main/registry/namespaces.yml"
+          
+          try:
+              response = requests.get(registry_url, timeout=30)
+              if response.status_code == 200:
+                  registry = yaml.safe_load(response.text)
+                  namespaces = registry.get('namespaces', {})
+                  active = [ns for ns, data in namespaces.items() if data.get('status') == 'active']
+                  print(f"✅ Registry fetched: {len(active)} active namespaces")
+                  for ns in active:
+                      print(f"   - {ns}")
+                  
+                  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                      f.write(f"registry_available=true\n")
+                      f.write(f"active_namespaces={len(active)}\n")
+              else:
+                  print(f"⚠️ Registry returned status {response.status_code}")
+                  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                      f.write("registry_available=false\n")
+          except Exception as e:
+              print(f"⚠️ Could not fetch registry: {e}")
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write("registry_available=false\n")
+          EOF
+
+      - name: Check upstream KODA version
+        id: upstream
+        run: |
+          echo "🔍 Checking upstream KODA version..."
+          python3 << 'EOF'
+          import yaml
+          import requests
+          import os
+
+          # Try to fetch upstream catalog
+          upstream_url = "https://raw.githubusercontent.com/koda-framework/koda/main/catalog/catalog_master_koda.yml"
+          
+          try:
+              response = requests.get(upstream_url, timeout=30)
+              if response.status_code == 200:
+                  upstream = yaml.safe_load(response.text)
+                  stats = upstream.get('Statistics', {})
+                  print(f"✅ Upstream reachable")
+                  print(f"   Artifacts: {stats.get('total_artifacts', 'unknown')}")
+                  print(f"   Last updated: {stats.get('last_updated', 'unknown')}")
+                  
+                  # Write to GitHub output
+                  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                      f.write(f"upstream_available=true\n")
+                      f.write(f"upstream_artifacts={stats.get('total_artifacts', 0)}\n")
+              else:
+                  print(f"⚠️ Upstream returned status {response.status_code}")
+                  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                      f.write("upstream_available=false\n")
+          except Exception as e:
+              print(f"⚠️ Could not reach upstream: {e}")
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write("upstream_available=false\n")
+          EOF
+
+      - name: Analyze local resolver
+        id: local
+        run: |
+          echo "🔍 Analyzing local resolver configuration..."
+          python3 << 'EOF'
+          import yaml
+          import os
+          from datetime import datetime, timezone
+
+          with open('.knowledge-resolver.yml', 'r') as f:
+              resolver = yaml.safe_load(f)
+
+          meta = resolver.get('_meta', {})
+          self_config = resolver.get('self', {})
+          namespaces = resolver.get('namespaces', {})
+
+          print(f"Namespace: {self_config.get('namespace', 'unknown')}")
+          print(f"Resolver version: {meta.get('resolver_version', 'unknown')}")
+          print(f"KODA compatibility: {meta.get('koda_compatibility', 'unknown')}")
+          print(f"Last sync: {meta.get('last_sync', 'never')}")
+          print(f"Configured namespaces: {len(namespaces)}")
+
+          # Check sync freshness
+          last_sync = meta.get('last_sync')
+          if last_sync:
+              try:
+                  sync_date = datetime.fromisoformat(last_sync.replace('Z', '+00:00'))
+                  now = datetime.now(timezone.utc)
+                  days_since_sync = (now - sync_date).days
+                  print(f"Days since last sync: {days_since_sync}")
+                  
+                  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                      f.write(f"days_since_sync={days_since_sync}\n")
+                      if days_since_sync > 14:
+                          f.write("sync_stale=true\n")
+                      else:
+                          f.write("sync_stale=false\n")
+              except Exception as e:
+                  print(f"Could not parse last_sync date: {e}")
+                  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                      f.write("sync_stale=unknown\n")
+          else:
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write("sync_stale=true\n")
+          EOF
+
+      - name: Check for dependency updates
+        id: deps
+        run: |
+          echo "🔍 Checking dependencies..."
+          python3 << 'EOF'
+          import yaml
+          import glob
+          import os
+
+          dependencies = set()
+
+          # Collect all URN dependencies from artifacts
+          for filepath in glob.glob('knowledge/**/*.yml', recursive=True):
+              with open(filepath, 'r') as f:
+                  try:
+                      doc = yaml.safe_load(f)
+                      if doc and '_manifest' in doc:
+                          deps = doc['_manifest'].get('dependencies', {}).get('requires', [])
+                          for dep in deps:
+                              if isinstance(dep, dict):
+                                  dependencies.add(dep.get('urn', ''))
+                              elif isinstance(dep, str):
+                                  dependencies.add(dep)
+                  except:
+                      pass
+
+          # Collect from agents
+          for filepath in glob.glob('agents/**/*.yaml', recursive=True):
+              with open(filepath, 'r') as f:
+                  try:
+                      doc = yaml.safe_load(f)
+                      if doc and '_manifest' in doc:
+                          deps = doc['_manifest'].get('dependencies', {}).get('requires', [])
+                          for dep in deps:
+                              if isinstance(dep, dict):
+                                  dependencies.add(dep.get('urn', ''))
+                              elif isinstance(dep, str):
+                                  dependencies.add(dep)
+                  except:
+                      pass
+
+          # Filter external dependencies (not from this namespace)
+          with open('.knowledge-resolver.yml', 'r') as f:
+              resolver = yaml.safe_load(f)
+          
+          self_namespace = resolver.get('self', {}).get('namespace', 'koda')
+          external_deps = [d for d in dependencies if d and f":{self_namespace}:" not in d]
+
+          print(f"Total dependencies: {len(dependencies)}")
+          print(f"External dependencies: {len(external_deps)}")
+
+          for dep in sorted(external_deps)[:10]:  # Show first 10
+              print(f"  - {dep}")
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"external_deps={len(external_deps)}\n")
+          EOF
+
+      - name: Generate health report
+        run: |
+          echo "📊 Generating health report..."
+          python3 << 'EOF'
+          import yaml
+          import glob
+          import json
+          from datetime import datetime, timezone
+
+          report = {
+              "timestamp": datetime.now(timezone.utc).isoformat(),
+              "namespace": "",
+              "status": "healthy",
+              "artifacts": {
+                  "knowledge": 0,
+                  "agents": 0,
+                  "schemas": 0
+              },
+              "warnings": []
+          }
+
+          # Read resolver
+          with open('.knowledge-resolver.yml', 'r') as f:
+              resolver = yaml.safe_load(f)
+          
+          report["namespace"] = resolver.get('self', {}).get('namespace', 'unknown')
+
+          # Count artifacts
+          report["artifacts"]["knowledge"] = len(glob.glob('knowledge/**/*.yml', recursive=True))
+          report["artifacts"]["agents"] = len(glob.glob('agents/**/*.yaml', recursive=True))
+          report["artifacts"]["schemas"] = len(glob.glob('schemas/**/*.json', recursive=True))
+
+          # Check for warnings
+          meta = resolver.get('_meta', {})
+          last_sync = meta.get('last_sync')
+          if last_sync:
+              try:
+                  sync_date = datetime.fromisoformat(last_sync.replace('Z', '+00:00'))
+                  days = (datetime.now(timezone.utc) - sync_date).days
+                  if days > 14:
+                      report["warnings"].append(f"Sync is {days} days old")
+                      report["status"] = "degraded"
+              except:
+                  pass
+
+          print(json.dumps(report, indent=2))
+          EOF
+
+      - name: Create issue if stale
+        if: steps.local.outputs.sync_stale == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '⚠️ KODA Federation Sync Stale';
+            const body = `
+            ## Federation Sync Alert
+
+            The last federation sync was more than 14 days ago.
+
+            ### Recommended Actions:
+            1. Review upstream KODA changes
+            2. Update \`.knowledge-resolver.yml\` with current timestamp
+            3. Check for breaking changes in dependencies
+
+            ### Sync Details:
+            - Days since sync: ${{ steps.local.outputs.days_since_sync }}
+            - Upstream available: ${{ steps.upstream.outputs.upstream_available }}
+
+            ---
+            *This issue was automatically created by the KODA Federation Sync workflow.*
+            `;
+
+            // Check if issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'federation-sync'
+            });
+
+            const existingIssue = issues.data.find(i => i.title === title);
+            
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['federation-sync', 'automated']
+              });
+              console.log('Created new issue for stale sync');
+            } else {
+              console.log('Issue already exists, skipping creation');
+            }
+
+      - name: Summary
+        run: |
+          echo "========================================"
+          echo "KODA Federation Sync Complete"
+          echo "========================================"
+          echo "Upstream available: ${{ steps.upstream.outputs.upstream_available }}"
+          echo "Days since sync: ${{ steps.local.outputs.days_since_sync }}"
+          echo "External dependencies: ${{ steps.deps.outputs.external_deps }}"
+          echo "========================================"

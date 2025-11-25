@@ -15,7 +15,7 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:koda:core:spec:1.1.0"
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
         reason: "Format specification"
       - urn: "urn:knowledge:koda:core:agent:1.0.0"
         reason: "Agent definition schema"

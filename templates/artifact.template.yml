@@ -1,0 +1,69 @@
+# KODA Knowledge Artifact Template
+# Replace all {PLACEHOLDERS} with your values
+# Spec: urn:knowledge:koda:core:spec:1.0.0
+
+_manifest:
+  urn: "urn:knowledge:{NAMESPACE}:{DOMAIN}:{ARTIFACT-ID}:1.0.0"
+  federation:
+    visibility: public  # public | internal | private
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/{DOMAIN}/{FILENAME}"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "KODA/Spec format compliance"
+      # Add other dependencies as needed
+  provenance:
+    created_by: "{AUTHOR}"
+    created_at: "{YYYY-MM-DD}"
+    last_modified_by: "{AUTHOR}"
+    last_modified_at: "{YYYY-MM-DD}"
+    signature: null
+
+ID: {ARTIFACT-ID-UPPERCASE}
+Version: 1.0.0
+Status: Draft  # Draft | Published | Deprecated
+Human-Creator: {AUTHOR}
+Human-Editor: {AUTHOR}
+Model-Collaborator: null
+Creation-Date: {YYYY-MM-DD}
+Modification-Date: {YYYY-MM-DD}
+Source: {SOURCE-REFERENCE}
+Ctx: {ONE-LINE-DESCRIPTION}
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+    
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+    
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+    
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:.
+    
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Purp: {PURPOSE-OF-THIS-ARTIFACT}
+
+# =============================================================================
+# YOUR CONTENT STARTS HERE
+# =============================================================================
+
+# Add your structured content following KODA/Spec conventions:
+# - Use IDs for all major sections: ID: SECTION-01
+# - Use Purp: for purposes
+# - Use Def: for definitions
+# - Use Req: for requirements
+# - Use Prohib: for prohibitions
+# - Use Ex: for examples
+# - Use Ref: for internal references only

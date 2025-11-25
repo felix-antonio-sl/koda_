@@ -1,34 +1,59 @@
 # KODA Knowledge Resolver Configuration
 # Defines how URNs are resolved to physical file paths
+# Spec: urn:knowledge:koda:core:federation:1.0.0
 
-version: "1.0.0"
+# =============================================================================
+# METADATA - Required for federation health tracking
+# =============================================================================
+_meta:
+  resolver_version: "1.0.0"
+  koda_compatibility: ">=1.0.0 <2.0.0"
+  last_sync: "2025-11-25T20:49:54Z"
+  health_check_interval: weekly
 
+# =============================================================================
+# SELF - This repository's identity in the federation
+# =============================================================================
+self:
+  namespace: koda
+  repository: "github.com/koda-framework/koda"
+  visibility: public
+  maintainer: "fs@sanixai.com"
+  role: upstream  # This is the upstream source for all KODA-compliant repos
+
+# =============================================================================
+# NAMESPACES - Federated namespace resolution
+# =============================================================================
 namespaces:
-  # KODA - Framework base (este repositorio)
+  # KODA - Framework base (this repository)
   koda:
     type: local
     base_path: "./"
+    required: true
     description: "KODA Framework - Knowledge-Oriented Design Architecture"
 
-  # SANIXAI - Organización comercial
+  # SANIXAI - Commercial organization (peer)
   sanixai:
-    type: local
+    type: peer
     base_path: "../sanixai/"
     fallback: "https://raw.githubusercontent.com/sanixai/knowledge-hub/main/"
+    required: false
     description: "SANIXAI - Productos comerciales y proyectos clientes"
 
-  # GORENUBLE - Gobierno Regional de Ñuble
+  # GORENUBLE - Gobierno Regional de Ñuble (peer)
   gorenuble:
-    type: local
+    type: peer
     base_path: "../gorenuble/knowledge-hub/"
     fallback: "https://raw.githubusercontent.com/gorenuble/knowledge-hub/main/"
+    required: false
     description: "Gobierno Regional de Ñuble - Conocimiento institucional"
 
-  # FXSL - Personal/Privado
+  # FXSL - Personal/Private (peer)
   fxsl:
-    type: local
+    type: peer
     base_path: "../fxsl/private-kb/"
     fallback: "https://raw.githubusercontent.com/fxsl/private-kb/main/"
+    required: false
     description: "FXSL - Proyectos personales y experimentación"
 
 resolution_rules:
@@ -42,13 +67,16 @@ resolution_rules:
   "urn:knowledge:koda:core:agent-construct:*": "./knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
   "urn:knowledge:koda:core:test:*": "./knowledge/core/guide_core_007_koda-test-spec_koda.yml"
   "urn:knowledge:koda:core:schema-versioning:*": "./knowledge/core/guide_core_008_schema-versioning_koda.yml"
+  "urn:knowledge:koda:core:federation:*": "./knowledge/core/guide_core_009_federation-protocol_koda.yml"
   
   # Schema
   "urn:knowledge:koda:core:agent-schema:*": "./schemas/koda-agent-schema-1.0.0.json"
   
   # Agents
   "urn:knowledge:koda:agents:architect:*": "./agents/knowledge-architect/agent_koda_architect.yaml"
-  "urn:knowledge:koda:agents:knowledge-architect:*": "./agents/knowledge-architect/agent.yaml"
+  
+  # Registry
+  "urn:knowledge:koda:registry:namespaces:*": "./registry/namespaces.yml"
 
 # Directory structure conventions
 directories:

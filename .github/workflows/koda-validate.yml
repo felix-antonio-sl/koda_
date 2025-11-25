@@ -1,0 +1,201 @@
+# KODA Validation Workflow
+# Validates YAML syntax, resolver configuration, and artifact manifests
+# Spec: urn:knowledge:koda:core:federation:1.0.0
+
+name: KODA Validation
+
+on:
+  push:
+    paths:
+      - 'knowledge/**'
+      - 'agents/**'
+      - 'schemas/**'
+      - 'catalog/**'
+      - '.knowledge-resolver.yml'
+  pull_request:
+    paths:
+      - 'knowledge/**'
+      - 'agents/**'
+      - 'schemas/**'
+      - 'catalog/**'
+      - '.knowledge-resolver.yml'
+
+jobs:
+  validate:
+    name: Validate KODA Artifacts
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml yamllint
+
+      - name: Validate YAML syntax (yamllint)
+        run: |
+          echo "🔍 Validating YAML syntax..."
+          yamllint -d "{extends: relaxed, rules: {line-length: disable, document-start: disable}}" \
+            knowledge/ agents/ catalog/ .knowledge-resolver.yml
+          echo "✅ YAML syntax valid"
+
+      - name: Validate resolver configuration
+        run: |
+          echo "🔍 Validating .knowledge-resolver.yml..."
+          python3 << 'EOF'
+          import yaml
+          import sys
+
+          with open('.knowledge-resolver.yml', 'r') as f:
+              resolver = yaml.safe_load(f)
+
+          # Check required sections
+          required_sections = ['_meta', 'self', 'namespaces']
+          for section in required_sections:
+              if section not in resolver:
+                  print(f"❌ Missing required section: {section}")
+                  sys.exit(1)
+
+          # Check _meta fields
+          meta = resolver.get('_meta', {})
+          if 'resolver_version' not in meta:
+              print("❌ Missing _meta.resolver_version")
+              sys.exit(1)
+          if 'koda_compatibility' not in meta:
+              print("❌ Missing _meta.koda_compatibility")
+              sys.exit(1)
+
+          # Check self fields
+          self_config = resolver.get('self', {})
+          if 'namespace' not in self_config:
+              print("❌ Missing self.namespace")
+              sys.exit(1)
+
+          print(f"✅ Resolver valid for namespace: {self_config['namespace']}")
+          EOF
+
+      - name: Validate artifact manifests
+        run: |
+          echo "🔍 Validating artifact manifests..."
+          python3 << 'EOF'
+          import yaml
+          import glob
+          import sys
+
+          errors = []
+
+          # Check knowledge artifacts
+          for filepath in glob.glob('knowledge/**/*.yml', recursive=True):
+              with open(filepath, 'r') as f:
+                  try:
+                      doc = yaml.safe_load(f)
+                      if doc is None:
+                          continue
+                      if '_manifest' not in doc:
+                          errors.append(f"❌ Missing _manifest in {filepath}")
+                      else:
+                          manifest = doc['_manifest']
+                          if 'urn' not in manifest:
+                              errors.append(f"❌ Missing _manifest.urn in {filepath}")
+                  except yaml.YAMLError as e:
+                      errors.append(f"❌ YAML error in {filepath}: {e}")
+
+          # Check agent artifacts
+          for filepath in glob.glob('agents/**/*.yaml', recursive=True):
+              with open(filepath, 'r') as f:
+                  try:
+                      doc = yaml.safe_load(f)
+                      if doc is None:
+                          continue
+                      if '_manifest' not in doc:
+                          errors.append(f"❌ Missing _manifest in {filepath}")
+                  except yaml.YAMLError as e:
+                      errors.append(f"❌ YAML error in {filepath}: {e}")
+
+          if errors:
+              for error in errors:
+                  print(error)
+              sys.exit(1)
+
+          print("✅ All artifact manifests valid")
+          EOF
+
+      - name: Check federation health (fallback URLs)
+        run: |
+          echo "🔍 Checking fallback URL availability..."
+          python3 << 'EOF'
+          import yaml
+          import urllib.request
+          import urllib.error
+          import sys
+
+          with open('.knowledge-resolver.yml', 'r') as f:
+              resolver = yaml.safe_load(f)
+
+          warnings = []
+          namespaces = resolver.get('namespaces', {})
+
+          for ns_name, ns_config in namespaces.items():
+              fallback = ns_config.get('fallback')
+              if fallback:
+                  try:
+                      req = urllib.request.Request(fallback, method='HEAD')
+                      urllib.request.urlopen(req, timeout=10)
+                      print(f"✅ {ns_name}: fallback reachable")
+                  except urllib.error.URLError as e:
+                      warnings.append(f"⚠️ {ns_name}: fallback unreachable ({fallback})")
+                  except Exception as e:
+                      warnings.append(f"⚠️ {ns_name}: error checking fallback - {e}")
+
+          if warnings:
+              for warning in warnings:
+                  print(warning)
+              # Warnings don't fail the build, just inform
+              
+          print("✅ Federation health check complete")
+          EOF
+
+      - name: Validate catalog consistency
+        run: |
+          echo "🔍 Validating catalog..."
+          python3 << 'EOF'
+          import yaml
+          import os
+          import sys
+
+          with open('catalog/catalog_master_koda.yml', 'r') as f:
+              catalog = yaml.safe_load(f)
+
+          errors = []
+          catalog_data = catalog.get('Catalog', {})
+
+          # Check that all referenced files exist
+          for section in ['Core_Guides', 'Schemas', 'Agents']:
+              items = catalog_data.get(section, [])
+              if items is None:
+                  continue
+              for item in items:
+                  filepath = item.get('file')
+                  if filepath and not os.path.exists(filepath):
+                      errors.append(f"❌ Catalog references non-existent file: {filepath}")
+
+          if errors:
+              for error in errors:
+                  print(error)
+              sys.exit(1)
+
+          print("✅ Catalog consistency valid")
+          EOF
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "========================================"
+          echo "KODA Validation Complete"
+          echo "========================================"

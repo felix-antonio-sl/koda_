@@ -22,7 +22,7 @@ Catalog:
       file: "knowledge/core/guide_core_000_quickstart_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:koda:core:spec:1.1.0"
+    - urn: "urn:knowledge:koda:core:spec:1.0.0"
       title: "KODA/Spec Specification"
       file: "knowledge/core/guide_core_001_koda-spec_koda.yml"
       status: published
@@ -61,6 +61,11 @@ Catalog:
       title: "Schema Versioning Policy"
       file: "knowledge/core/guide_core_008_schema-versioning_koda.yml"
       status: published
+      
+    - urn: "urn:knowledge:koda:core:federation:1.0.0"
+      title: "Federation Protocol"
+      file: "knowledge/core/guide_core_009_federation-protocol_koda.yml"
+      status: published
 
   Schemas:
     - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
@@ -75,12 +80,6 @@ Catalog:
       file: "agents/knowledge-architect/agent_koda_architect.yaml"
       status: published
       primary: true
-      
-    - urn: "urn:knowledge:koda:agents:knowledge-architect:1.0.0"
-      title: "Compositional Knowledge Architect Agent"
-      description: "Specialized agent for knowledge architecture and data modeling"
-      file: "agents/knowledge-architect/agent.yaml"
-      status: published
 
   Domains: []
     # Future domain-specific knowledge bases will be registered here
@@ -92,8 +91,8 @@ Catalog:
 
 Statistics:
   total_artifacts: 12
-  core_guides: 9
+  core_guides: 10
   schemas: 1
-  agents: 2
+  agents: 1
   domains: 0
   last_updated: "2025-11-25"

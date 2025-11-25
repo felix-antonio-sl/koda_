@@ -1,0 +1,112 @@
+# KODA Federation Registry
+# Official list of registered namespaces in the KODA ecosystem
+# 
+# To register a new namespace:
+# 1. Fork this repository
+# 2. Add your namespace entry below
+# 3. Submit a PR with title "Register namespace: {your-namespace}"
+# 4. Ensure your repo is KODA-compliant (has .knowledge-resolver.yml, catalog, etc.)
+
+_meta:
+  registry_version: "1.0.0"
+  last_updated: "2025-11-25"
+  maintainers:
+    - "fs@sanixai.com"
+
+namespaces:
+  # ============================================================================
+  # FRAMEWORK (upstream for all)
+  # ============================================================================
+  koda:
+    status: active
+    type: framework
+    owner: "KODA Framework"
+    repository: "github.com/koda-framework/koda"
+    fallback_url: "https://raw.githubusercontent.com/koda-framework/koda/main/"
+    visibility: public
+    license: "CC-BY-4.0"
+    registered: "2025-11-25"
+    description: "KODA Framework - Core specifications and reference implementations"
+    domains:
+      - core
+      - agents
+
+  # ============================================================================
+  # COMMERCIAL
+  # ============================================================================
+  sanixai:
+    status: active
+    type: commercial
+    owner: "SANIXAI"
+    repository: "github.com/sanixai/knowledge-hub"
+    fallback_url: "https://raw.githubusercontent.com/sanixai/knowledge-hub/main/"
+    visibility: public
+    license: "Proprietary"
+    registered: "2025-11-25"
+    description: "SANIXAI - Commercial products and client projects"
+    domains:
+      - products
+      - clients
+      - internal
+
+  # ============================================================================
+  # INSTITUTIONAL
+  # ============================================================================
+  gorenuble:
+    status: active
+    type: institutional
+    owner: "Gobierno Regional de Ñuble"
+    repository: "github.com/gorenuble/knowledge-hub"
+    fallback_url: "https://raw.githubusercontent.com/gorenuble/knowledge-hub/main/"
+    visibility: public
+    license: "Institutional Use"
+    registered: "2025-11-25"
+    description: "GORE Ñuble - Institutional knowledge and procedures"
+    domains:
+      - normativa
+      - procesos
+      - servicios
+
+  # ============================================================================
+  # PERSONAL/PRIVATE
+  # ============================================================================
+  fxsl:
+    status: active
+    type: personal
+    owner: "Félix Sanhueza"
+    repository: "github.com/fxsl/private-kb"
+    fallback_url: null  # Private repo, no public fallback
+    visibility: private
+    license: "Proprietary"
+    registered: "2025-11-25"
+    description: "FXSL - Personal experiments and learning"
+    domains:
+      - experiments
+      - learning
+
+# ============================================================================
+# REGISTRATION REQUIREMENTS
+# ============================================================================
+registration_requirements:
+  mandatory:
+    - ".knowledge-resolver.yml at repository root"
+    - "_meta.resolver_version must be 1.0.0 or higher"
+    - "self.namespace must match requested namespace"
+    - "koda namespace configured as upstream with fallback"
+    - "catalog/catalog_master_{namespace}.yml exists"
+    
+  recommended:
+    - "At least one published artifact"
+    - "CI/CD workflows (koda-validate.yml)"
+    - "README.md with KODA badge"
+    - "LICENSE file"
+
+# ============================================================================
+# VALIDATION ENDPOINT
+# ============================================================================
+validation:
+  check_url: "https://raw.githubusercontent.com/{repo}/main/.knowledge-resolver.yml"
+  required_fields:
+    - "_meta.resolver_version"
+    - "self.namespace"
+    - "namespaces.koda"

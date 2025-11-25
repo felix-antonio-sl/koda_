@@ -11,7 +11,7 @@ _manifest:
     min_consumer_version: "1.0.0"
     breaking_changes_from: null
   resolution:
-    canonical_url: "file://knowledge/core/guide_core_003_koda-hub-master_sts.yml"
+    canonical_url: "file://knowledge/core/guide_core_003_koda-hub-master_koda.yml"
     mirrors: []
   dependencies:
     requires:
@@ -230,7 +230,7 @@ Architecture:
       Subdirs:
         - knowledge/core/: Transversal guides (ALM, KODA/Spec, KODA/Hub)
         - knowledge/domains/{name}/: Domain-specific (gore_nuble, legal)
-        - knowledge/catalog/: Master inventory
+        - catalog/: Master inventory (catalog_master_{namespace}.yml)
 
     - Path: /sources/
       Purp: Raw unprocessed materials (PDFs, docs).
@@ -358,7 +358,18 @@ Naming_Conventions:
 Catalog:
   ID: GUIDE-KODA-HUB-CATALOG-01
   Purp: Master inventory for discovery and impact analysis.
-  File: knowledge/catalog/catalog_master_sts.yml
+  File: catalog/catalog_master_{namespace}.yml
+  
+  Federation_Model:
+    Def: Each namespace maintains its OWN catalog. No central catalog.
+    Rationale:
+      - Ownership: Each org controls their inventory
+      - Independence: No single point of failure
+      - Discovery: Cross-repo discovery via resolver, not catalog
+    
+    Cross_Repo_Discovery:
+      Method: Resolve URN via .knowledge-resolver.yml, then read remote catalog
+      Ex: To discover gorenuble artifacts, resolve any gorenuble URN, find catalog path
 
   Entry_Schema:
     urn: Full URN

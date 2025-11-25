@@ -1,0 +1,21 @@
+# KODA Framework Code Owners
+# These owners will be requested for review on PRs that modify matching paths
+
+# Default owners for everything
+* @koda-framework/maintainers
+
+# Core specifications require architect review
+/knowledge/core/ @koda-framework/architects
+
+# Agent definitions
+/agents/ @koda-framework/architects
+
+# Schema changes require careful review
+/schemas/ @koda-framework/architects
+
+# Catalog and resolver changes
+/catalog/ @koda-framework/maintainers
+/.knowledge-resolver.yml @koda-framework/architects
+
+# CI/CD workflows
+/.github/workflows/ @koda-framework/maintainers

@@ -28,12 +28,23 @@ knowledge/core/guide_core_000_quickstart_koda.yml → Construye tu primer agente
 ```
 KODA/
 ├── knowledge/               # Todos los artefactos de conocimiento
-│   ├── core/               # Especificaciones del framework
+│   ├── core/               # Especificaciones del framework (10 guías)
 │   │   └── guide_core_*.yml
 │   └── domains/            # KBs específicas de dominio
 ├── agents/                 # Definiciones de agentes
 ├── schemas/                # JSON Schemas
-├── catalog/                # Registro de artefactos
+├── catalog/                # Inventario de artefactos
+├── registry/               # Registro de namespaces federados
+├── scripts/                # Herramientas CLI
+│   ├── koda              # Punto de entrada CLI
+│   ├── koda-init.sh      # Inicializar nuevo repo
+│   ├── koda-validate.sh  # Validar repositorio
+│   ├── koda-add-artifact.sh  # Crear artefacto (interactivo)
+│   └── koda-health.sh    # Health check de federación
+├── templates/              # Plantillas de artefactos
+│   ├── artifact.template.yml
+│   └── agent.template.yml
+├── .github/workflows/      # Automatización CI/CD
 ├── sources/                # Materiales fuente
 └── staging/                # Trabajo en progreso (gitignored)
 ```
@@ -44,15 +55,16 @@ Todas las guías core ubicadas en `knowledge/core/`:
 
 | # | Archivo | URN | Propósito |
 |---|---------|-----|-----------|
-| 000 | `guide_core_000_quickstart_koda.yml` | `urn:knowledge:sanixai:core:quickstart:1.0.0` | **Guía de inicio rápido (EMPIEZA AQUÍ)** |
-| 001 | `guide_core_001_koda-spec_koda.yml` | `urn:knowledge:sanixai:core:koda-spec:1.1.0` | Especificación del formato KODA/Spec (RAÍZ) |
-| 002 | `guide_core_002_koda-transform_koda.yml` | `urn:knowledge:sanixai:core:koda-transform:1.0.0` | Metodología de transformación KODA/Spec |
-| 003 | `guide_core_003_koda-hub-master_koda.yml` | `urn:knowledge:sanixai:core:koda-hub-master:1.0.0` | Gestión KODA/Hub |
-| 004 | `guide_core_004_koda-life-master_koda.yml` | `urn:knowledge:sanixai:core:koda-life-master:1.0.0` | Gestión KODA/Life |
-| 005 | `guide_core_005_koda-agent-spec_koda.yml` | `urn:knowledge:sanixai:core:koda-agent-spec:1.0.0` | Especificación del protocolo KODA/Agent |
-| 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:sanixai:core:koda-agent-construct:1.0.0` | Metodología de construcción KODA/Agent |
-| 007 | `guide_core_007_koda-test-spec_koda.yml` | `urn:knowledge:sanixai:core:koda-test-spec:1.0.0` | Framework KODA/Test |
-| 008 | `guide_core_008_schema-versioning_koda.yml` | `urn:knowledge:sanixai:core:schema-versioning:1.0.0` | Política de versionado de schemas |
+| 000 | `guide_core_000_quickstart_koda.yml` | `urn:knowledge:koda:core:quickstart:1.0.0` | **Guía de inicio rápido (EMPIEZA AQUÍ)** |
+| 001 | `guide_core_001_koda-spec_koda.yml` | `urn:knowledge:koda:core:spec:1.0.0` | Especificación del formato KODA/Spec (RAÍZ) |
+| 002 | `guide_core_002_koda-transform_koda.yml` | `urn:knowledge:koda:core:transform:1.0.0` | Metodología de transformación KODA/Spec |
+| 003 | `guide_core_003_koda-hub-master_koda.yml` | `urn:knowledge:koda:core:hub:1.0.0` | Gestión KODA/Hub |
+| 004 | `guide_core_004_koda-life-master_koda.yml` | `urn:knowledge:koda:core:life:1.0.0` | Gestión KODA/Life |
+| 005 | `guide_core_005_koda-agent-spec_koda.yml` | `urn:knowledge:koda:core:agent:1.0.0` | Especificación del protocolo KODA/Agent |
+| 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:koda:core:agent-construct:1.0.0` | Metodología de construcción KODA/Agent |
+| 007 | `guide_core_007_koda-test-spec_koda.yml` | `urn:knowledge:koda:core:test:1.0.0` | Framework KODA/Test |
+| 008 | `guide_core_008_schema-versioning_koda.yml` | `urn:knowledge:koda:core:schema-versioning:1.0.0` | Política de versionado de schemas |
+| 009 | `guide_core_009_federation-protocol_koda.yml` | `urn:knowledge:koda:core:federation:1.0.0` | Protocolo de federación cross-repo |
 
 ### Archivos de Schema
 
@@ -88,7 +100,7 @@ koda-spec (001) ─────────────────────�
 - Formato compatible con YAML para artefactos de conocimiento optimizados para RAG
 - **Principios**: Fidelidad, Densidad, Semántica Estructural, Referenciación Interna
 - **Léxico**: 20 keywords Tier-1 + vocabulario semántico abierto Tier-2
-- **Nuevo en v1.1**: `Ctx_Required` y `Ctx_Optional` para clasificación explícita de dependencias
+- **Keywords**: `Ctx_Required` y `Ctx_Optional` para clasificación explícita de dependencias
 
 ### KODA/Hub (Gestión del Hub de Conocimiento)
 
@@ -182,7 +194,10 @@ Todos los artefactos pasan:
 ### Comandos Rápidos de Validación
 
 ```bash
-# Validación de sintaxis YAML
+# Usando KODA CLI (recomendado)
+./scripts/koda validate
+
+# Validación manual de sintaxis YAML
 for f in knowledge/core/guide_core_*.yml; do
   python -c "import yaml; yaml.safe_load(open('$f'))" && echo "✓ $f" || echo "✗ $f"
 done
@@ -190,6 +205,43 @@ done
 # Validación de agent.yaml con schema (requiere ajv-cli)
 npm install -g ajv-cli
 ajv validate --spec=draft2020 -s schemas/koda-agent-schema-1.0.0.json -d agent.yaml
+```
+
+## Herramientas CLI
+
+KODA incluye herramientas CLI interactivas para operaciones comunes:
+
+```bash
+# Ver todos los comandos
+./scripts/koda --help
+
+# Inicializar un nuevo repositorio KODA-compliant
+./scripts/koda init <namespace> --type commercial
+
+# Validar repositorio actual
+./scripts/koda validate
+
+# Agregar nuevo artefacto interactivamente
+./scripts/koda add
+
+# Verificar salud de la federación
+./scripts/koda health
+./scripts/koda health --full  # Incluye checks remotos
+
+# Sincronizar con registro de federación
+./scripts/koda sync
+```
+
+### Instalación Global (opcional)
+
+```bash
+# Agregar al PATH para acceso global
+echo 'export PATH="$HOME/Developer/koda/scripts:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+# Ahora puedes usar desde cualquier lugar
+koda validate
+koda health
 ```
 
 ## Convención de Nombres
@@ -230,9 +282,7 @@ formato: koda
 
 | Versión | Fecha | Cambios |
 |---------|-------|---------|
-| 2.0.0 | 2025-11-25 | **Rebrand KODA**: Renombrado de STS a KODA Framework. Migración completa de terminología. |
-| 1.1.0 | 2025-11-25 | Añadido: guía quickstart, framework KODA/Test, JSON Schema, política de versionado. |
-| 1.0.0 | 2025-11-25 | Release inicial. Todos los artefactos estandarizados. |
+| 1.0.0 | 2025-11-25 | Release inicial. Framework KODA completo con 10 guías core (incluyendo Protocolo de Federación), JSON Schema, agente de referencia, herramientas CLI, plantillas, registro y automatización GitHub Actions. |
 
 ## Autores
 

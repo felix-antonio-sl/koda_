@@ -11,7 +11,7 @@ _manifest:
     min_consumer_version: "1.0.0"
     breaking_changes_from: null
   resolution:
-    canonical_url: "file://knowledge/core/guide_core_007_koda-test-spec_sts.yml"
+    canonical_url: "file://knowledge/core/guide_core_007_koda-test-spec_koda.yml"
     mirrors: []
   dependencies:
     requires:

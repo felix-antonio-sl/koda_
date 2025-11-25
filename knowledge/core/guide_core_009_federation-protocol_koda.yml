@@ -1,0 +1,1104 @@
+# KODA Federation Protocol v1.0
+# KODA/Spec YAML Format
+# Secure, Efficient, Resilient Cross-Repository Knowledge Federation
+
+_manifest:
+  urn: "urn:knowledge:koda:core:federation:1.0.0"
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/core/guide_core_009_federation-protocol_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:hub:1.0.0"
+        reason: "Base hub architecture this protocol extends"
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "Artifact format specification"
+  provenance:
+    created_by: "FS"
+    created_at: "2025-11-25"
+    last_modified_by: "FS"
+    last_modified_at: "2025-11-25"
+    signature: null
+
+ID: FEDERATION-PROTOCOL-01
+Version: 1.0.0
+Status: Published
+Human-Creator: FS
+Human-Editor: FS
+Model-Collaborator: IA-CLAUDE
+Creation-Date: 2025-11-25
+Modification-Date: 2025-11-25
+Ctx: Protocol for secure, resilient federation of knowledge artifacts and agents across repositories
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+    FIDELITY: Preserve meat and skeleton with zero loss. Ignore fat.
+    LEXICON: Def->Definition, Req->Requirement, Prohib->Prohibition, Warn->Warning, Rec->Recommendation
+    END_LLM_INSTRUCTIONS
+
+Purp: Define the protocol that enables knowledge artifacts and agent definitions to form a coherent, secure, and resilient federated graph across multiple repositories and organizations.
+
+# =============================================================================
+# 1. FEDERATION FUNDAMENTALS
+# =============================================================================
+
+Fundamentals:
+  ID: FED-FUNDAMENTALS-01
+  Purp: Core concepts enabling cross-repository artifact composition.
+
+  Definition:
+    Def: Federation is the ability for artifacts in different repositories to reference, depend on, and compose with each other via stable URN identifiers, without requiring physical co-location.
+    Analogy: Like the internet's DNS - stable names, mutable locations, decentralized ownership.
+
+  Core_Invariants:
+    - Invariant: URN Stability
+      Def: Once published, a URN MUST always resolve to semantically equivalent content.
+      Prohib: Changing content without version bump.
+      
+    - Invariant: Namespace Isolation
+      Def: Each namespace = exactly one repository = one organization.
+      Prohib: Namespace sharing across repos; repo containing multiple namespaces.
+      
+    - Invariant: Explicit Dependencies
+      Def: All cross-repo dependencies MUST be declared in _manifest.dependencies.
+      Prohib: Implicit or undeclared external references.
+      
+    - Invariant: Graceful Degradation
+      Def: System MUST function with partial federation availability.
+      Req: Cache, fallbacks, and offline modes.
+
+  Topology:
+    Types:
+      - Type: Upstream
+        Def: Namespace this repo depends on but does not modify.
+        Ex: "koda is upstream for all KODA-compliant repos"
+        
+      - Type: Peer
+        Def: Namespace with bidirectional potential references.
+        Ex: "sanixai and gorenuble may reference each other"
+        
+      - Type: Downstream
+        Def: Namespace that depends on this repo.
+        Note: Discovered via registry, not declared locally.
+
+# =============================================================================
+# 2. RESOLVER CONTRACT
+# =============================================================================
+
+Resolver_Contract:
+  ID: FED-RESOLVER-CONTRACT-01
+  Purp: Mandatory specification for .knowledge-resolver.yml in every KODA-compliant repository.
+
+  Requirement: Every KODA-compliant repository MUST have .knowledge-resolver.yml at root.
+  
+  Schema:
+    Version: "1.0.0"
+    Structure: |
+      # .knowledge-resolver.yml - MANDATORY
+      
+      _meta:
+        resolver_version: "1.0.0"
+        koda_compatibility: ">=1.0.0 <2.0.0"
+        last_sync: "2025-11-25T16:00:00Z"
+        health_check_interval: "weekly"
+      
+      self:
+        namespace: "{your-namespace}"
+        repository: "github.com/{org}/{repo}"
+        visibility: "public|internal|private"
+        maintainer: "{email or team}"
+      
+      namespaces:
+        koda:
+          type: upstream
+          pin_version: "1.0.0"
+          base_path: "../koda/"
+          fallback: "https://raw.githubusercontent.com/koda-framework/koda/main/"
+          required: true
+          
+        {peer-namespace}:
+          type: peer
+          base_path: "../{peer}/"
+          fallback: "https://..."
+          required: false
+          
+      resolution_rules:
+        "urn:knowledge:{namespace}:*": "./{path}"
+        
+      cache:
+        enabled: true
+        ttl_seconds: 86400
+        max_size_mb: 100
+        
+      modes:
+        default: hybrid
+        ci: remote-only
+        offline: local-only
+
+  Fields:
+    _meta:
+      resolver_version:
+        Req: MUST match supported resolver schema version.
+        Current: "1.0.0"
+      koda_compatibility:
+        Req: Semver range of compatible KODA core versions.
+        Format: ">=1.0.0 <2.0.0"
+      last_sync:
+        Def: Timestamp of last registry synchronization.
+        Req: Updated by sync process, not manually.
+      health_check_interval:
+        Options: ["daily", "weekly", "monthly", "manual"]
+        Default: "weekly"
+        
+    self:
+      namespace:
+        Req: MUST match the namespace used in artifact URNs.
+        Prohib: Claiming namespace not owned.
+      repository:
+        Req: Canonical repository URL.
+      visibility:
+        Options: ["public", "internal", "private"]
+        Def: Controls federation discoverability.
+      maintainer:
+        Rec: Contact for federation issues.
+
+  Validation:
+    Req: Resolver MUST be validated on every commit.
+    Checks:
+      - YAML syntax valid
+      - All required fields present
+      - self.namespace matches repo structure
+      - At least koda namespace configured
+      - All base_paths resolve or fallbacks defined
+
+# =============================================================================
+# 3. HEALTH PROTOCOL
+# =============================================================================
+
+Health_Protocol:
+  ID: FED-HEALTH-01
+  Purp: Continuous monitoring of federation connectivity and compatibility.
+
+  Health_Checks:
+    Categories:
+      - Category: Connectivity
+        Checks:
+          - Name: namespace_reachability
+            Def: All declared namespaces reachable via local or fallback.
+            Severity: critical
+          - Name: fallback_availability
+            Def: Remote fallback URLs respond with 200.
+            Severity: warning
+            
+      - Category: Compatibility
+        Checks:
+          - Name: koda_version_compatible
+            Def: Pinned KODA version within supported range.
+            Severity: critical
+          - Name: dependency_versions_exist
+            Def: All referenced URN versions exist.
+            Severity: critical
+          - Name: no_circular_dependencies
+            Def: Dependency graph is acyclic.
+            Severity: error
+            
+      - Category: Freshness
+        Checks:
+          - Name: sync_age
+            Def: Last sync within configured interval.
+            Severity: warning
+            Threshold: health_check_interval * 2
+          - Name: artifact_staleness
+            Def: No artifact older than 180 days without review.
+            Severity: info
+            
+      - Category: Integrity
+        Checks:
+          - Name: signature_valid
+            Def: If signatures enabled, all pass verification.
+            Severity: critical
+          - Name: manifest_complete
+            Def: All artifacts have valid _manifest.
+            Severity: error
+
+  Health_Report_Schema: |
+    health_report:
+      timestamp: "2025-11-25T16:00:00Z"
+      namespace: "gorenuble"
+      overall_status: "healthy|degraded|unhealthy"
+      
+      checks:
+        - name: "namespace_reachability"
+          status: "pass|warn|fail"
+          details: "koda: local ✓, sanixai: fallback ✓"
+          
+      dependencies:
+        resolved: 12
+        failed: 0
+        cached: 3
+        
+      recommendations:
+        - "Update koda pin from 1.0.0 to 1.0.1 (patch available)"
+
+  Alerting:
+    Channels: ["github_issue", "email", "slack_webhook"]
+    Rules:
+      - Condition: overall_status == "unhealthy"
+        Action: Create GitHub issue, notify maintainer
+      - Condition: critical check fails
+        Action: Block CI pipeline, immediate notification
+      - Condition: warning persists > 7 days
+        Action: Create tracking issue
+
+# =============================================================================
+# 4. SYNCHRONIZATION PROTOCOL
+# =============================================================================
+
+Sync_Protocol:
+  ID: FED-SYNC-01
+  Purp: Keep federation metadata current without manual intervention.
+
+  Sync_Types:
+    - Type: Registry Sync
+      Def: Pull latest namespace registry from KODA central.
+      Frequency: Weekly (configurable)
+      Updates: Available versions, deprecation notices, security alerts.
+      
+    - Type: Dependency Sync
+      Def: Verify all declared dependencies still resolve.
+      Frequency: On commit, daily scheduled.
+      Updates: Cache refresh, broken link detection.
+      
+    - Type: Compatibility Sync
+      Def: Check if upstream breaking changes affect this repo.
+      Frequency: On upstream release, weekly scan.
+      Updates: Migration notices, compatibility warnings.
+
+  Sync_Flow: |
+    1. Fetch registry manifest from KODA central (or configured registry)
+    2. Compare local pins with available versions
+    3. Check for deprecation notices affecting local dependencies
+    4. Check for security advisories
+    5. Update _meta.last_sync timestamp
+    6. Generate sync report
+    7. If breaking changes detected, create migration issue
+    8. If compatible updates available, optionally create PR
+
+  Registry_Manifest:
+    Location: "https://registry.koda.dev/v1/manifest.yml"
+    Fallback: "https://raw.githubusercontent.com/koda-framework/koda/main/registry/manifest.yml"
+    Schema: |
+      registry:
+        version: "1.0.0"
+        updated_at: "2025-11-25T16:00:00Z"
+        
+      namespaces:
+        koda:
+          current_version: "1.0.0"
+          available_versions: ["1.0.0"]
+          status: "active"
+          repository: "github.com/koda-framework/koda"
+          
+      compatibility:
+        "koda:1.0.0":
+          resolver_versions: ["1.0.x"]
+          min_agent_schema: "1.0.0"
+          
+      announcements:
+        - id: "ANN-001"
+          type: "info"
+          date: "2025-11-25"
+          message: "KODA 1.0.0 released"
+
+# =============================================================================
+# 5. BREAKING CHANGE MANAGEMENT
+# =============================================================================
+
+Breaking_Changes:
+  ID: FED-BREAKING-01
+  Purp: Manage incompatible changes without breaking federation.
+
+  Principles:
+    - Principle: Announcement Lead Time
+      Req: Breaking changes announced minimum 90 days before enforcement.
+      
+    - Principle: Coexistence Period
+      Req: Old and new versions MUST coexist during migration window.
+      
+    - Principle: Migration Path
+      Req: Every breaking change MUST include migration guide.
+      
+    - Principle: Downstream Discovery
+      Req: Attempt to notify known downstream consumers.
+
+  Change_Categories:
+    - Category: Schema Breaking
+      Ex: New required field in _manifest, renamed namespace.
+      Migration: Schema migration script, validation update.
+      
+    - Category: Protocol Breaking
+      Ex: Resolver format change, new required health check.
+      Migration: Resolver upgrade, CI update.
+      
+    - Category: Semantic Breaking
+      Ex: Keyword meaning change, URN format change.
+      Migration: Content update, reference rewrite.
+
+  Lifecycle:
+    States: ["announced", "deprecated", "migration", "enforced", "removed"]
+    Flow: |
+      announced (Day 0)
+          │ 90 days notice
+          ▼
+      deprecated (Day 1-90)
+          │ Both versions work, warnings emitted
+          ▼
+      migration (Day 60-90)
+          │ Active migration support, old version warns
+          ▼
+      enforced (Day 90+)
+          │ New version required, old version errors
+          ▼
+      removed (Day 180+)
+          │ Old version completely removed
+
+  Version_Pinning_Strategy:
+    Conservative:
+      Def: Pin exact version, manual updates only.
+      Use: Production, stability-critical.
+      Ex: "pin_version: '1.0.0'"
+      
+    Floating_Patch:
+      Def: Accept patch updates automatically.
+      Use: Development, non-critical.
+      Ex: "pin_version: '1.0.x'"
+      
+    Floating_Minor:
+      Def: Accept minor updates automatically.
+      Use: Experimental, early adopter.
+      Ex: "pin_version: '1.x'"
+      Warn: May receive breaking deprecation warnings.
+
+# =============================================================================
+# 6. SECURITY AND TRUST
+# =============================================================================
+
+Security:
+  ID: FED-SECURITY-01
+  Purp: Ensure federation integrity and prevent malicious artifacts.
+
+  Trust_Model:
+    Levels:
+      - Level: Upstream Trust
+        Def: KODA core namespace is implicitly trusted.
+        Verification: Repository ownership, maintainer identity.
+        
+      - Level: Peer Trust
+        Def: Explicitly declared peer namespaces.
+        Verification: Registry listing, optional signature.
+        
+      - Level: External Trust
+        Def: Unknown namespaces not in registry.
+        Verification: Manual review required, signature mandatory.
+
+  Signature_Protocol:
+    Purpose: Verify artifact has not been tampered.
+    Algorithm: SHA-256 hash of artifact content (excluding _manifest.provenance.signature).
+    Storage: _manifest.provenance.signature field.
+    Verification: |
+      1. Extract signature from manifest
+      2. Remove signature field, compute hash of remaining content
+      3. Compare computed hash with stored signature
+      4. If mismatch, reject artifact
+
+  Access_Control:
+    Visibility_Enforcement:
+      public: Anyone can resolve and consume.
+      internal: Only namespaces in same organization.
+      private: Only explicitly authorized namespaces.
+      
+    Cross_Visibility_Rules:
+      - public artifact CAN reference public artifacts only.
+      - internal artifact CAN reference public + internal (same org).
+      - private artifact CAN reference any with authorization.
+      
+    Prohibitions:
+      - Prohib: Public artifact depending on private artifact.
+      - Prohib: Consuming artifact without respecting license.
+
+  Security_Checks:
+    - Check: No execution of remote code
+      Def: Artifacts are data only, never executed
+      
+    - Check: URL validation
+      Def: Fallback URLs must use HTTPS
+      Prohib: HTTP fallbacks in production
+      
+    - Check: Path traversal prevention
+      Def: base_path must not escape repository root
+      Prohib: Path traversal attacks like parent directory escapes
+
+# =============================================================================
+# 7. BOOTSTRAPPING PROTOCOL
+# =============================================================================
+
+Bootstrapping:
+  ID: FED-BOOTSTRAP-01
+  Purp: Initialize new KODA-compliant namespace from scratch.
+
+  Prerequisites:
+    - Git repository initialized
+    - Namespace name chosen (lowercase, unique)
+    - Organization ownership confirmed
+
+  Initialization_Steps:
+    - Step: 1. Create directory structure
+      Commands: |
+        mkdir -p knowledge/core knowledge/domains agents schemas catalog sources staging
+        
+    - Step: 2. Create resolver
+      File: .knowledge-resolver.yml
+      Template: |
+        # {NAMESPACE} Knowledge Resolver
+        # KODA-compliant resolver configuration
+        
+        _meta:
+          resolver_version: "1.0.0"
+          koda_compatibility: ">=1.0.0 <2.0.0"
+          last_sync: "{YYYY-MM-DDTHH:MM:SS-TZ}"
+          health_check_interval: weekly
+        
+        self:
+          namespace: "{namespace}"
+          repository: "github.com/{org}/{repo}"
+          visibility: public
+          maintainer: "{email}"
+        
+        namespaces:
+          {namespace}:
+            type: local
+            base_path: "./"
+            required: true
+            description: "{description}"
+          
+          koda:
+            type: upstream
+            base_path: "../koda/"
+            fallback: "https://raw.githubusercontent.com/koda-framework/koda/main/"
+            required: true
+            description: "KODA Framework - upstream dependency"
+        
+        resolution_rules:
+          "urn:knowledge:{namespace}:*": "./{path-pattern}"
+        
+        directories:
+          knowledge: "./knowledge/"
+          agents: "./agents/"
+          catalog: "./catalog/"
+          staging: "./staging/"
+          sources: "./sources/"
+        
+        cache:
+          enabled: true
+          ttl_seconds: 86400
+      
+    - Step: 3. Create catalog
+      File: catalog/catalog_master_{namespace}.yml
+      Content: |
+        _manifest:
+          urn: "urn:knowledge:{namespace}:catalog:master:1.0.0"
+          federation:
+            visibility: public
+            license: "CC-BY-4.0"
+        Catalog:
+          Core_Guides: []
+          Agents: []
+          Domains: []
+        Statistics:
+          total_artifacts: 0
+          last_updated: "{date}"
+          
+    - Step: 4. Create .gitignore
+      Content: |
+        staging/*
+        !staging/.gitkeep
+        .DS_Store
+        *.pyc
+        __pycache__/
+        
+    - Step: 5. Register namespace (optional but recommended)
+      Action: Submit PR to KODA registry or self-host registry entry.
+      
+    - Step: 6. Validate setup
+      Command: "koda validate --repo ."
+      Expected: All checks pass.
+
+  First_Artifact:
+    Rec: Start with a simple guide or agent.
+    Template: |
+      _manifest:
+        urn: "urn:knowledge:{namespace}:{domain}:{artifact}:1.0.0"
+        federation:
+          visibility: public
+          license: "{license}"
+        dependencies:
+          requires:
+            - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        provenance:
+          created_by: "{author}"
+          created_at: "{date}"
+      
+      ID: {ARTIFACT-ID}
+      Version: 1.0.0
+      Status: Draft
+      
+      # Your content here...
+
+  Validation_Checklist:
+    ID: FED-BOOTSTRAP-CHECKLIST-01
+    Purp: Verify new repository is KODA-compliant before first commit
+    
+    Structure_Checks:
+      - Check: Directory structure exists
+        Command: ls -la knowledge/ agents/ catalog/ sources/ staging/
+        Expected: All directories present
+        
+      - Check: Resolver exists and is valid YAML
+        Command: ruby -ryaml -e "YAML.load_file('.knowledge-resolver.yml')"
+        Expected: No errors
+        
+      - Check: Catalog exists and is valid YAML
+        Command: ruby -ryaml -e "YAML.load_file('catalog/catalog_master_{ns}.yml')"
+        Expected: No errors
+        
+      - Check: .gitignore exists
+        Command: cat .gitignore
+        Expected: Contains staging/* exclusion
+    
+    Resolver_Checks:
+      - Check: _meta section present
+        Verify: resolver_version, koda_compatibility, health_check_interval
+        
+      - Check: self section present
+        Verify: namespace matches directory/repo name
+        
+      - Check: koda namespace configured as upstream
+        Verify: Has fallback URL to GitHub
+        
+      - Check: Own namespace configured as local
+        Verify: base_path is "./"
+    
+    Federation_Checks:
+      - Check: Can resolve koda upstream (if online)
+        Command: curl -sf "https://raw.githubusercontent.com/koda-framework/koda/main/catalog/catalog_master_koda.yml" | head -5
+        Expected: Returns YAML content
+        
+      - Check: Catalog has valid _manifest
+        Verify: urn matches pattern urn:knowledge:{namespace}:catalog:master:1.0.0
+    
+    First_Commit_Checklist:
+      - All directories created
+      - .knowledge-resolver.yml valid and complete
+      - catalog/catalog_master_{namespace}.yml valid
+      - .gitignore configured
+      - README.md with basic info (optional but recommended)
+      - LICENSE file present (recommended)
+
+# =============================================================================
+# 8. CI/CD INTEGRATION
+# =============================================================================
+
+CI_CD:
+  ID: FED-CICD-01
+  Purp: Automate federation health and sync in continuous integration.
+
+  GitHub_Actions:
+    Validation_Workflow: |
+      # .github/workflows/koda-validate.yml
+      name: KODA Validation
+      
+      on:
+        push:
+          paths:
+            - 'knowledge/**'
+            - 'agents/**'
+            - '.knowledge-resolver.yml'
+        pull_request:
+          paths:
+            - 'knowledge/**'
+            - 'agents/**'
+      
+      jobs:
+        validate:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v4
+            
+            - name: Validate YAML syntax
+              run: |
+                pip install yamllint
+                yamllint knowledge/ agents/
+                
+            - name: Validate resolver
+              run: |
+                python -c "import yaml; yaml.safe_load(open('.knowledge-resolver.yml'))"
+                
+            - name: Check federation health
+              run: |
+                # Verify all fallback URLs are reachable
+                grep -oP 'fallback: "\K[^"]+' .knowledge-resolver.yml | while read url; do
+                  curl -sf "$url" > /dev/null || echo "::warning::Fallback unreachable: $url"
+                done
+                
+            - name: Validate manifests
+              run: |
+                for f in knowledge/**/*.yml agents/**/*.yaml; do
+                  python -c "
+                import yaml
+                with open('$f') as file:
+                    doc = yaml.safe_load(file)
+                    if '_manifest' not in doc:
+                        print(f'::error::Missing _manifest in $f')
+                        exit(1)
+                "
+                done
+
+    Sync_Workflow: |
+      # .github/workflows/koda-sync.yml
+      name: KODA Federation Sync
+      
+      on:
+        schedule:
+          - cron: '0 6 * * 1'  # Weekly Monday 6am UTC
+        workflow_dispatch:
+      
+      jobs:
+        sync:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v4
+            
+            - name: Fetch registry
+              run: |
+                curl -sf https://raw.githubusercontent.com/koda-framework/koda/main/registry/manifest.yml \
+                  -o /tmp/registry.yml || echo "::warning::Registry fetch failed"
+                  
+            - name: Check for updates
+              id: check
+              run: |
+                # Compare pinned versions with available
+                # Set outputs for downstream steps
+                echo "updates_available=false" >> $GITHUB_OUTPUT
+                
+            - name: Create update issue
+              if: steps.check.outputs.updates_available == 'true'
+              uses: actions/github-script@v7
+              with:
+                script: |
+                  github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: 'KODA Federation Update Available',
+                    body: 'New versions available for pinned dependencies.',
+                    labels: ['federation', 'update']
+                  })
+
+  Pre_Commit_Hook: |
+    # .pre-commit-config.yaml
+    repos:
+      - repo: local
+        hooks:
+          - id: koda-validate
+            name: KODA Validation
+            entry: python -c "import yaml; yaml.safe_load(open('.knowledge-resolver.yml'))"
+            language: system
+            files: '\.knowledge-resolver\.yml$'
+
+# =============================================================================
+# 9. TROUBLESHOOTING
+# =============================================================================
+
+Troubleshooting:
+  ID: FED-TROUBLESHOOTING-01
+  Purp: Diagnose and resolve common federation issues.
+
+  Common_Issues:
+    - Issue: "URN resolution failed"
+      Symptoms: Agent cannot find referenced artifact.
+      Diagnosis:
+        - Check namespace is declared in resolver.
+        - Verify base_path exists and is accessible.
+        - Test fallback URL manually.
+      Resolution:
+        - Add missing namespace to resolver.
+        - Fix base_path (relative to repo root).
+        - Ensure fallback URL is correct and public.
+        
+    - Issue: "Circular dependency detected"
+      Symptoms: Health check reports cycle in dependency graph.
+      Diagnosis:
+        - Map dependency graph manually.
+        - Identify which artifacts create the cycle.
+      Resolution:
+        - Refactor to break cycle.
+        - Extract shared content to separate artifact.
+        - Use composition instead of mutual reference.
+        
+    - Issue: "Version incompatibility"
+      Symptoms: Artifact references version that doesn't exist.
+      Diagnosis:
+        - Check if referenced version was ever published.
+        - Check if version was deprecated/removed.
+      Resolution:
+        - Update to existing version.
+        - Check migration guide if version was removed.
+        
+    - Issue: "Stale cache causing issues"
+      Symptoms: Old content served despite upstream updates.
+      Diagnosis:
+        - Check cache.ttl_seconds setting.
+        - Verify _meta.last_sync timestamp.
+      Resolution:
+        - Clear local cache.
+        - Reduce TTL for frequently changing artifacts.
+        - Force sync with registry.
+        
+    - Issue: "Fallback not working in CI"
+      Symptoms: Local works, CI fails.
+      Diagnosis:
+        - CI doesn't have local repos.
+        - Network restrictions in CI environment.
+      Resolution:
+        - Ensure all fallback URLs are public HTTPS.
+        - Configure CI to use remote-only mode.
+
+  Diagnostic_Commands: |
+    # Validate resolver syntax
+    python -c "import yaml; print(yaml.safe_load(open('.knowledge-resolver.yml')))"
+    
+    # Test namespace reachability
+    for ns in $(grep -oP '^\s+\w+:$' .knowledge-resolver.yml | tr -d ': '); do
+      echo "Testing $ns..."
+    done
+    
+    # List all dependencies
+    grep -r "urn:" knowledge/ agents/ | grep -oP 'urn:knowledge:[^"]+' | sort -u
+    
+    # Check for orphan artifacts (not in catalog)
+    # Compare files in knowledge/ with catalog entries
+
+# =============================================================================
+# 10. FEDERATION METRICS
+# =============================================================================
+
+Metrics:
+  ID: FED-METRICS-01
+  Purp: Quantify federation health and usage.
+
+  Key_Metrics:
+    - Metric: Resolution_Success_Rate
+      Def: Percentage of URN resolutions that succeed.
+      Target: ">= 99.9%"
+      Alert: "< 99%"
+      
+    - Metric: Cache_Hit_Rate
+      Def: Percentage of resolutions served from cache.
+      Target: ">= 80%"
+      Note: Higher is better for performance.
+      
+    - Metric: Cross_Repo_Reference_Count
+      Def: Number of artifacts referencing external namespaces.
+      Note: Indicator of federation utilization.
+      
+    - Metric: Sync_Freshness
+      Def: Days since last successful registry sync.
+      Target: "< 7 days"
+      Alert: "> 14 days"
+      
+    - Metric: Dependency_Depth
+      Def: Maximum depth of dependency chain.
+      Target: "< 5"
+      Alert: "> 7"
+      Note: Deep chains increase fragility.
+      
+    - Metric: Namespace_Availability
+      Def: Percentage uptime of namespace resolution.
+      Target: ">= 99%"
+      Note: Includes fallback availability.
+
+  Dashboard_Recommendation: |
+    Implement metrics collection via:
+    - CI job that runs health checks and exports metrics
+    - Simple JSON file updated on each sync
+    - Optional: Prometheus/Grafana for visualization
+
+# =============================================================================
+# 11. OPERATIONAL RUNBOOK
+# =============================================================================
+
+Operational_Runbook:
+  ID: FED-RUNBOOK-01
+  Purp: Step-by-step procedures for common federation operations across repositories
+
+  Scenario_Add_Artifact:
+    ID: RUNBOOK-ADD-01
+    Title: Adding a new artifact that will be consumed by other namespaces
+    
+    Prerequisites:
+      - Artifact content ready
+      - URN scheme decided
+      - Visibility determined (public for cross-repo)
+    
+    Steps_In_Source_Repo:
+      - Step: 1. Create artifact with valid manifest
+        Action: |
+          _manifest:
+            urn: "urn:knowledge:{namespace}:{domain}:{artifact}:1.0.0"
+            federation:
+              visibility: public
+            dependencies:
+              requires: [...]
+            provenance:
+              created_by: "{author}"
+              created_at: "{date}"
+      
+      - Step: 2. Add to local catalog
+        File: catalog/catalog_master_{namespace}.yml
+        Action: Add entry with urn, title, file, status
+      
+      - Step: 3. Add resolution rule
+        File: .knowledge-resolver.yml
+        Action: |
+          resolution_rules:
+            "urn:knowledge:{namespace}:{domain}:{artifact}:*": "./{path}"
+      
+      - Step: 4. Validate and push
+        Commands: |
+          # Validate YAML
+          ruby -ryaml -e "YAML.load_file('{file}')"
+          # Commit
+          git add .
+          git commit -m "kb({domain}): add {artifact} v1.0.0"
+          git push
+    
+    Steps_In_Consumer_Repo:
+      - Step: 1. Verify source namespace is configured
+        Check: .knowledge-resolver.yml has namespace with fallback
+      
+      - Step: 2. Add dependency to agent manifest
+        Action: |
+          _manifest:
+            dependencies:
+              requires:
+                - urn: "urn:knowledge:{source}:{domain}:{artifact}:1.0.0"
+      
+      - Step: 3. Add to source_artifacts
+        Action: |
+          knowledge_base_interaction_and_governance_rules:
+            source_artifacts:
+              - urn: "urn:knowledge:{source}:{domain}:{artifact}:1.0.0"
+      
+      - Step: 4. Validate resolution
+        Command: Check CI passes with new dependency
+
+  Scenario_Edit_Artifact:
+    ID: RUNBOOK-EDIT-01
+    Title: Editing an artifact that is consumed by other namespaces
+    
+    Decision_Tree:
+      - Question: Does change affect structure or semantics?
+        If_No: PATCH version (1.0.0 → 1.0.1)
+        If_Yes: Continue to next question
+        
+      - Question: Is change additive only (new fields, no removals)?
+        If_Yes: MINOR version (1.0.0 → 1.1.0)
+        If_No: MAJOR version (1.0.0 → 2.0.0)
+    
+    Procedure_Patch:
+      - Step: 1. Make changes
+      - Step: 2. Bump version in manifest (1.0.0 → 1.0.1)
+      - Step: 3. Update Modification-Date
+      - Step: 4. Commit with message kb(domain) fix description
+      - Step: 5. Push (consumers with exact version unaffected)
+    
+    Procedure_Minor:
+      - Step: 1. Make additive changes
+      - Step: 2. Bump version (1.0.0 → 1.1.0)
+      - Step: 3. Document new fields in artifact
+      - Step: 4. Commit with message kb(domain) add feature to artifact
+      - Step: 5. Push (backward compatible)
+    
+    Procedure_Major:
+      - Step: 1. Create new version file (optional, or update in place)
+      - Step: 2. Set version to 2.0.0
+      - Step: 3. Document breaking changes
+        Action: |
+          _manifest:
+            compatibility:
+              breaking_changes_from: "1.0.0"
+              migration_guide: "See Migration section below"
+      - Step: 4. Maintain old version for 90 days minimum
+      - Step: 5. Add deprecation notice to old version
+        Action: |
+          _manifest:
+            status: deprecated
+            deprecation:
+              since: "{date}"
+              removal: "{date + 90 days}"
+              replacement: "urn:...:{artifact}:2.0.0"
+      - Step: 6. Notify known consumers
+        Channels: GitHub issue, email, registry announcement
+      - Step: 7. Push and monitor
+
+  Scenario_Delete_Artifact:
+    ID: RUNBOOK-DELETE-01
+    Title: Removing an artifact that may be consumed by other namespaces
+    Warn: NEVER delete without deprecation period
+    
+    Procedure:
+      - Step: 1. Mark as deprecated (Day 0)
+        Action: |
+          _manifest:
+            status: deprecated
+            deprecation:
+              since: "{today}"
+              removal: "{today + 90 days}"
+              reason: "{why}"
+              replacement: "{alternative URN or null}"
+      
+      - Step: 2. Announce deprecation
+        Channels:
+          - Commit message with [DEPRECATED] tag
+          - GitHub issue in source repo
+          - Registry announcement (if applicable)
+          - Direct notification to known consumers
+      
+      - Step: 3. Wait for deprecation period (90 days)
+        During_This_Time:
+          - Artifact still resolves
+          - Consumers see deprecation warning
+          - Consumers migrate to replacement
+      
+      - Step: 4. Verify no active consumers
+        Check: |
+          # Search for URN references in known consumer repos
+          # Check resolution logs if available
+          # Confirm with consumer teams
+      
+      - Step: 5. Remove from catalog (Day 90)
+        Action: Remove entry from catalog_master_{namespace}.yml
+      
+      - Step: 6. Remove resolution rule
+        Action: Remove from .knowledge-resolver.yml
+      
+      - Step: 7. Archive or delete file (Day 90+)
+        Rec: Move to /archive/ instead of deleting for history
+      
+      - Step: 8. Final commit
+        Message: "kb({domain}): remove deprecated {artifact} [BREAKING]"
+
+  Scenario_Consumer_Detects_Breaking_Change:
+    ID: RUNBOOK-CONSUMER-01
+    Title: Responding to breaking change in upstream dependency
+    
+    Detection_Methods:
+      - CI sync workflow creates issue
+      - Manual discovery during development
+      - Deprecation notice in artifact
+    
+    Response_Procedure:
+      - Step: 1. Assess impact
+        Questions:
+          - Which agents use this artifact?
+          - What fields/structures are affected?
+          - Is there a replacement artifact?
+      
+      - Step: 2. Check migration guide
+        Location: Source artifact _manifest.compatibility.migration_guide
+      
+      - Step: 3. Decide strategy
+        Options:
+          - Pin to old version (temporary, until removal)
+          - Migrate to new version immediately
+          - Fork artifact locally (last resort)
+      
+      - Step: 4. If pinning temporarily
+        Action: Keep exact version reference
+        Warn: Track deprecation removal date
+        Deadline: Must migrate before removal date
+      
+      - Step: 5. If migrating
+        Actions:
+          - Update agent to handle new structure
+          - Update URN version in dependencies
+          - Test thoroughly
+          - Deploy
+      
+      - Step: 6. Update local resolver sync timestamp
+        File: .knowledge-resolver.yml
+        Action: Update _meta.last_sync to current datetime
+
+  Scenario_URN_Resolution_Failure:
+    ID: RUNBOOK-RESOLUTION-01
+    Title: Handling URN resolution failures
+    
+    Diagnosis_Steps:
+      - Step: 1. Identify failing URN
+        Log: Check error message for exact URN
+      
+      - Step: 2. Check local resolver config
+        Command: grep "{namespace}" .knowledge-resolver.yml
+        Verify: Namespace is declared with base_path and fallback
+      
+      - Step: 3. Test local resolution
+        Command: ls {base_path}/{expected_path}
+        If_Fails: Local repo not cloned or wrong path
+      
+      - Step: 4. Test fallback resolution
+        Command: curl -sf "{fallback_url}" | head
+        If_Fails: Remote not accessible or file not pushed
+      
+      - Step: 5. Check cache
+        Location: Varies by implementation
+        Action: Clear cache if stale
+    
+    Common_Fixes:
+      - Problem: Namespace not in resolver
+        Fix: Add namespace entry to .knowledge-resolver.yml
+        
+      - Problem: Wrong base_path
+        Fix: Correct relative path (check sibling directory structure)
+        
+      - Problem: Fallback 404
+        Fix: Ensure artifact is pushed to remote and path is correct
+        
+      - Problem: Artifact was deleted
+        Fix: Contact source owner, use cached version, or find replacement
+
+  Automation_Summary:
+    What_Is_Automated:
+      - YAML syntax validation (CI on push)
+      - Manifest structure validation (CI on push)
+      - Fallback URL reachability check (CI on push)
+      - Catalog consistency check (CI on push)
+      - Upstream sync check (CI weekly)
+      - Stale sync detection and issue creation (CI weekly)
+      
+    What_Requires_Manual_Action:
+      - Deciding to add new dependency
+      - Writing migration guides
+      - Coordinating breaking changes with consumers
+      - Migrating to new artifact versions
+      - Deprecation announcements
+      - Final deletion after deprecation period
+      - Resolving complex URN failures
