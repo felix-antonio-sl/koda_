@@ -4,6 +4,8 @@
 > **Format**: KODA-YAML (Knowledge-Oriented Declarative Architecture)  
 > **License**: CC-BY-4.0
 
+*[Versión en español](README_es.md)*
+
 ## Overview
 
 This corpus contains the foundational artifacts for **Agent Engineering** using the KODA Framework. It provides a complete, coherent framework for:
