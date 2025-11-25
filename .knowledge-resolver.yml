@@ -26,6 +26,7 @@ resolution_rules:
   
   # Agents
   "urn:knowledge:gorenuble:agents:koda-architect:*": "./agents/knowledge-architect/agent_koda_architect.yaml"
+  "urn:knowledge:gorenuble:agents:knowledge-architect:*": "./agents/knowledge-architect/agent.yaml"
 
 # Directory structure conventions
 directories:
