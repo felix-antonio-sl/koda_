@@ -71,11 +71,14 @@ Catalog:
   Agents:
     - urn: "urn:knowledge:gorenuble:agents:koda-architect:1.0.0"
       title: "KODA Architect Agent"
+      description: "Official agent embodying the KODA Framework"
       file: "agents/knowledge-architect/agent_koda_architect.yaml"
       status: published
+      primary: true
       
     - urn: "urn:knowledge:gorenuble:agents:knowledge-architect:1.0.0"
       title: "Compositional Knowledge Architect Agent"
+      description: "Specialized agent for knowledge architecture and data modeling"
       file: "agents/knowledge-architect/agent.yaml"
       status: published
 
