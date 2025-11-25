@@ -1,0 +1,431 @@
+# KODA Hub Management Master Guide v1.0
+# KODA/Spec YAML Format
+# Federated, Cross-Repository Knowledge Management
+
+_manifest:
+  urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/core/guide_core_003_koda-hub-master_sts.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+        reason: "Agent lifecycle integration"
+      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+        reason: "Structural format specification"
+  provenance:
+    created_by: "FS"
+    created_at: "2025-07-06"
+    last_modified_by: "FS"
+    last_modified_at: "2025-11-25"
+    signature: null
+
+ID: KODA-HUB-MASTER-01
+Version: 1.0.0
+Status: Published
+Human-Creator: FS
+Human-Editor: FS
+Model-Collaborator: IA-CLAUDE
+Creation-Date: 2025-07-06
+Modification-Date: 2025-11-25
+Source: GUIDE-KODA-HUB-MASTER-01
+Ctx: Master guide for federated knowledge hub management
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Purp: Engineering-grade management of federated Knowledge Hub enabling cross-domain and cross-repository artifact composition.
+
+# =============================================================================
+# 1. PHILOSOPHY AND CORE PRINCIPLES
+# =============================================================================
+
+Philosophy:
+  ID: GUIDE-KODA-HUB-PHILOSOPHY-01
+  Purp: Fundamental principles for federated knowledge engineering.
+  Mssn: Ensure artifacts are discoverable, auditable, versionable, composable across agent fleets regardless of repository boundaries.
+
+  Principles:
+    - ID: PRINCIPLE-MANAGED-ASSET
+      Name: Knowledge as Managed Asset
+      Def: Artifacts treated with software rigor—lifecycle, quality control, version control, provenance.
+
+    - ID: PRINCIPLE-CENTRALIZED-FEDERATED
+      Name: Centralized Hub, Federated Domains
+      Def: Logical hub with strict domain separation; single namespace registry, multiple physical repos.
+
+    - ID: PRINCIPLE-COMPOSITION
+      Name: Composition over Ramification
+      Def: Agent KBs assembled by composing granular artifacts via URN references.
+      Prohib: Git branches for content variations; copy-paste duplication.
+
+    - ID: PRINCIPLE-GOVERNANCE
+      Name: Explicit Governance
+      Def: Structure, naming, lifecycle governed by explicit rules and roles.
+
+    - ID: PRINCIPLE-KODA-LIFE-INTEGRATION
+      Name: KODA/Life Integration
+      Def: Implements knowledge layer of KODA/Life framework.
+      Ctx: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+
+    - ID: PRINCIPLE-FEDERATION
+      Name: Federated Addressability
+      Def: Every artifact is addressable independent of physical location via URN.
+      Analogy: Like DOI—stable identifier, mutable location.
+
+# =============================================================================
+# 2. KNOWLEDGE URN SCHEME
+# =============================================================================
+
+URN_Scheme:
+  ID: GUIDE-KODA-HUB-URN-01
+  Purp: Unique, stable, resolvable artifact identifiers.
+  Format: "urn:knowledge:{namespace}:{domain}:{artifact-id}:{version}"
+
+  Components:
+    - Component: namespace
+      Def: Organization publishing artifact.
+      Ex: gorenuble, acme-corp
+    - Component: domain
+      Def: Thematic domain.
+      Ex: core, procurement, gore_nuble
+    - Component: artifact-id
+      Def: Unique ID in kebab-case.
+      Ex: koda-hub-master, circular-33
+    - Component: version
+      Def: Semantic version or latest/stable.
+
+  Examples:
+    - "urn:knowledge:gorenuble:core:koda-hub-master:2.0.0"
+    - "urn:knowledge:gorenuble:procurement:circular-33:latest"
+
+  Validation_Pattern: "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
+
+# =============================================================================
+# 3. ARTIFACT MANIFEST
+# =============================================================================
+
+Manifest:
+  ID: GUIDE-KODA-HUB-MANIFEST-01
+  Purp: Embedded metadata for federation, resolution, dependencies.
+  Req: Every federable artifact MUST include _manifest as first element.
+
+  Schema:
+    urn: Full URN (required)
+    federation:
+      visibility: [public, internal, restricted]
+      license: "CC-BY-4.0 | proprietary | internal-use"
+    compatibility:
+      min_consumer_version: Minimum KODA spec version
+      breaking_changes_from: Incompatible versions
+    resolution:
+      canonical_url: Primary fetch location
+      mirrors: Alternative URLs (ordered)
+    dependencies:
+      requires: List of {urn, reason} pairs
+    provenance:
+      created_by: Author
+      created_at: YYYY-MM-DD
+      last_modified_by: Editor
+      last_modified_at: YYYY-MM-DD
+      signature: sha256 hash (optional)
+
+# =============================================================================
+# 4. DIRECTORY ARCHITECTURE
+# =============================================================================
+
+Architecture:
+  ID: GUIDE-KODA-HUB-ARCHITECTURE-01
+  Purp: Standardized directory structure.
+
+  Directories:
+    - Path: /knowledge/
+      Purp: Validated, agent-ready artifacts.
+      Subdirs:
+        - knowledge/core/: Transversal guides (ALM, KODA/Spec, KODA/Hub)
+        - knowledge/domains/{name}/: Domain-specific (gore_nuble, legal)
+        - knowledge/catalog/: Master inventory
+
+    - Path: /sources/
+      Purp: Raw unprocessed materials (PDFs, docs).
+
+    - Path: /staging/
+      Purp: Work-in-progress under transformation.
+
+    - Path: /agents/
+      Purp: Agent definitions (agent.yaml per subdirectory).
+
+    - Path: /.knowledge-resolver.yml
+      Purp: Local URN resolution overrides.
+
+# =============================================================================
+# 5. NAMING CONVENTION
+# =============================================================================
+
+Naming:
+  ID: GUIDE-KODA-HUB-NAMING-01
+  Purp: Machine-readable artifact filenames.
+  Pattern: "{tipo}_{dominio}_{id-num}_{descripcion}_{formato}.yml"
+
+  Components:
+    - tipo: kb (knowledge base) | guide (meta-document)
+    - dominio: core | gn | custom
+    - id-num: 3-digit sequential (001, 002)
+    - descripcion: 2-4 words kebab-case
+    - formato: sts
+    - Extension: .yml
+
+  Examples:
+    - kb_gn_001_contexto-regional_sts.yml
+    - guide_core_003_koda-hub-master_sts.yml
+
+# =============================================================================
+# 6. KNOWLEDGE CATALOG
+# =============================================================================
+
+Catalog:
+  ID: GUIDE-KODA-HUB-CATALOG-01
+  Purp: Master inventory for discovery and impact analysis.
+  File: knowledge/catalog/catalog_master_sts.yml
+
+  Entry_Schema:
+    urn: Full URN
+    file: Filename
+    Purp: One-line purpose
+    Skeleton: Main sections list
+    Tags: Controlled vocabulary [procurement, compliance]
+    Complexity: foundational | intermediate | advanced
+    Dependencies: Required URNs
+    Consumers: Agent IDs (auto-generated)
+
+  Queries_Enabled:
+    - "Artifacts by tag + domain"
+    - "Impact of modifying artifact X"
+    - "Orphan artifacts (no consumers)"
+
+# =============================================================================
+# 7. KNOWLEDGE RESOLVER
+# =============================================================================
+
+Resolver:
+  ID: GUIDE-KODA-HUB-RESOLVER-01
+  Purp: Translate URN to accessible content.
+
+  Flow:
+    - Parse URN components
+    - Check local override (.knowledge-resolver.yml)
+    - Lookup namespace registry
+    - Resolve to URL(s)
+    - Fetch & validate signature
+    - Cache locally with TTL
+
+  Config_File: .knowledge-resolver.yml
+  Config_Schema:
+    namespaces:
+      gorenuble:
+        type: local
+        base_path: "./knowledge/"
+      external:
+        type: remote
+        endpoint: "https://api.example.io/resolve"
+    overrides:
+      "urn:knowledge:gorenuble:core:*": "./knowledge/core/"
+    cache:
+      enabled: true
+      ttl_seconds: 86400
+
+  Modes:
+    - strict: All URNs must resolve. Fail otherwise.
+    - graceful: Use cache if URN fails. Warn if stale.
+    - offline: Local + cache only. No network.
+
+# =============================================================================
+# 8. AGENT KB COMPOSITION
+# =============================================================================
+
+Agent_Composition:
+  ID: GUIDE-KODA-HUB-COMPOSITION-01
+  Purp: Declarative KB definition in agent.yaml.
+
+  Schema:
+    KB:
+      GOVERNANCE:
+        RESOLUTION_MODE: graceful
+        SOURCE_ARTIFACTS:
+          - path: "knowledge/domains/gn/kb_gn_001.yml"  # Local
+          - urn: "urn:knowledge:gorenuble:core:koda-life-master:latest"  # Federated
+            required: true
+          - urn: "urn:knowledge:external:legal:gdpr:2.0.0"  # Cross-repo
+            cache_ttl: 604800
+          - urn: "urn:knowledge:gorenuble:procurement:circular-33:1.0.0"
+            local_override: "./staging/circular-33-wip.yml"  # Dev override
+
+# =============================================================================
+# 9. GOVERNANCE WORKFLOW
+# =============================================================================
+
+Governance:
+  ID: GUIDE-KODA-HUB-GOVERNANCE-01
+  Purp: Roles, responsibilities, approval flows.
+
+  Roles:
+    - Knowledge_Architect: Transversal coherence, /knowledge/core/, URN scheme
+    - Domain_Steward: Domain quality, /knowledge/domains/{domain}/
+    - Agent_Owner: Agent KB composition, /agents/{agent}/
+    - Contributor: Propose changes via /staging/
+
+  Approval_Flows:
+    - New core artifact: Knowledge_Architect approval
+    - New domain artifact: Domain_Steward approval
+    - Skeleton change: Notify affected Agent_Owners
+    - MAJOR version: Knowledge_Architect + Domain_Stewards + migration plan
+
+# =============================================================================
+# 10. CONTENT VERSIONING
+# =============================================================================
+
+Versioning:
+  ID: GUIDE-KODA-HUB-VERSIONING-01
+  Purp: Artifact evolution without breaking consumers.
+  Format: MAJOR.MINOR.PATCH
+
+  Types:
+    - PATCH: Corrections, no skeleton change. Backward compatible.
+    - MINOR: Additions, skeleton grows. Backward compatible.
+    - MAJOR: Breaking changes, skeleton mutates. Requires migration.
+
+  Migration_Protocol:
+    - Create new artifact with incremented MAJOR
+    - Mark previous as Deprecated
+    - Define coexistence period (90 days default)
+    - Notify consumers via catalog
+    - Document migration guide
+
+  States: Published -> Deprecated -> Obsolete
+
+# =============================================================================
+# 11. KNOWLEDGE LIFECYCLE
+# =============================================================================
+
+Lifecycle:
+  ID: GUIDE-KODA-HUB-LIFECYCLE-01
+  Purp: End-to-end artifact creation, validation, publishing.
+
+  Phases:
+    - Phase_1_Sourcing:
+        Role: Contributor
+        Act: Place raw materials in /sources/{domain}/
+
+    - Phase_2_Staging:
+        Role: Contributor
+        Act: Transform in /staging/, add _manifest, self-validate
+
+    - Phase_3_Audit:
+        Role: Domain_Steward
+        Act: Compliance audit, fidelity check, YAML validation
+        Req: 100% checklist pass
+
+    - Phase_4_Publishing:
+        Role: Domain_Steward
+        Act: Assign URN, generate filename, move to /knowledge/
+
+    - Phase_5_Registration:
+        Role: Domain_Steward
+        Act: Add catalog entry with URN, Tags, Dependencies
+
+    - Phase_6_Maintenance:
+        Role: Domain_Steward
+        Act: Version bump, re-audit, republish, update catalog
+
+# =============================================================================
+# 12. VALIDATION CHECKLIST
+# =============================================================================
+
+Validation:
+  ID: GUIDE-KODA-HUB-VALIDATION-01
+  Purp: Quality assurance for publishing.
+
+  Checks:
+    Syntax:
+      - YAML valid (yamllint)
+      - Keywords from KODA lexicon
+
+    Structure:
+      - _manifest present as first element
+      - Metadata complete (ID, Version, Status, dates, authors)
+      - LLM_Parsing_Instructions present
+      - Unique IDs within artifact
+      - Valid internal Ref targets
+
+    Fidelity:
+      - 100% source facts preserved
+      - Zero redundancy (Ref used)
+      - Structure preserved (hierarchies, lists)
+
+    Efficiency:
+      - 30-50% token reduction vs source
+
+    Federation:
+      - URN valid format
+      - Dependencies resolvable
+
+# =============================================================================
+# 13. GIT STRATEGY
+# =============================================================================
+
+Git:
+  ID: GUIDE-KODA-HUB-GIT-01
+  Purp: Version control for knowledge assets.
+
+  Anti_Patterns:
+    - Branch-based KB variations (causes merge conflicts)
+    - Cross-repo duplication (causes version drift)
+
+  Correct_Patterns:
+    - Composition at agent level via URN references
+    - URN-based cross-repo sharing (no duplication)
+
+  Commit_Convention:
+    Format: "type(scope): subject"
+    Types:
+      - kb: Knowledge artifact changes
+      - catalog: Catalog updates
+      - feat: Agent features
+      - fix: Bug fixes
+    Ex: "kb(gn_001): update with 2024 census data"
+
+# =============================================================================
+# 14. OBSERVABILITY
+# =============================================================================
+
+Observability:
+  ID: GUIDE-KODA-HUB-OBSERVABILITY-01
+  Purp: Monitor and improve Knowledge Hub.
+
+  Metrics:
+    - Coverage_Index: published_domains / total_domains (target >= 0.8)
+    - Freshness_Score: Avg artifact age (alert > 180 days)
+    - Reference_Density: Avg Ref per artifact (target >= 1.5)
+    - Orphan_Rate: Unconsumed artifacts (target 0%)
+    - Resolution_Success: URN resolution success (target >= 99.9%)
+    - Cross_Repo_Usage: Artifacts consumed from external namespaces

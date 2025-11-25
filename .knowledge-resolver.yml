@@ -1,0 +1,41 @@
+# KODA Knowledge Resolver Configuration
+# Defines how URNs are resolved to physical file paths
+
+version: "1.0.0"
+
+namespaces:
+  gorenuble:
+    type: local
+    base_path: "./"
+    description: "Primary KODA namespace"
+
+resolution_rules:
+  # Core guides
+  "urn:knowledge:gorenuble:core:quickstart:*": "./guide_core_000_quickstart_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-spec:*": "./guide_core_001_koda-spec_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-transform:*": "./guide_core_002_koda-transform_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-hub-master:*": "./guide_core_003_koda-hub-master_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-life-master:*": "./guide_core_004_koda-life-master_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-agent-spec:*": "./guide_core_005_koda-agent-spec_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-agent-construct:*": "./guide_core_006_koda-agent-construct_koda.yml"
+  "urn:knowledge:gorenuble:core:koda-test-spec:*": "./guide_core_007_koda-test-spec_koda.yml"
+  "urn:knowledge:gorenuble:core:schema-versioning:*": "./guide_core_008_schema-versioning_koda.yml"
+  
+  # Schema
+  "urn:knowledge:gorenuble:core:koda-agent-schema:*": "./schemas/koda-agent-schema-1.0.0.json"
+  
+  # Agents
+  "urn:knowledge:gorenuble:agents:koda-architect:*": "./agents/knowledge-architect/agent_koda_architect.yaml"
+
+# Directory structure conventions
+directories:
+  core: "./"
+  schemas: "./schemas/"
+  agents: "./agents/"
+  domains: "./domains/"
+  staging: "./staging/"
+  sources: "./sources/"
+
+cache:
+  enabled: true
+  ttl_seconds: 86400  # 24 hours

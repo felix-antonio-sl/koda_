@@ -1,0 +1,422 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:knowledge:gorenuble:core:koda-agent-schema:1.0.0",
+  "title": "KODA Agent Protocol Schema",
+  "description": "JSON Schema for validating agent.yaml files conforming to KODA/Agent v1.0.0",
+  "type": "object",
+  "required": [
+    "agent_identity_and_global_configuration",
+    "knowledge_base_interaction_and_governance_rules",
+    "public_behavior_workflows_and_states",
+    "private_internal_reasoning_processes",
+    "input_output_style_format_and_interaction",
+    "safety_constraints_and_behavioral_guardrails",
+    "self_evaluation_and_correction_mechanisms"
+  ],
+  "properties": {
+    "KODA_Runtime_Instructions": {
+      "type": "object",
+      "description": "Runtime instructions that transform LLM into agent interpreter",
+      "required": ["ID", "Activation", "Content"],
+      "properties": {
+        "ID": {
+          "type": "string",
+          "pattern": "^KODA-RUNTIME-[A-Z0-9-]+$"
+        },
+        "Activation": {
+          "type": "string"
+        },
+        "Content": {
+          "type": "string",
+          "pattern": "BEGIN_KODA_RUNTIME[\\s\\S]*END_KODA_RUNTIME"
+        }
+      }
+    },
+    "agent_identity_and_global_configuration": {
+      "type": "object",
+      "required": ["primary_role_objective_and_audience", "settings"],
+      "properties": {
+        "primary_role_objective_and_audience": {
+          "type": "object",
+          "required": ["role", "objective", "audience"],
+          "properties": {
+            "role": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Agent's primary role description"
+            },
+            "objective": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Ultimate goal of the agent"
+            },
+            "audience": {
+              "type": "string",
+              "minLength": 5,
+              "description": "Target user profile description"
+            }
+          }
+        },
+        "settings": {
+          "type": "object",
+          "required": ["content_lang"],
+          "properties": {
+            "content_lang": {
+              "type": "string",
+              "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+              "description": "BCP 47 language tag (e.g., es-CL, en-US)"
+            }
+          }
+        }
+      }
+    },
+    "knowledge_base_interaction_and_governance_rules": {
+      "type": "object",
+      "required": ["usage_policy_and_source_management", "uncertainty_protocol", "citation_formatting"],
+      "properties": {
+        "usage_policy_and_source_management": {
+          "type": "object",
+          "required": ["policy"],
+          "properties": {
+            "policy": {
+              "type": "string",
+              "enum": ["EXCLUSIVE_USE", "ALLOW_GENERAL_KNOWLEDGE"]
+            },
+            "source_artifacts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "anyOf": [
+                  {
+                    "required": ["urn"],
+                    "properties": {
+                      "urn": {
+                        "type": "string",
+                        "pattern": "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
+                      },
+                      "required": { "type": "boolean" },
+                      "cache_ttl": { "type": "integer" },
+                      "local_override": { "type": "string" }
+                    }
+                  },
+                  {
+                    "required": ["path"],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "description": "Legacy: local file path (deprecated, use URN)"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "if": {
+            "properties": { "policy": { "const": "EXCLUSIVE_USE" } }
+          },
+          "then": {
+            "required": ["source_artifacts"]
+          }
+        },
+        "uncertainty_protocol": {
+          "type": "string",
+          "enum": ["DECLARE_ABSENCE", "DECLARE_UNCERTAINTY_WITH_REASONING"]
+        },
+        "citation_formatting": {
+          "type": "object",
+          "required": ["style"],
+          "properties": {
+            "style": {
+              "type": "string",
+              "enum": ["OFFICIAL_SOURCE_NAME", "FILENAME", "INLINE_REASONING_TRACE"]
+            }
+          }
+        }
+      }
+    },
+    "public_behavior_workflows_and_states": {
+      "type": "object",
+      "required": ["defined_workflows", "defined_states"],
+      "properties": {
+        "defined_workflows": {
+          "type": "object",
+          "patternProperties": {
+            "^WF-[A-Z0-9-]+$": {
+              "type": "object",
+              "required": ["initial_state"],
+              "properties": {
+                "initial_state": {
+                  "type": "string",
+                  "pattern": "^S-[A-Z0-9-]+$"
+                },
+                "description": { "type": "string" }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "defined_states": {
+          "type": "object",
+          "patternProperties": {
+            "^S-[A-Z0-9-]+$": {
+              "type": "object",
+              "required": ["role", "process", "transitions"],
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "description": "Functional role description of state"
+                },
+                "process": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "maxItems": 5,
+                  "description": "High-level orchestration steps (max 5)"
+                },
+                "transitions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^IF .+ -> S-[A-Z0-9-]+$"
+                  },
+                  "description": "Transition conditions to other states"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "private_internal_reasoning_processes": {
+      "type": "object",
+      "patternProperties": {
+        "^CM-[A-Z0-9-]+$": {
+          "type": "object",
+          "required": ["_meta", "dimensions"],
+          "properties": {
+            "_meta": {
+              "type": "object",
+              "required": ["expose"],
+              "properties": {
+                "expose": {
+                  "type": "boolean",
+                  "const": false
+                }
+              }
+            },
+            "dimensions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            },
+            "apply_on_trigger": {
+              "type": "string",
+              "description": "Documentation of invoking state"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "input_output_style_format_and_interaction": {
+      "type": "object",
+      "properties": {
+        "communication_tone": {
+          "type": "object",
+          "properties": {
+            "tone": { "type": "string" }
+          }
+        },
+        "response_formatting": {
+          "type": "object",
+          "properties": {
+            "use_markdown": { "type": "boolean" },
+            "max_length": { "type": "integer" },
+            "structure_template": { "type": "string" }
+          }
+        },
+        "user_interaction_rules": {
+          "type": "object",
+          "properties": {
+            "initial_prompt": {
+              "type": "string",
+              "description": "First message to user on session start"
+            },
+            "clarification_strategy": { "type": "string" },
+            "confirmation_required": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "safety_constraints_and_behavioral_guardrails": {
+      "type": "object",
+      "required": [
+        "scope_and_rejection_policies",
+        "confidentiality_protection",
+        "communication_restrictions"
+      ],
+      "properties": {
+        "scope_and_rejection_policies": {
+          "type": "object",
+          "required": ["scope_policy", "rejection_response"],
+          "properties": {
+            "scope_policy": {
+              "type": "string",
+              "enum": ["REJECT_OUT_OF_SCOPE", "FLEXIBLE_WITH_BOUNDARIES"]
+            },
+            "rejection_response": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Custom rejection message"
+            },
+            "allowed_topics": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "forbidden_topics": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "confidentiality_protection": {
+          "type": "object",
+          "required": ["block_instructions", "response_on_query"],
+          "properties": {
+            "block_instructions": {
+              "type": "boolean",
+              "const": true,
+              "description": "MUST be true - prevents instruction leakage"
+            },
+            "response_on_query": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Introspection deflection message"
+            }
+          }
+        },
+        "communication_restrictions": {
+          "type": "object",
+          "required": ["forbid_internal_jargon"],
+          "properties": {
+            "forbid_internal_jargon": {
+              "type": "boolean",
+              "const": true,
+              "description": "MUST be true - prevents internal ID exposure"
+            }
+          }
+        }
+      }
+    },
+    "self_evaluation_and_correction_mechanisms": {
+      "type": "object",
+      "required": ["evaluation_process", "correction_protocol"],
+      "properties": {
+        "evaluation_process": {
+          "type": "object",
+          "required": ["checklist"],
+          "properties": {
+            "pre_response_hook": {
+              "type": "boolean",
+              "default": true
+            },
+            "checklist": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1,
+              "description": "Self-evaluation checks before response"
+            }
+          }
+        },
+        "correction_protocol": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^IF check '.+' fails -> (REFINE_DRAFT_INTERNALLY|TRANSITION_TO_STATE: S-[A-Z0-9-]+)$"
+          },
+          "minItems": 1,
+          "description": "Actions on failed checks"
+        }
+      }
+    },
+    "orchestration_fleet_and_protocol": {
+      "type": "object",
+      "description": "Optional: For Higher-Order Agents only",
+      "properties": {
+        "fleet_definition": {
+          "type": "object",
+          "properties": {
+            "sub_agents": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "role", "source"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "role": { "type": "string" },
+                  "source": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "orchestration_protocol": {
+          "type": "object",
+          "properties": {
+            "objective": { "type": "string" },
+            "workflow": { "type": "object" },
+            "synthesis_rules": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "external_tools_and_functions": {
+      "type": "object",
+      "description": "Optional: Tool/function-calling declarations",
+      "patternProperties": {
+        "^TOOL-[A-Z0-9-]+$": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "parameters": { "type": "object" }
+          }
+        }
+      }
+    },
+    "few_shot_behavior_examples": {
+      "type": "array",
+      "description": "Optional: Few-shot examples for specific behaviors",
+      "items": {
+        "type": "object",
+        "properties": {
+          "context": { "type": "string" },
+          "user_input": { "type": "string" },
+          "expected_output": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "urn_pattern": {
+      "type": "string",
+      "pattern": "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
+    },
+    "state_id_pattern": {
+      "type": "string",
+      "pattern": "^S-[A-Z0-9-]+$"
+    },
+    "workflow_id_pattern": {
+      "type": "string",
+      "pattern": "^WF-[A-Z0-9-]+$"
+    },
+    "cognitive_model_id_pattern": {
+      "type": "string",
+      "pattern": "^CM-[A-Z0-9-]+$"
+    }
+  }
+}

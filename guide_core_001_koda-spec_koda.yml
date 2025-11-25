@@ -1,0 +1,303 @@
+# KODA/Spec Specification v1.0
+# Core format specification for RAG-optimized knowledge artifacts
+# Foundation layer of the knowledge engineering stack
+
+_manifest:
+  urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/core/guide_core_001_koda-spec_koda.yml"
+    mirrors: []
+  dependencies:
+    requires: []  # Root artifact - no dependencies
+  provenance:
+    created_by: "FS"
+    created_at: "2025-11-21"
+    last_modified_by: "FS"
+    last_modified_at: "2025-11-25"
+    signature: null
+
+ID: KODA-SPEC-01
+Version: 1.1.0
+Status: Published
+Human-Creator: FS
+Human-Editor: FS
+Model-Collaborator: IA-GEMINI
+Creation-Date: 2025-11-21
+Modification-Date: 2025-11-25
+Source: GUIDE-KODA-MASTER-01
+Ctx: Technical specification of KODA as YAML extension
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Purp: Define KODA/Spec ( Specification) as formal extension of YAML for RAG-optimized knowledge artifacts.
+
+# 1. Definition
+
+KODA:
+  Def: YAML-compliant format using controlled keyword vocabulary for semantic markup.
+  Obj: Transform verbose human documents into dense, structured artifacts for LLM consumption via RAG.
+  Key_Characteristics:
+    - Zero information loss (absolute fidelity)
+    - Telegraphic brevity (maximum token density)
+    - Structural semantics (hierarchy, tables, lists carry meaning)
+    - Internal referencing (eliminate redundancy)
+
+# 2. YAML Extension Mechanism
+
+Extension_Model:
+  Base: YAML 1.2 specification
+  Constraint: All KODA documents must be valid YAML
+  Extension: KODA keywords used as YAML keys for semantic markup
+
+Schema:
+  Pattern: "Keyword: ContentValue"
+  Example: '"Def: A definition" or "Risk_Factors: High blood pressure"'
+  Validation: Keys must be either Tier 1 (Core) or Tier 2 (Semantic).
+
+# 3. Keyword Strategy (Tiered Lexicon)
+
+Keyword_Strategy:
+  ID: KODA-KEYWORD-STRATEGY-01
+  Def: Dual-tier system combining rigid structural control with flexible semantic expression.
+  Obj: Maximize token economy and RAG retrieval quality by using semantically dense keys.
+
+  Tier_1_Core_Structural:
+    Def: Reserved keywords for logical structure, referencing, and execution.
+    Req: MUST be used for their specific purpose. DO NOT invent alternatives for these functions.
+    Keywords:
+      - Keyword: ID
+        Def: Unique Identifier (Immutable).
+      - Keyword: Ref
+        Def: Internal cross-reference to another ID.
+      - Keyword: Def
+        Def: Definition of a term or concept.
+      - Keyword: Act
+        Def: Action or instruction to be executed.
+      - Keyword: Cond
+        Def: Condition or logic gate (If/Else).
+      - Keyword: Res
+        Def: Result, outcome, or implication.
+      - Keyword: Req
+        Def: Requirement or mandatory constraint.
+      - Keyword: Ctx
+        Def: Context, scope, or background information (generic).
+      - Keyword: Ctx_Required
+        Def: External reference that MUST be consulted (mandatory dependency).
+      - Keyword: Ctx_Optional
+        Def: External reference for additional context (informational, non-blocking).
+      - Keyword: Ex
+        Def: Example or illustration.
+      - Keyword: Purp
+        Def: Purpose or reason for existence.
+      - Keyword: Mssn
+        Def: Mission or overarching goal.
+      - Keyword: Obj
+        Def: Specific objective.
+      - Keyword: Proc
+        Def: Process or workflow.
+      - Keyword: Src
+        Def: Source or origin.
+      - Keyword: Prohib
+        Def: Prohibition or restriction.
+      - Keyword: Warn
+        Def: Warning or critical alert.
+      - Keyword: Just
+        Def: Justification or rationale.
+      - Keyword: Rec
+        Def: Recommendation (non-mandatory).
+
+  Tier_2_Semantic_Domain:
+    Def: Open vocabulary for domain-specific containers, attributes, and classifications.
+    Req:
+      - Must be self-explanatory in the document's language (English/Spanish).
+      - Must be concise (Snake_Case or CamelCase).
+      - Must NOT duplicate Tier 1 functionality (e.g., do not use 'Definition' if 'Def' applies).
+    Best_Practices:
+      - "Use specific terms: 'Symptoms' is better than 'Ctx: Type: Symptoms'."
+      - "Use natural anchors: 'Tacticas', 'Riesgos', 'Escenarios' act as strong attention anchors."
+    Examples:
+      - Valid: '"Tacticas_Universales", "Risk_Factors", "Clinical_Signs", "Pregunta_Clave"'
+      - Invalid: '"Definition_Formal" (Use Def), "Action_Item" (Use Act), "Item_1" (Use list)'
+
+# 4. Mandatory Document Structure
+
+Metadata_Block:
+  ID: KODA-STRUCT-METADATA
+  Purp: Identify document version, authorship, and lifecycle.
+  Req: Must be first element in every KODA artifact.
+
+  Required_Fields:
+    - Field: Version
+      Def: Semantic versioning (MAJOR.MINOR.PATCH)
+
+    - Field: Status
+      Def: Lifecycle state
+      Values: [Draft, Review, Published, Obsolete]
+
+    - Field: Human-Creator
+      Def: Original human author (name or initials)
+
+    - Field: Human-Editor
+      Def: Last human editor (name or initials)
+
+    - Field: Model-Collaborator
+      Def: LLM that participated in creation/editing
+
+    - Field: Creation-Date
+      Format: YYYY-MM-DD
+
+    - Field: Modification-Date
+      Format: YYYY-MM-DD
+
+    - Field: Ctx
+      Def: Document scope or contextual category
+
+Spec_LLM_Parsing_Instructions:
+  ID: KODA-STRUCT-INSTRUCTIONS
+  Purp: Provide rules for LLM consumption with perfect fidelity.
+  Req: Mandatory block immediately following Metadata Block.
+  Prohib: Using these instructions for creation/translation tasks.
+  Content_Structure:
+    - Section: Core Objective (Fidelity)
+    - Section: Conceptual Metaphors (Meat vs Fat)
+    - Section: Lexicon Mode (Expansion rules)
+    - Section: Reference Policy (Internal only)
+    - Section: Language Invariance Policy
+
+  Standard_Template: |
+    LLM_Parsing_Instructions:
+      ID: KODA-LLM-PARSER-01
+      Req: Mandatory block following Metadata.
+      Prohib: Using for artifact creation or translation.
+      Content: |
+        BEGIN_LLM_INSTRUCTIONS
+        You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+        FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+        LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+        REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+        LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+        END_LLM_INSTRUCTIONS
+
+# 5. Structural Semantics
+
+Structure_Principles:
+  ID: KODA-PRINCIPLE-STRUCTURE
+  Def: Structural elements (hierarchy, unique identifiers, cross-references, table relationships, list ordering) are informational meat, not presentation.
+  Req: Preserve all structural relationships as they carry semantic meaning.
+
+  Elements:
+    - Element: Hierarchy
+      Def: Nested YAML structure represents logical containment and importance.
+      Req: Maintain nesting depth to preserve relationships.
+
+    - Element: Unique_Identifiers
+      Keyword: ID
+      Def: Anchor points for internal references.
+      Req: Globally unique within artifact.
+      Format: UPPERCASE-KEBAB-CASE with semantic naming.
+      Ex: GUIDE-KODA-PRINCIPLE-FIDELITY-01
+
+    - Element: Cross_References
+      Keyword: Ref
+      Def: Eliminate redundancy by pointing to single definition.
+      Req: Target must exist within same artifact.
+      Prohib: External document references.
+
+    - Element: Tables
+      Def: Tabular structures preserve multi-dimensional relationships between data points.
+      Req: Maintain complete table structure including all rows, columns, and cell relationships.
+      Prohib: Converting table to another format or flattening relational data.
+
+    - Element: Lists
+      Def: List structures preserve sequence semantics.
+      Types:
+        - Ordered: Sequence matters (YAML list with implicit order)
+        - Unordered: Grouping only (sequence arbitrary)
+      Req: Maintain list type and item ordering as they carry semantic meaning.
+
+# 6. Core Principles
+
+Principles:
+  - Principle: Absolute Fidelity
+    ID: KODA-PRINCIPLE-FIDELITY
+    Def: Zero loss of informational meat during transformation.
+    Req: All original data points must be preserved.
+    Prohib: Summarization or inference.
+
+  - Principle: Single Source of Truth
+    ID: KODA-PRINCIPLE-SSOT
+    Def: Each concept defined once with unique ID, referenced elsewhere via Ref.
+    Req: Use Ref for all repetitions.
+    Res: Eliminates redundancy and ensures consistency.
+
+  - Principle: Maximum Density
+    ID: KODA-PRINCIPLE-DENSITY
+    Def: Maximum informational meat per token.
+    Mech: Telegraphic brevity, keyword-based markup, reference-based deduplication.
+    Target: 30-50% token reduction vs original human document.
+
+  - Principle: Structural Semantics
+    Ref: KODA-PRINCIPLE-STRUCTURE
+
+  - Principle: Language Invariance
+    ID: KODA-PRINCIPLE-LANGUAGE
+    Def: Keywords in English, content in original language.
+    Req: Never translate content during KODA transformation.
+    Just: Preserves fidelity and allows multilingual artifacts.
+
+# 7. Validation Schema
+
+Validation:
+  ID: KODA-VALIDATION-01
+  Purp: Criteria for valid KODA artifact.
+
+  Syntax_Validation:
+    - Rule: Valid YAML
+      Test: Must parse without errors using YAML 1.2 parser.
+
+    - Rule: Keywords from lexicon
+      Test: All keys match official KODA keywords.
+
+    - Rule: Unique IDs
+      Test: No duplicate ID values within artifact.
+
+    - Rule: Valid references
+      Test: All Ref values point to existing ID within artifact.
+
+  Semantic_Validation:
+    - Rule: Metadata block present
+      Test: First element contains required fields.
+
+    - Rule: No information loss
+      Test: Manual verification that all source data preserved.
+
+    - Rule: No redundancy
+      Test: Concepts defined once, referenced via Ref elsewhere.
+
+    - Rule: Token efficiency
+      Test: "Artifact uses fewer tokens than source (target: 30-50% reduction)."

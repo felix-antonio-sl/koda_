@@ -1,0 +1,509 @@
+# Schema Versioning Policy v1.0
+# KODA/Spec YAML Format
+# Governance framework for KODA schema evolution
+
+_manifest:
+  urn: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/core/guide_core_008_schema-versioning_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
+        reason: "Format specification"
+      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+        reason: "Agent definition schema"
+  provenance:
+    created_by: "FS"
+    created_at: "2025-11-25"
+    last_modified_by: "FS"
+    last_modified_at: "2025-11-25"
+    signature: null
+
+ID: SCHEMA-VERSIONING-01
+Version: 1.0.0
+Status: Published
+Human-Creator: FS
+Human-Editor: FS
+Model-Collaborator: IA-CLAUDE
+Creation-Date: 2025-11-25
+Modification-Date: 2025-11-25
+Ctx: Governance framework for schema evolution and backward compatibility
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Purp: Define governance policies for KODA/Spec and KODA/Agent schema versioning, ensuring backward compatibility and controlled evolution.
+
+Obj: Enable schema evolution without breaking existing agents and knowledge artifacts.
+
+# =============================================================================
+# 1. VERSIONING PRINCIPLES
+# =============================================================================
+
+Principles:
+  ID: SV-PRINCIPLES-01
+  
+  Core_Principles:
+    - Principle: Schema Independence
+      ID: SV-PRINCIPLE-INDEPENDENCE
+      Def: Schema versions are independent from artifact versions.
+      Just: An agent at v2.0.0 may use KODA/Agent schema v1.0.0; a KB at v1.0.0 may use KODA/Spec schema v1.1.0.
+      
+    - Principle: Backward Compatibility Default
+      ID: SV-PRINCIPLE-BACKWARD
+      Def: All schema changes SHOULD be backward compatible unless explicitly marked as breaking.
+      Just: Existing agents must continue to function after schema updates.
+      
+    - Principle: Explicit Breaking Changes
+      ID: SV-PRINCIPLE-EXPLICIT
+      Def: Breaking changes MUST be documented with migration path and coexistence period.
+      Just: Enables controlled migration without surprise failures.
+      
+    - Principle: Version Declaration
+      ID: SV-PRINCIPLE-DECLARATION
+      Def: Every artifact MUST declare which schema version it conforms to.
+      Mech: _manifest.compatibility.min_consumer_version field.
+
+# =============================================================================
+# 2. VERSION NUMBER SEMANTICS
+# =============================================================================
+
+Version_Semantics:
+  ID: SV-SEMANTICS-01
+  Format: "MAJOR.MINOR.PATCH"
+  
+  Components:
+    - Component: MAJOR
+      Def: Breaking changes requiring migration.
+      Trigger:
+        - Removal of required fields
+        - Change of field semantics
+        - Incompatible structural changes
+        - Removal of keywords from Tier 1
+      Consumer_Impact: "MUST update artifacts to comply."
+      
+    - Component: MINOR
+      Def: Backward-compatible additions.
+      Trigger:
+        - New optional fields
+        - New keywords (Tier 1 or Tier 2)
+        - New enum values
+        - Enhanced validation rules (permissive)
+      Consumer_Impact: "MAY use new features; existing artifacts continue working."
+      
+    - Component: PATCH
+      Def: Backward-compatible fixes.
+      Trigger:
+        - Documentation clarifications
+        - Typo fixes in schema
+        - Bug fixes in validation
+      Consumer_Impact: "No action required."
+
+  Examples:
+    - "1.0.0 -> 1.0.1: Typo fix in description (PATCH)"
+    - "1.0.0 -> 1.1.0: Added Ctx_Required keyword (MINOR)"
+    - "1.0.0 -> 2.0.0: Made source_artifacts required for all policies (MAJOR)"
+
+# =============================================================================
+# 3. SCHEMA REGISTRY
+# =============================================================================
+
+Schema_Registry:
+  ID: SV-REGISTRY-01
+  Purp: Track all schema versions and their status.
+  
+  KODA_Spec_Schema_Versions:
+    - Version: "1.0.0"
+      Status: Deprecated
+      Release_Date: "2025-11-21"
+      Deprecation_Date: "2025-11-25"
+      Keywords_Count: 18
+      Breaking_From: null
+      
+    - Version: "1.1.0"
+      Status: Current
+      Release_Date: "2025-11-25"
+      Deprecation_Date: null
+      Keywords_Count: 20
+      Breaking_From: null
+      Changes:
+        - "Added Ctx_Required keyword"
+        - "Added Ctx_Optional keyword"
+        - "Updated REFERENCE POLICY"
+
+  KODA_Agent_Schema_Versions:
+    - Version: "1.0.0"
+      Status: Current
+      Release_Date: "2025-11-25"
+      Deprecation_Date: null
+      JSON_Schema_File: "schemas/koda-agent-schema-1.0.0.json"
+      Breaking_From: null
+      Namespaces_Count: 7
+      
+  Schema_Files:
+    - URN: "urn:knowledge:gorenuble:core:koda-agent-schema:1.0.0"
+      File: "schemas/koda-agent-schema-1.0.0.json"
+      Format: "JSON Schema draft/2020-12"
+
+# =============================================================================
+# 4. CHANGE CLASSIFICATION
+# =============================================================================
+
+Change_Classification:
+  ID: SV-CLASSIFICATION-01
+  Purp: Classify schema changes by impact.
+  
+  Backward_Compatible:
+    ID: SV-CLASS-COMPATIBLE
+    Def: Changes that do not break existing artifacts.
+    
+    Categories:
+      - Category: Additive
+        Examples:
+          - "New optional field"
+          - "New keyword in Tier 1 or Tier 2"
+          - "New enum value"
+          - "New validation pattern (permissive)"
+        Version_Bump: MINOR
+        
+      - Category: Clarifying
+        Examples:
+          - "Improved field description"
+          - "Added examples"
+          - "Fixed documentation typos"
+        Version_Bump: PATCH
+        
+      - Category: Relaxing
+        Examples:
+          - "Removed required constraint (field now optional)"
+          - "Widened type (string -> string|array)"
+          - "Increased maxItems limit"
+        Version_Bump: MINOR
+  
+  Breaking_Changes:
+    ID: SV-CLASS-BREAKING
+    Def: Changes that invalidate existing artifacts.
+    
+    Categories:
+      - Category: Removal
+        Examples:
+          - "Removed field from schema"
+          - "Removed keyword from Tier 1"
+          - "Removed enum value"
+        Version_Bump: MAJOR
+        Req: Migration guide + coexistence period
+        
+      - Category: Restructuring
+        Examples:
+          - "Renamed field"
+          - "Moved field to different parent"
+          - "Changed nesting level"
+        Version_Bump: MAJOR
+        Req: Migration guide + coexistence period
+        
+      - Category: Constraining
+        Examples:
+          - "Added new required field"
+          - "Narrowed type (string|array -> string)"
+          - "Reduced maxItems limit"
+          - "Added stricter validation pattern"
+        Version_Bump: MAJOR
+        Req: Migration guide + coexistence period
+        
+      - Category: Semantic
+        Examples:
+          - "Changed meaning of existing field"
+          - "Changed behavior of keyword"
+        Version_Bump: MAJOR
+        Req: Migration guide + detailed documentation
+
+# =============================================================================
+# 5. BREAKING CHANGE PROTOCOL
+# =============================================================================
+
+Breaking_Change_Protocol:
+  ID: SV-BREAKING-01
+  Purp: Process for introducing breaking changes.
+  
+  Phases:
+    - Phase: Proposal
+      Duration: "Minimum 30 days"
+      Acts:
+        - "Document proposed change with rationale"
+        - "Impact analysis: affected artifacts, consumers"
+        - "Draft migration guide"
+        - "Community review period"
+      Artifacts:
+        - "RFC document (Request for Change)"
+        - "Impact assessment"
+      
+    - Phase: Deprecation
+      Duration: "Minimum 90 days"
+      Acts:
+        - "Mark affected elements as deprecated in current schema"
+        - "Publish migration guide"
+        - "Update documentation with deprecation warnings"
+        - "Emit warnings in validation tools"
+      Artifacts:
+        - "Migration guide document"
+        - "Updated schema with deprecation markers"
+      
+    - Phase: Coexistence
+      Duration: "Minimum 180 days"
+      Acts:
+        - "Release new MAJOR version"
+        - "Maintain both old and new versions"
+        - "Support migration tooling"
+        - "Monitor migration progress"
+      Artifacts:
+        - "New schema version"
+        - "Migration scripts (if applicable)"
+      
+    - Phase: Sunset
+      Duration: "As announced"
+      Acts:
+        - "Mark old version as obsolete"
+        - "Remove from active support"
+        - "Archive documentation"
+      Artifacts:
+        - "Sunset announcement"
+        - "Archived schema"
+  
+  Minimum_Timeline: "300 days from proposal to sunset"
+
+# =============================================================================
+# 6. MIGRATION GUIDE TEMPLATE
+# =============================================================================
+
+Migration_Guide_Template:
+  ID: SV-MIGRATION-TEMPLATE-01
+  Purp: Standard format for migration documentation.
+  
+  Template: |
+    # Migration Guide: Schema vX.Y.Z to vA.B.C
+    
+    ## Overview
+    - **Source Version**: X.Y.Z
+    - **Target Version**: A.B.C
+    - **Change Type**: MAJOR (Breaking)
+    - **Deprecation Date**: YYYY-MM-DD
+    - **Sunset Date**: YYYY-MM-DD
+    
+    ## Summary of Changes
+    | Change | Type | Impact |
+    |--------|------|--------|
+    | ... | Removal/Restructure/Constraint | High/Medium/Low |
+    
+    ## Migration Steps
+    
+    ### Step 1: [Change Description]
+    
+    **Before (vX.Y.Z):**
+    ```yaml
+    old_structure:
+      field: value
+    ```
+    
+    **After (vA.B.C):**
+    ```yaml
+    new_structure:
+      field: value
+    ```
+    
+    **Automated Migration:**
+    ```bash
+    # Command to automate this change
+    migration-tool transform --from X.Y.Z --to A.B.C input.yaml
+    ```
+    
+    ### Step 2: [Next Change]
+    ...
+    
+    ## Validation
+    ```bash
+    # Validate migrated artifact
+    ajv validate -s schema-A.B.C.json -d migrated.yaml
+    ```
+    
+    ## Rollback Procedure
+    ...
+    
+    ## Support Resources
+    - Migration tool: [link]
+    - FAQ: [link]
+    - Help channel: [contact]
+
+# =============================================================================
+# 7. COMPATIBILITY MATRIX
+# =============================================================================
+
+Compatibility_Matrix:
+  ID: SV-COMPAT-MATRIX-01
+  Purp: Track compatibility between schemas and artifacts.
+  
+  KODA_Spec_Compatibility:
+    Table:
+      Headers: [Artifact_STS_Version, Schema_1.0.0, Schema_1.1.0]
+      Rows:
+        - ["1.0.0", "✓ Full", "✓ Full (backward compatible)"]
+        - ["1.1.0 (uses Ctx_Required)", "✗ Unknown keyword", "✓ Full"]
+  
+  KODA_Agent_Compatibility:
+    Table:
+      Headers: [Agent_ADP_Version, Schema_1.0.0]
+      Rows:
+        - ["1.0.0", "✓ Full"]
+  
+  Cross_Schema_Dependencies:
+    - "KODA/Agent 1.0.0 requires KODA/Spec >= 1.0.0"
+    - "KODA/Test 1.0.0 requires KODA/Agent >= 1.0.0"
+    - "KODA/Hub 1.0.0 requires KODA/Spec >= 1.0.0"
+
+# =============================================================================
+# 8. VALIDATION TOOLING
+# =============================================================================
+
+Validation_Tooling:
+  ID: SV-TOOLING-01
+  Purp: Tools for schema validation across versions.
+  
+  Recommended_Tools:
+    - Tool: ajv-cli
+      Purp: JSON Schema validation
+      Install: "npm install -g ajv-cli"
+      Usage: |
+        # Validate against specific schema version
+        ajv validate -s schemas/koda-agent-schema-1.0.0.json -d agent.yaml --verbose
+        
+    - Tool: yamllint
+      Purp: YAML syntax validation
+      Install: "pip install yamllint"
+      Usage: "yamllint agent.yaml"
+      
+    - Tool: sts-validate (planned)
+      Purp: Full KODA validation with version detection
+      Status: Planned for v1.1.0
+      Features:
+        - "Auto-detect schema version from _manifest"
+        - "Cross-reference validation"
+        - "Deprecation warnings"
+  
+  Validation_Script_Example: |
+    #!/bin/bash
+    # validate-agent.sh - Validate agent.yaml against KODA/Agent schema
+    
+    SCHEMA_DIR="./schemas"
+    AGENT_FILE="$1"
+    
+    if [ -z "$AGENT_FILE" ]; then
+      echo "Usage: validate-agent.sh <agent.yaml>"
+      exit 1
+    fi
+    
+    # Extract schema version from manifest (requires yq)
+    SCHEMA_VERSION=$(yq -r '._manifest.compatibility.min_consumer_version // "1.0.0"' "$AGENT_FILE")
+    SCHEMA_FILE="$SCHEMA_DIR/koda-agent-schema-$SCHEMA_VERSION.json"
+    
+    if [ ! -f "$SCHEMA_FILE" ]; then
+      echo "Schema file not found: $SCHEMA_FILE"
+      exit 1
+    fi
+    
+    echo "Validating $AGENT_FILE against KODA/Agent schema v$SCHEMA_VERSION..."
+    ajv validate --spec=draft2020 -s "$SCHEMA_FILE" -d "$AGENT_FILE" --verbose
+    
+    if [ $? -eq 0 ]; then
+      echo "✓ Validation passed"
+    else
+      echo "✗ Validation failed"
+      exit 1
+    fi
+
+# =============================================================================
+# 9. DEPRECATION MARKERS
+# =============================================================================
+
+Deprecation_Markers:
+  ID: SV-DEPRECATION-01
+  Purp: Standard way to mark deprecated elements.
+  
+  In_Schema:
+    Format: |
+      "deprecated_field": {
+        "type": "string",
+        "deprecated": true,
+        "description": "DEPRECATED in v1.1.0. Use 'new_field' instead. Will be removed in v2.0.0."
+      }
+  
+  In_KODA_Artifact:
+    Format: |
+      deprecated_section:
+        _deprecated:
+          since: "1.1.0"
+          removal: "2.0.0"
+          replacement: "new_section"
+          migration: "Copy content to new_section"
+        # ... original content ...
+  
+  In_Documentation:
+    Format: |
+      > ⚠️ **DEPRECATED**: This feature is deprecated since v1.1.0 and will be removed in v2.0.0.
+      > Use [new_feature] instead. See [migration guide](link).
+
+# =============================================================================
+# 10. GOVERNANCE
+# =============================================================================
+
+Governance:
+  ID: SV-GOVERNANCE-01
+  Purp: Decision-making process for schema changes.
+  
+  Roles:
+    - Role: Schema Steward
+      Def: Responsible for schema integrity and evolution.
+      Responsibilities:
+        - "Review and approve schema changes"
+        - "Maintain schema registry"
+        - "Coordinate breaking changes"
+        - "Publish migration guides"
+    
+    - Role: Contributor
+      Def: Proposes schema changes.
+      Responsibilities:
+        - "Submit RFC for changes"
+        - "Provide impact analysis"
+        - "Implement approved changes"
+  
+  Change_Request_Process:
+    - Step: "1. Submit RFC with rationale and impact"
+    - Step: "2. Community review (30 days for MAJOR)"
+    - Step: "3. Schema Steward review and decision"
+    - Step: "4. Implementation and testing"
+    - Step: "5. Release with documentation"
+  
+  Decision_Criteria:
+    - "Necessity: Is this change essential?"
+    - "Impact: How many artifacts affected?"
+    - "Migration: Is migration feasible?"
+    - "Value: Does benefit outweigh cost?"

@@ -1,0 +1,582 @@
+# KODA Lifecycle Management (ALM) Master Guide v1.0
+# KODA/Spec YAML Format
+# Complete engineering framework for AI agent development
+
+_manifest:
+  urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/core/guide_core_004_koda-life-master_sts.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+        reason: "Structural format specification"
+      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+        reason: "Agent definition protocol"
+  provenance:
+    created_by: "FS"
+    created_at: "2025-06-29"
+    last_modified_by: "FS"
+    last_modified_at: "2025-11-25"
+    signature: null
+
+ID: KODA-LIFE-MASTER-01
+Version: 1.0.0
+Status: Published
+Human-Creator: FS
+Human-Editor: FS
+Model-Collaborator: IA-GEMINI
+Creation-Date: 2025-06-29
+Modification-Date: 2025-07-10
+Source: GUIDE-KODA-MASTER-01; GUIDE-KODA-MASTER-03 (v3.0.0)
+Ctx: KODA Lifecycle Management (ALM) master guide
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+# 0. Preliminaries
+
+Preliminaries:
+  ID: GUIDE-KODA-LIFE-PRELIMINARIES-01
+
+  Purpose_Audience:
+    Purp: Establish a unified engineering framework for the design, development, deployment, and maintenance of conversational AI agents.
+    Dest: Knowledge Architects, AI Engineers, Agent Developers, RAG Specialists.
+
+  Knowledge_Prerequisites:
+    Req: Functional understanding of reference standards.
+    Standards:
+      - Ctx: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+      - Ctx: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
+      - Ctx: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+
+  Methodology_Scope:
+    Ctx_In_Scope: Full lifecycle for conversational agents with RAG and action capabilities.
+    Ctx_Out_Of_Scope: Model fine-tuning execution; scope includes only strategic evaluation of fine-tuning vs RAG.
+
+# 1. Philosophy and Architecture
+
+Philosophy_Architecture:
+  ID: GUIDE-KODA-LIFE-PHILOSOPHY-01
+
+  Core_Mission:
+    Mssn: Transition from prompt crafting to agent engineering.
+    Cpt_Agent_As_Software:
+      Def: Agent as software artifact, not a natural language text.
+    Obj: Maximize predictability, maintainability, and behavioral fidelity.
+
+  Separation_Of_Concerns:
+    Cpt_Code:
+      Def: Declarative behavior definition (`agent.yaml`); defines HOW the agent thinks and acts.
+    Cpt_Data:
+      Def: Structured knowledge base (`KB/*.md`); defines WHAT the agent knows.
+
+    Principle_Public_vs_Private:
+      ID: KODA-LIFE-PRINCIPLE-PUBLIC-PRIVATE-01
+      Def: Public interface vs private implementation separation.
+      Public_Interface:
+        Def: High-level control flow in `public_behavior_workflows_and_states`; describes WHAT the agent does.
+      Private_Implementation:
+        Def: "Complex reasoning and business logic in `private_internal_reasoning_processes` with `_meta: { expose: false }`; describes HOW the agent thinks."
+      Fnd: Practical application of the Monadic Process Encapsulation pattern defined in KODA; ensures robust encapsulation.
+      Ctx: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+      Req: Detailed business logic MUST reside in the private implementation to minimize exposure surface and maximize process confidentiality.
+
+    Principle_Semantic_Abstraction:
+      ID: KODA-LIFE-PRINCIPLE-SEMANTIC-ABSTRACTION-01
+      Def: Agent communication MUST abstract away internal implementation details (state IDs, KB filenames, internal framework acronyms).
+      Just: Ensures a natural user experience and defends against implementation detail leakage.
+
+    Principle_Knowledge_Cartography:
+      ID: KODA-LIFE-PRINCIPLE-KB-CARTOGRAPHY-01
+      Def: Reasoning path from user query to knowledge artifact MUST be explicit, deterministic, and verifiable via a routing model.
+      Mech: Implement a KB Guidance Pattern (e.g., `CM-KB-GUIDANCE`) mapping query domains to specific source files.
+      Just: Avoids implicit retrieval that causes hallucinations and unpredictable behavior; explicit map turns lookup into a reliable, high-fidelity step.
+      Req: Every agent with a knowledge base MUST implement a `CM-KB-GUIDANCE` cognitive model; its absence is a critical architectural flaw.
+
+    Principle_Execution_Model:
+      ID: KODA-LIFE-PRINCIPLE-EXECUTION-MODEL-01
+      Def: Execution model for loading `agent.yaml` into the LLM MUST be an explicit design choice.
+      Models:
+        - Ctx: Direct_Execution
+          Def: '`agent.yaml` content is used directly as the system prompt.'
+        - Ctx: Indirect_Execution
+          Def: A Bootloader prompt instructs the model to load and execute an attached `agent.yaml` file.
+      Just: Critical for platforms with instruction length limits; formalizes the Agent Bootloader Pattern.
+      Ctx: Agent Bootloader Pattern (Annex E).
+
+  KODA_Coherence_Stack:
+    ID: KODA-LIFE-STACK-01
+    Layers:
+      - Cpt: Definition_Layer
+        Def: KODA/Agent (agent source code).
+      - Cpt: Knowledge_Layer
+        Def: KODA/Spec (structured content).
+      - Cpt: Specialized_Layer
+        Def: SFD (form-based structures).
+
+  Principle_Categorical_Coherence:
+    ID: KODA-LIFE-PRINCIPLE-CATEGORICAL-01
+    Def: Agent components obey structural relations; workflows are functors, transitions morphisms, and states objects; compositions must respect identity and associativity.
+    Nota_Didactica: Ensures logical and composable architecture, preventing unreachable states or broken workflows; implementation detailed in Annex C.
+
+  Strategic_Distinctions:
+    ID: KODA-LIFE-STRATEGIC-DISTINCTIONS-01
+
+    Distinction_Product_vs_Engine:
+      Cpt_Agent_as_Product:
+        Def: Self-contained agent within a platform; platform provides UI, user management, and tooling.
+        Ex: '"OpenAI Custom GPTs", "Google Gems", "Anthropic Projects".'
+      Cpt_Agent_as_Engine:
+        Def: Headless agent for external integration via API; requires a custom application around it.
+        Ex: '"OpenAI Assistants API", "Google Gemini API", "Anthropic Claude API".'
+
+    Distinction_Agent_Order:
+      Cpt_First_Order_Agent:
+        Def: Agent dedicated to direct task execution within a specific domain; operates on a KB and executes workflows.
+      Cpt_Higher_Order_Agent:
+        Def: Agent dedicated to orchestration of other agents; its KB is the fleet definition and its workflow the delegation protocol.
+      Nota_Categorial: Respects the closure principle; a Manager composes agents as monads, preserving encapsulation of their internal processes.
+
+    Req: Product/Engine choice and Agent Order are preliminary design decisions conditioning lifecycle, tooling, and deployment strategy.
+
+# 2. Agent Lifecycle – 5 Phases
+
+Agent_Lifecycle:
+  ID: GUIDE-KODA-LIFE-LIFECYCLE-01
+
+  Phase_1_Conception_Strategy_Platform:
+    ID: KODA-LIFE-PHASE-1-CONCEPTION-01
+    Obj: Define the "what", "why", and "where" of the agent.
+
+    Acts:
+      - Act: 1.1 - Strategic Definition (Platform & Order)
+        Procs:
+          - Proc: Select Artifact Type (Product vs Engine).
+          - Proc: Select Agent Order (First-Order vs Higher-Order).
+          - Proc: Analyze strategic implications of the selected platform's features.
+          - Proc: Document platform constraints and capabilities, including instruction length limits and Instruction-via-KB-File capability.
+            Ctx: Annex A.
+          - Proc: Identify platform knowledge management model (file-based vs UI-driven) as a critical architectural constraint.
+        Res: Formal Platform Destination Fact Sheet document.
+
+      - Act: 1.2 - Agent's Charter Elaboration
+        Procs:
+          - Proc: Use a structured framework (e.g., FTCF) to establish high-level requirements.
+        Res: Creation of agent.yaml with mandatory AGENT RUNTIME DIRECTIVE and initial draft of core and guard sections; for Indirect Execution, include Bootloader Instruction draft.
+
+      - Act: 1.3 - Model Adaptation Strategy Definition
+        Procs:
+          - Proc: Evaluate trade-offs between general-purpose foundation model with RAG vs fine-tuned model.
+          - Proc: Document data requirements, costs, and performance expectations.
+        Res: Model Strategy Brief.
+
+    Gate_P1_GUARD:
+      ID: KODA-LIFE-GATE-P1-GUARD-01
+      Req: Automatic verification that the Minimum Guard Set defined in KODA/Agent guide is present and complete in agent.yaml before proceeding.
+
+  Phase_2_KB_Curation_Implementation:
+    ID: KODA-LIFE-PHASE-2-KB-01
+    Obj: Build a data foundation optimized for the target platform.
+    Fnd: Knowledge capability of modern platforms is typically based on RAG; well-structured KODA-YAML source artifacts significantly improve performance.
+
+    Acts:
+      - Act: 2.1 - Knowledge Transcription and Refactoring
+        Procs:
+          - Proc: Apply KODA-YAML methodology (sts_transformation_methodology.yml + sts_yaml_specification.yml) to refactor all textual knowledge into KODA-YAML artifacts.
+          - Proc: Apply specialized SFD schemas implemented as KODA-YAML to represent all form-based knowledge as structured artifacts.
+
+      - Act: 2.2 - KB Packaging and Consolidation Strategy
+        Procs:
+          - Proc: Design KODA-YAML file structure based on platform constraints (number of files, size limits).
+          - Cpt: Use KODA mechanisms (e.g., embedded logical blocks or structured containers) to consolidate multiple logical artifacts into a single physical file when platform file-count limits require it.
+          - Proc: For Indirect Execution models, ensure agent.yaml is included as part of the knowledge artifact package.
+          - Proc: Define a KB Synchronization Protocol if the platform's knowledge store is not the Git repository itself (e.g., manual upload to a UI, sync to cloud storage). Platform KB is treated as deployment target, not source of truth.
+            Ctx: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
+          - Cond: If knowledge requirements exceed platform RAG limits, activate external KB protocol via Actions and document this decision in this phase.
+        Res: KB structure with validated KODA-YAML (and SFD-layer) artifacts and a defined KB Synchronization Protocol.
+
+  Phase_3_ADP_Programming:
+    ID: KODA-LIFE-PHASE-3-ADP-01
+    Obj: Write the agent's source code in a platform-compatible manner.
+    Fnd: Effective agent programming relies on advanced prompt engineering principles (extreme clarity, examples, structure, explicit roles/objectives).
+
+    Acts:
+      - Act: 3.1 - Design-to-Code Translation
+        Procs:
+          - Proc: 3.1.1 - Preamble Verification. Ensure agent.yaml begins with the complete, unmodified AGENT RUNTIME DIRECTIVE as specified in KODA-AGENT-SPEC (urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0).
+          - Proc: 3.1.2 - Systematically map Phase 1 design concepts to specific YAML keys in agent.yaml.
+
+      - Act: Platform-Specific Prompting Strategy
+        Procs:
+          - Proc: Based on the selected platform, define the primary prompting strategy used in agent.yaml directives.
+          - Ex: For Anthropic Claude, prioritize Chain-of-Thought with `<thinking>` tags.
+          - Ex: For OpenAI GPT-4.1, implement agentic reminders (persistence, tool-use, planning) in key instructions.
+          - Ex: For Google Gemini, structure prompts around Persona/Task/Context/Format.
+        Res: Prompting Strategy document outlining chosen techniques.
+
+      - Act: 3.2 - Logic, Patterns, and Rules Implementation
+        Procs:
+          - Proc: 3.2.1 - Implement logic and actions. Define complex behaviors using `public_behavior_workflows_and_states.defined_workflows`, `public_behavior_workflows_and_states.defined_states`, and `private_internal_reasoning_processes`. Ensure actions are compatible with the target platform.
+          - Proc: 3.2.2 - Implement Anti-Pattern Checks via automated linters and code reviews.
+          - Anti_Patterns:
+              - Name: Logic_Exposure
+                Indicador_Rapido: "Processes > 5 lines in public_behavior_workflows_and_states.defined_states.*.process."
+                Mitigacion: "Move business logic to private_internal_reasoning_processes."
+              - Name: Implicit_Knowledge_Retrieval
+                Indicador_Rapido: "Calls to knowledge artifacts without explicit routing map."
+                Mitigacion: "Apply KB Guidance Pattern with explicit query→document mapping."
+          - Proc: 3.2.3 - Apply Architectural Patterns. Implement formal KODA patterns such as KB Guidance Pattern (Functorial) and Monadic Process Encapsulation according to mappings in Annex C.
+          - Proc: 3.2.4 - Respect Rules of Composition. Ensure pattern combinations are valid according to explicit composition rules in Annex C.
+
+      - Act: 3.3 - Knowledge Routing Implementation
+        Procs:
+          - Proc: Implement KB Guidance Pattern (see Annex E) by creating a dedicated model under `private_internal_reasoning_processes` (e.g., `CM-KB-GUIDANCE`) that maps query domains to KODA-YAML knowledge artifacts.
+          - Just: Transforms knowledge retrieval from unreliable implicit inference into explicit, auditable, high-fidelity reasoning.
+
+      - Act: API Stability Review (Agent-as-Engine projects)
+        Procs:
+          - Proc: Review platform API documentation for stability markers (e.g., Beta, Deprecated, GA).
+          - Proc: Assess provider's deprecation policy and migration support.
+        Res: Risk assessment memo for API dependency.
+
+    Res: Complete, syntactically valid agent.yaml file.
+
+  Phase_4_Testing_Deployment_Refinement:
+    ID: KODA-LIFE-PHASE-4-TEST-DEPLOY-01
+    Obj: Validate agent behavior and implement robust observability.
+
+    Acts:
+      - Act: 4.1 - Test Plan Design and Execution
+        Cpt: Unit tests, Integration tests, Regression tests.
+
+      - Act: 4.2 - Observability Strategy Implementation
+        Procs:
+          - Proc: Define key performance metrics and comprehensive logging strategy.
+
+      - Act: 4.3 - Refinement Loop Execution
+        Procs:
+          - Proc: Debug agent behavior by systematically correcting code (agent.yaml) and data (KODA-YAML knowledge artifacts).
+          - Proc: Apply targeted prompt-engineering debugging techniques.
+            Tactics:
+              - Name: Tactic_1_Rephrasing
+                Def: Reformulate instructions using different wording.
+              - Name: Tactic_2_Order_Sensitivity
+                Def: Experiment with order of instructions and context; for long contexts, test platform-specific ordering strategies.
+              - Name: Tactic_3_Forced_Reasoning
+                Def: When logic is flawed, instruct the model to think step-by-step internally before responding; this debugging mechanism MUST remain internal per Principle_Semantic_Abstraction.
+              - Name: Tactic_4_Example_Tuning
+                Def: Add or modify few-shot examples to cover failing edge cases.
+
+      - Gate_4_4_Checklist_Validation:
+        Req: CI/CD pipeline MUST execute `KODA-VALIDATION-CHECKLIST-02`, including checks for presence and integrity of AGENT RUNTIME DIRECTIVE, KODA Principle 3 (keys in EN, content in operating language), and forbidden legacy keys. For Indirect Execution, validation MUST ensure Bootloader Instruction is present, correctly references the KB package (including agent.yaml), and passes an assimilation test. Deployment MUST be blocked if any check fails.
+
+      - Act: 4.5 - Deployment
+        Procs:
+          - Proc: Publish agent on target platform and version final state using Git.
+          - Proc: For Indirect Execution models, 1) paste Bootloader Instruction into platform instruction field; 2) upload complete KB package including agent.yaml.
+        Res: Deployed and stable agent.
+
+  Phase_5_Maintenance_Evolution:
+    ID: KODA-LIFE-PHASE-5-MAINTENANCE-01
+    Obj: Manage agent in production, ensuring sustained performance and planned evolution.
+
+    Acts:
+      - Act: 5.1 - Version Control Establishment
+        Req: All agent repositories MUST follow Git management protocol detailed in Git_Management section.
+
+      - Act: 5.2 - User Feedback Collection and Analysis
+        Procs:
+          - Proc: Implement mechanisms to collect explicit and implicit user feedback to identify failure modes and improvement opportunities.
+
+      - Act: 5.3 - Drift Detection and Model Monitoring
+        Procs:
+          - Proc: Establish baseline metrics to detect performance degradation (model drift) and changes in user query patterns (data drift).
+
+      - Act: 5.4 - Proactive Maintenance Audit
+        Req: Execute recurring quarterly audit against `KODA-VALIDATION-CHECKLIST-02` and Minimum Guard Set for all production agents to prevent config-drift.
+
+      - Act: 5.5 - Change Management Protocol
+        Procs:
+          - Proc: Treat any change request as initiating a new KODA/Life cycle from the appropriate phase.
+
+# 3. Version Control and Repository Management with Git
+
+Git_Management:
+  ID: GUIDE-KODA-LIFE-GIT-MANAGEMENT-01
+  Purp: Establish strict, standardized methodology for managing agent source code (agent.yaml) and KODA-YAML knowledge artifacts using Git.
+  Fnd: Treat agent development with same engineering discipline as software development.
+
+  Repository_Structure:
+    ID: GUIDE-KODA-LIFE-GIT-REPO-STRUCTURE-01
+    Req: Entire system (agents and knowledge) MUST reside in a single mono-repository.
+    Fnd: Ensures single source of truth, simplifies dependency management, and aligns with "Centralized Hub, Federated Domains" principle.
+    Ctx: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
+
+    Layout:
+      - Cpt: /agents/
+        Purp: Contains definition files for all AI agents.
+        Ctx: Each subdirectory corresponds to a single agent.
+      - Cpt: /knowledge/
+        Purp: Root directory for all validated, curated, agent-ready knowledge artifacts.
+      - Cpt: /sources/
+        Purp: Repository for raw, unprocessed source materials.
+      - Cpt: /staging/
+        Purp: Temporary work-in-progress area for artifacts undergoing transformation.
+      - Cpt: /tests/
+        Purp: Automated tests for agent logic and knowledge integrity.
+
+  Branching_Strategy:
+    ID: GUIDE-KODA-LIFE-GIT-BRANCHING-01
+    Purp: Provide predictable model for development, features, and releases.
+    Mdl: Simplified GitFlow model.
+
+    Branches:
+      - Name: main
+        Cpt: Main_Branch
+        Def: Production-ready, deployed state of the agent.
+        Req: MUST be protected; direct commits prohibited.
+        Proc: Updated only by merging from develop for new releases.
+
+      - Name: develop
+        Cpt: Develop_Branch
+        Def: Primary integration branch for next release; consolidated view of completed features.
+        Proc: All feature branches are created from develop and merged back into it.
+
+      - Name: feature/<feature-name>
+        Cpt: Feature_Branch
+        Purp: Develop new features or add/update knowledge artifacts in isolation.
+        Ex:
+          - feature/add-sts-onboarding-artifact
+          - feature/update-core-objective
+        Proc: Branched from develop and merged back via Pull Request.
+
+      - Name: hotfix/<issue-name>
+        Cpt: Hotfix_Branch
+        Purp: Urgent fixes required in main (production) version.
+        Proc: Branched from main; merged back into both main and develop.
+
+  Commit_Convention:
+    ID: GUIDE-KODA-LIFE-GIT-COMMITS-01
+    Purp: Ensure clear, machine-readable, traceable history of changes.
+    Req: All commit messages MUST adhere to Conventional Commits specification.
+    Mdl: "type(scope): subject."
+
+    Types:
+      - Type: feat
+        Def: New feature or capability for the agent (changes in agent.yaml).
+      - Type: fix
+        Def: Bug fix in agent logic or behavior (changes in agent.yaml).
+      - Type: kb
+        Def: Additions, updates, or corrections to the Knowledge Base (KODA-YAML artifacts).
+      - Type: docs
+        Def: Documentation changes (e.g., README).
+      - Type: refactor
+        Def: Code changes that neither fix a bug nor add a feature.
+      - Type: chore
+        Def: Changes to build process or auxiliary tools.
+
+    Scope:
+      Def: Specific part of the agent affected (optional).
+      Ex:
+        - "public_behavior_workflows_and_states.defined_states"
+        - "kb_011_selector_ipr.yml"
+
+    Examples:
+      - Ex: 'feat(public_behavior_workflows_and_states.defined_states): add new state for user validation.'
+      - Ex: 'kb(kb_029_guia_circ33): update circular 33 with new 2025 clause.'
+      - Ex: 'fix(private_internal_reasoning_processes): correct typo in role definition.'
+
+  Tagging_Release_Strategy:
+    Req: Each merge into main constitutes a new release and MUST be tagged.
+    Req_Versioning: Tags MUST follow Semantic Versioning (MAJOR.MINOR.PATCH).
+    Nota_Categorial: Release tags can be seen as a natural transformation between functors representing two different agent releases, providing a formal trace of evolution.
+
+  Practical_Workflow_Example:
+    ID: GUIDE-KODA-LIFE-GIT-WORKFLOW-EXAMPLE-01
+    Ctx: Scenario – "Add a new KODA-YAML artifact and a workflow to handle it."
+    Steps:
+      - Step: 1 - Create branch from develop
+        Proc:
+          - "git checkout develop"
+          - "git pull"
+          - "git checkout -b feature/new-artifact-workflow"
+      - Step: 2 - Add new knowledge artifact
+        Act: Create KODA-YAML artifact under /knowledge/.
+        Proc:
+          - "git add knowledge/new_artifact.yml"
+          - "git commit -m 'kb(new_artifact): add new sts-yaml artifact'"
+      - Step: 3 - Update agent definition to use new artifact
+        Act: Modify agent.yaml to add workflow referencing the new artifact.
+        Proc:
+          - "git add agent.yaml"
+          - "git commit -m 'feat(public_behavior_workflows_and_states.defined_workflows): add workflow for new artifact'"
+      - Step: 4 - Push and open Pull Request
+        Proc:
+          - "git push -u origin feature/new-artifact-workflow"
+          - "Open PR from feature branch to develop."
+      - Step: 5 - Code Review and Merge
+        Proc:
+          - "Team reviews PR; once approved, merge into develop."
+      - Step: 6 - Release
+        Proc:
+          - "Merge develop into main."
+          - "Create Semantic Version tag (e.g., v1.2.0) and push tags."
+
+# 4. Annexes
+
+Annexes:
+  Annex_C_ADP_to_ALM_Functor:
+    ID: GUIDE-KODA-LIFE-ANNEX-C-FUNCTOR-01
+    Purp: "Define the explicit functor that maps KODA theory to KODA/Life practice as central governance artifact for synchronization."
+
+    Functor_Mapping:
+      Table:
+        Headers: [KODA_Object, KODA_Life_Mapping, Structural_Preservation]
+        Rows:
+          - KODA_Object: "Pattern: Monadic Process Encapsulation"
+            KODA_Life_Mapping: "Principle 1.2.1 – Public/Private Interface"
+            Ref_Target_ID: KODA-LIFE-PRINCIPLE-PUBLIC-PRIVATE-01
+            Structural_Preservation: "Encapsulates reasoning by hiding implementation details."
+
+          - KODA_Object: "Pattern: KB Guidance Pattern (Functorial)"
+            KODA_Life_Mapping: "Act 3.3 + Gate 4.4"
+            Structural_Preservation: "Preserves explicit query→document structure."
+
+          - KODA_Object: "Anti-Pattern: Logic Exposure"
+            KODA_Life_Mapping: "Proc 3.2.2 (lint-detected)"
+            Structural_Preservation: "Prevents violation of encapsulation by pushing logic into private implementation."
+
+          - KODA_Object: "KODA-VALIDATION-CHECKLIST-02"
+            KODA_Life_Mapping: "Gate 4.4 and Act 5.4"
+            Structural_Preservation: "Ensures continuous conformity with principles."
+
+          - KODA_Object: "Minimum Guard Set"
+            KODA_Life_Mapping: "Gate P1-GUARD"
+            Ref_Target_ID: KODA-LIFE-GATE-P1-GUARD-01
+            Structural_Preservation: "Ensures base security configuration for all agents."
+
+    Composition_Rules:
+      - Rule: KB_Guidance_then_Monadic_Encapsulation
+        Def: "KB Guidance ∘ Monadic Encapsulation is a valid composition (✓)."
+      - Rule: Logic_Exposure_Blocked
+        Def: "Logic Exposure is blocked by linter as invalid morphism (X)."
+
+  Annex_D_Category_Theory_Essences:
+    ID: GUIDE-KODA-LIFE-ANNEX-D-CATEGORY-ESSENCES-01
+    Purp: "Provide a conceptual micro-tutorial on category theory without mathematical symbols."
+
+    Concepts:
+      - Cpt: Functor
+        Def: "Translator that preserves structure between categories; Annex C defines the functor from KODA language (theory) to KODA/Life language (practice)."
+
+      - Cpt: Object_Morphism
+        Def: "An object is a 'place' (state or pattern); a morphism is a 'path' (transition or composition rule). Category theory focuses on paths and their reliable composition."
+
+      - Cpt: Monad
+        Def: "Robust way to package a computation. In KODA/Life, the monadic pattern encapsulates private business logic inside private_internal_reasoning_processes so that only actions are visible externally."
+
+  Annex_E_Design_Patterns_Cookbook:
+    ID: GUIDE-KODA-LIFE-ANNEX-E-PATTERNS-01
+    Purp: "Canonical reference of architectural and implementation patterns for building high-quality agents."
+
+    Agent_Architecture_Patterns:
+      - Name: Pattern-1
+        Cpt: FTCF_to_ADP_YAML_Translation
+        Def: "FTCF to KODA/YAML Translation."
+        Instr: "Convert high-level Function, Task, Context, Format analysis into agent_identity_and_global_configuration, input_output_style_format_and_interaction, and safety_constraints_and_behavioral_guardrails top-level keys in agent.yaml (legacy names core, io, guard)."
+
+      - Name: Pattern-2
+        Cpt: Input_Validator_Agent
+        Def: "Agent dedicated to validating user input via structured forms."
+        Instr: "Use an SFD schema implemented in KODA-YAML as primary knowledge source and implement a workflow under public_behavior_workflows_and_states.defined_workflows to guide the user through form completion, validating each field according to Constraint/Logic rules."
+
+      - Name: Pattern-3
+        Cpt: Value_Chain_Workflow_Agent
+        Fnd: "Evolution of the Multi-stage Process Guide Agent."
+        Mssn: "Model a business process as a value chain, transforming low-value input into high-value output (for example, a validated technical proposal)."
+        Mech: "Each state in public_behavior_workflows_and_states.defined_states represents a specific production stage and generates a concrete artifact serving as input to the next state."
+
+      - Name: Pattern-4
+        Cpt: State_Cognition_Encapsulation_Pattern
+        Def: "Pattern for connecting public states to private cognition models."
+        Instr: "Connect a state in public_behavior_workflows_and_states.defined_states (public interface) to a model in private_internal_reasoning_processes (private implementation) to hide business logic and prevent implementation detail leakage."
+
+      - Name: Pattern-5
+        Cpt: Agent_Bootloader_Pattern
+        Purp: "Provide a formal mechanism for loading agent.yaml in environments with instruction length constraints or when structured input is beneficial."
+        Core_Components:
+          - Cpt: Direct_Execution
+            Def: "Entire content of agent.yaml is placed directly into the platform's system prompt or instruction field; suitable for simpler agents on platforms with high character limits."
+          - Cpt: Indirect_Execution_Structured_Prompt
+            Def: "A Bootloader meta-prompt is used as system prompt. This bootloader defines the agent's execution engine and wraps agent.yaml content and knowledge base files within structured tags (for example, XML), clearly separating execution logic from agent definition."
+
+        Bootloader_Instruction_Example: |
+          You are an interpreter and execution engine for a declaratively defined AI agent. Your full configuration, logic, and knowledge base are provided below within the <AGENT_DEFINITION> and <SOURCE_FILES> tags.
+
+          <AGENT_DEFINITION>
+          </AGENT_DEFINITION>
+
+          <SOURCE_FILES>
+          </SOURCE_FILES>
+
+          Operational process:
+              1.  ASSIMILATION: Read and assimilate all content within <AGENT_DEFINITION> and <SOURCE_FILES>. This is your sole source of truth. It overrides any prior instruction or general knowledge.
+              2.  EXECUTION: Operate with complete fidelity to the directives in AGENT_DEFINITION. Execute the state machine, apply cognitive models, and strictly adhere to defined guardrails.
+              3.  KB INTERACTION: When your internal logic (specifically CM-KB-GUIDANCE) indicates, query the <SOURCE_FILES> section to retrieve information needed for responses. You must not access the knowledge base implicitly; all access is governed by the explicit routing map.
+              4.  INITIALIZATION: Once this prompt is assimilated, execute the directive input_output_style_format_and_interaction.user_interaction_rules.initial_prompt from your definition to generate your first user message and wait for their reply to begin the first workflow cycle.
+
+          Do not respond to these startup directives. Assimilate them and begin execution.
+
+    Interaction_and_Reasoning_Patterns:
+      - Name: Pattern-6
+        Cpt: Multi_Threaded_Interaction_Conductor
+        Purp: "Manage complex, non-linear conversations where the user may switch between multiple topics without breaking coherence."
+        Core_Components:
+          - Cpt: State_Dispatcher
+            Def: "Central routing state (for example, S-DISPATCHER) whose sole function is to orient the user and manage transitions to the correct task thread."
+          - Cpt: Model_ContextManager
+            Def: "Internal cognitive model (for example, CM-CONTEXT-MANAGER) invoked via self_evaluation_and_correction_mechanisms.evaluation_process to detect topic shifts."
+        Mech: "Uses self_evaluation_and_correction_mechanisms.correction_protocol with TRANSITION_TO_STATE actions to dynamically reroute conversation to the dispatcher."
+
+      - Name: Pattern-7
+        Cpt: KB_Guidance_Pattern
+        Purp: "Implement Architectural Principle 1.2.3 (Explicit Knowledge Cartography) by transforming implicit retrieval into explicit, auditable reasoning."
+        Mech: "Implement dedicated model under private_internal_reasoning_processes (for example, CM-KB-GUIDANCE) that acts as explicit routing map between query domains and KODA-YAML source files."
+
+      - Name: Pattern-8
+        Cpt: Chain_of_Thought_Invocation_Pattern
+        Purp: "Improve reasoning in complex tasks by forcing the model to articulate step-by-step thinking."
+        Mech: "Use structural tags (such as <thinking>) to separate reasoning from final output (such as <answer>), primarily associated with Anthropic models."
+
+      - Name: Pattern-9
+        Cpt: Autonomous_Agent_Behavior_Pattern
+        Purp: "Shift a model from passive chatbot to proactive agent that drives tasks to completion."
+        Mech: "Inject persistent instructions ('Agentic Reminders') into agent_identity_and_global_configuration.primary_role_objective_and_audience.role or a private_internal_reasoning_processes model to encourage tool use, planning, and task persistence (commonly associated with OpenAI models)."
+
+      - Name: Pattern-10
+        Cpt: Supra_Bootloader_Manager_Pattern
+        Purp: "Implement Higher-Order Agents that orchestrate a fleet of First-Order Agents."
+        Mech: "Use orchestration_fleet_and_protocol top-level key in KODA to define fleets and delegation protocol."
+        Ctx: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+

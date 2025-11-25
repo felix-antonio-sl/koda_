@@ -1,0 +1,542 @@
+# KODA/Spec Transformation Methodology v1.0
+# Prescriptive process for converting documents to KODA format
+# Companion to KODA Specification
+
+_manifest:
+  urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/core/guide_core_002_koda-transform_sts.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+        reason: "Format specification this methodology implements"
+  provenance:
+    created_by: "FS"
+    created_at: "2025-11-21"
+    last_modified_by: "FS"
+    last_modified_at: "2025-11-25"
+    signature: null
+
+ID: KODA-TRANSFORM-01
+Version: 1.0.0
+Status: Published
+Human-Creator: FS
+Human-Editor: FS
+Model-Collaborator: IA-GEMINI
+Creation-Date: 2025-11-21
+Modification-Date: 2025-11-21
+Source: GUIDE-KODA-MASTER-01
+Ctx: Prescriptive methodology for KODA transformation
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Purp: Guide for transforming verbose human documents into token-efficient, structured KODA artifacts with zero information loss.
+
+Obj: Achieve 30-50% token reduction through telegrafization and intensive internal referencing.
+
+# 1. Transformation Overview
+
+Transformation:
+  ID: TRANSFORM-OVERVIEW
+  Def: Process of converting human-readable prose into RAG-optimized KODA format.
+
+  Input: Human document (prose, verbose, redundant)
+  Output: KODA artifact (telegraphic, structured, deduplicated)
+
+  Key_Metrics:
+    - Token_Reduction: 30-50% fewer tokens
+    - Information_Preservation: 100% fidelity (zero loss)
+    - Structure_Enhancement: YAML-compliant, keyword-marked, cross-referenced
+
+  Success_Criteria:
+    - All original facts present
+    - No redundant content (Ref used for repetitions)
+    - LLM can retrieve via RAG with high precision
+    - Passes validation checklist
+
+# 2. Four-Phase Transformation Process
+
+## Phase 1: Analysis (Meat vs Fat Identification)
+
+Phase1_Analysis:
+  ID: PHASE-ANALYSIS
+  Obj: Identify informational meat vs stylistic fat.
+
+  Steps:
+    - Step: Read source document thoroughly
+      Obj: Understand complete information landscape.
+
+    - Step: Mark meat (essential information)
+      Def: Facts, data, requirements, definitions, examples, relationships.
+      Mark: Highlight or tag as KEEP.
+
+    - Step: Mark fat (non-essential verbiage)
+      Def: Filler words, rhetorical flourishes, redundant phrasings.
+      Examples:
+        - "It is important to note that..."
+        - "One might consider..."
+        - "As previously mentioned..."
+      Mark: Highlight or tag as REMOVE.
+
+    - Step: Mark structure (skeleton)
+      Def: Hierarchical organization, sequence, groupings, relationships.
+      Mark: Highlight as PRESERVE STRUCTURE.
+      Note: Structure is meat, not presentation.
+
+  Output: Annotated source with meat/fat/structure identified.
+
+## Phase 2: Telegrafization (Verbal Condensation)
+
+Phase2_Telegrafization:
+  ID: PHASE-TELEGRAFIZE
+  Obj: Transform prose into telegraphic style with keyword markup.
+  Ctx: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+
+  Steps:
+    - Step: Initialize Artifact Structure
+      Act: Create Metadata Block and Insert Mandatory Instructions.
+      Src: Copy Standard_Template from KODA-YAML-SPEC-01 (LLM_Parsing_Instructions).
+      Req: Must be verbatim copy.
+
+    - Step: Remove fat
+      Act: Delete all non-essential verbiage.
+      Preserv: ALL meat content.
+
+    - Step: Convert to keyword markup
+      Proc:
+        - Identify semantic intent of each sentence
+        - Select appropriate KODA keyword
+        - Rewrite as "Keyword: EssentialContent"
+
+      Examples:
+        - Original: "The purpose of this system is to manage user authentication."
+          Telegraphic: "Purp: Manage user authentication."
+        - Original: "It is absolutely required that all data be validated before processing."
+          Telegraphic: "Req: Validate all data before processing."
+        - Original: "This is just a recommendation, but you might want to consider using caching."
+          Telegraphic: "Rec: Use caching."
+
+      Heuristic:
+        - "Is it a logical operator/core structure? -> Use Tier 1 (Cond, Act, Ref, Def, Req)."
+        - "Is it a domain-specific container/attribute? -> Use Tier 2 (Semantic Key)."
+      Ex_Tier1: "Cond: User is logged in (Logic)"
+      Ex_Tier2: "Symptoms: Fever, Cough (Domain Attribute)"
+      Prohib: "Generic wrappers like 'Cat: Symptoms' or 'Type: Formal' when a specific key exists."
+      Goal: Maximize readability and semantic density.
+
+    - Step: Eliminate redundant phrasing
+      Examples:
+        - 'Eliminate "in order to"'
+        - 'Eliminate "it should be noted that"'
+        - 'Convert "with regard to" to "regarding" or eliminate'
+
+    - Step: Preserve all data points
+      Warn: Do NOT summarize or combine distinct facts.
+      Example_Wrong: '"The system has 3 modes: A, B, C" (summarizes distinct items)'
+      Example_Right:
+        Modes:
+          - Mode: A
+            Def: ...
+          - Mode: B
+            Def: ...
+          - Mode: C
+            Def: ...
+
+  Output: Telegraphic content with keyword markup, zero fat, 100% meat.
+
+## Phase 3: Deduplication (INTENSIVE Ref Usage)
+
+Phase3_Deduplication:
+  ID: PHASE-DEDUPLICATE
+  Obj: Eliminate ALL redundancy through internal cross-referencing.
+  Criticality: This is the PRIMARY mechanism for token reduction.
+
+  Strategy:
+    - Identify all concepts/definitions that appear multiple times
+    - Define each concept ONCE with unique ID
+    - Replace all other occurrences with Ref
+    - Intensive_Referencing_Rule: If a concept is mentioned more than once, it MUST be defined and referenced. No exceptions.
+
+  Steps:
+    - Step: Scan for redundancy
+      Look_For:
+        - Repeated definitions
+        - Repeated requirements
+        - Repeated examples
+        - Repeated data points
+
+    - Step: Create definition registry
+      Proc:
+        - For each unique concept, create entry with:
+            - ID: UNIQUE-IDENTIFIER
+            - Def: [or Req, Ex, etc.]
+        - Store in Definitions section
+
+    - Step: Replace with references
+      Proc:
+        - Find all occurrences of same concept
+        - Keep FIRST occurrence with full definition + ID
+        - Replace all other occurrences with:
+
+          Ref: UNIQUE-IDENTIFIER
+
+  Example_Comparison: |
+    BEFORE (redundant, ~200 tokens):
+    Section_Authentication:
+      Def: Authentication is the process of verifying user identity.
+      Req: All users must authenticate before access.
+
+    Section_Authorization:
+      Def: Authentication is the process of verifying user identity.
+      Note: Must happen before authorization.
+
+    Section_Audit:
+      Principle: Authentication is the process of verifying user identity.
+
+    AFTER (deduplicated, ~120 tokens):
+    Definitions:
+      - ID: DEF-AUTHENTICATION
+        Def: Authentication is process of verifying user identity.
+
+    Section_Authentication:
+      Ref: DEF-AUTHENTICATION
+      Req: All users must authenticate before access.
+
+    Section_Authorization:
+      Ref: DEF-AUTHENTICATION
+      Note: Must happen before authorization.
+
+    Section_Audit:
+      Principle:
+        Ref: DEF-AUTHENTICATION
+
+  Advanced_Techniques:
+    - Technique: Nested references
+      Desc: References can themselves reference other entries.
+      Use: For building complex definitions from simpler components.
+
+    - Technique: Partial references
+      Desc: Reference main concept, add specific context.
+      Example:
+        Validation_Rule:
+          Ref: DEF-VALIDATION # Main concept
+          Context: Applied to user input only # Specific detail
+
+    - Technique: Reference chains
+      Desc: Trace concepts through multiple levels.
+      Benefit: Creates knowledge graph structure.
+
+  Output: Artifact with single source of truth for each concept, minimal redundancy.
+
+## Phase 4: Validation (Quality Assurance)
+
+Phase4_Validation:
+  ID: PHASE-VALIDATE
+  Obj: Verify artifact quality before delivery.
+  Req: Use checklist systematically.
+
+  Validation_Checklist:
+    - Check: YAML syntax valid
+      Test: Parse with YAML parser
+      Tool: yamllint or python yaml.safe_load()
+      Pass_Criteria: No syntax errors
+
+    - Check: Metadata block complete
+      Fields_Required:
+        [
+          Version,
+          Status,
+          Human-Creator,
+          Human-Editor,
+          Model-Collaborator,
+          Creation-Date,
+          Modification-Date,
+          Ctx,
+        ]
+      Pass_Criteria: All fields present
+
+    - Check: Mandatory Instructions Block
+      Req: Must follow Metadata Block immediately
+      Content: Standard LLM Parsing Instructions
+      Pass_Criteria: Block present and correct
+
+    - Check: Keywords from official lexicon
+      Test: Scan all keys, verify against KODA lexicon
+      Ctx: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+      Pass_Criteria: No invalid keywords
+
+    - Check: Unique IDs
+      Test: Extract all ID values, check for duplicates
+      Pass_Criteria: All IDs unique within artifact
+
+    - Check: Valid references
+      Test: Extract all Ref values, verify target IDs exist
+      Pass_Criteria: No broken references
+
+    - Check: Information completeness (FIDELITY)
+      Test: Manual comparison with source document
+      Method:
+        - Extract all facts from source
+        - Verify each fact present in KODA artifact
+        - Check that no facts were summarized or omitted
+      Pass_Criteria: 100% of source facts present
+
+    - Check: Zero redundancy
+      Test: Search for duplicate definitions/data
+      Method:
+        - Find concepts that could share ID+Ref
+        - Verify all repetitions use Ref
+      Pass_Criteria: No duplicate content (except where semantically distinct)
+
+    - Check: Token efficiency
+      Test: Count tokens (source vs artifact)
+      Tool: LLM tokenizer (e.g., tiktoken for GPT)
+      Pass_Criteria: 30-50% token reduction
+      Formula: (1 - artifact_tokens/source_tokens) * 100 >= 30%
+
+    - Check: Structure preserved
+      Test: Verify hierarchies, tables, lists maintained
+      Pass_Criteria: All structural relationships intact
+
+  Failure_Response:
+    - If_Fidelity_Failed:
+        Act: Return to Phase 1, identify missing meat
+
+    - If_Redundancy_Found:
+        Act: Return to Phase 3, intensify Ref usage
+
+    - If_Token_Target_Not_Met:
+        Act: Review for remaining fat, increase telegrafization
+        Note: Do NOT sacrifice fidelity for token count
+
+    - If_Reference_Density_Low:
+        Act: Return to Phase 3 (Deduplication).
+        Instr: Intent creation of new abstract definitions and replace occurrences.
+        Note: Do NOT sacrifice fidelity for token count
+
+  Output: Validated, deployment-ready KODA artifact.
+
+# 3. Common Transformation Patterns
+
+Patterns:
+  - Pattern: Prose paragraph to keyword list
+    Before: "The system must be secure, scalable, and maintainable. These are core requirements."
+    After: |
+      Req: Secure
+      Req: Scalable
+      Req: Maintainable
+
+    Token_Savings: ~40%
+
+  - Pattern: Narrative explanation to definition
+    Before: "Authentication is fundamentally about making sure that the person trying to access the system is actually who they claim to be."
+    After: "Def: Authentication verifies user identity claims."
+    Token_Savings: ~60%
+
+  - Pattern: Repeated concept to Ref
+    Before: "Step 1 requires data validation. Step 2 also requires data validation. Step 3 performs data validation on outputs."
+    After:
+      Definitions:
+        - ID: PROC-VALIDATION
+          Def: Data validation
+
+      Step_1:
+        Req:
+          Ref: PROC-VALIDATION
+      Step_2:
+        Req:
+          Ref: PROC-VALIDATION
+      Step_3:
+        Act:
+          Ref: PROC-VALIDATION
+          Context: On outputs
+
+    Token_Savings: ~50%
+
+  - Pattern: Verbose table to structured table
+    Before: Prose descriptions of multi-column data
+    After: YAML table or list of structured objects
+    Structure:
+      Table:
+        Headers: [Column1, Column2, Column3]
+        Rows:
+          - [Value1A, Value1B, Value1C]
+          - [Value2A, Value2B, Value2C]
+
+    Benefit: Preserves relationships, reduces verbiage
+
+# 4. Anti-Patterns (Avoid These)
+
+Anti_Patterns:
+  - Anti_Pattern: Summarizing distinct facts
+    Wrong: 'Summarizing: "The system has various security features"'
+    Right: List all 5 features individually with keyword markup
+    Why_Wrong: Information loss (violates fidelity principle)
+
+  - Anti_Pattern: Not using Ref for repetitions
+    Wrong: Copy-paste same definition in multiple sections
+    Right: Define once with ID, use Ref elsewhere
+    Why_Wrong: Token waste, redundancy
+
+  - Anti_Pattern: Using external references
+    Wrong: "Using external reference: Ref EXTERNAL-DOC-ID"
+    Right: "Ctx: See EXTERNAL-DOC-ID for related info"
+    Why_Wrong: Ref is for internal cross-references only
+
+  - Anti_Pattern: Overly aggressive telegrafization
+    Wrong: 'Too terse: "Req: Auth" loses meaning'
+    Right: "Req: User authentication required before access"
+    Why_Wrong: Ambiguity introduced, information effectively lost
+
+  - Anti_Pattern: Losing structure
+    Wrong: Flatten hierarchical info into flat list
+    Right: Preserve nesting with YAML structure
+    Why_Wrong: Structure is meat (semantic meaning lost)
+
+# 5. Token Reduction Techniques
+
+Token_Optimization:
+  - Technique: Eliminate filler phrases
+    Examples:
+      - 'Eliminate: "It is important to note"'
+      - 'Eliminate: "As mentioned previously"'
+      - 'Eliminate: "In other words"'
+      - 'Eliminate: "Basically"'
+    Impact: 5-10% reduction
+
+  - Technique: Use abbreviations (keywords)
+    Instead_Of: "Requirement:"
+    Use: "Req:"
+    Impact: 10-15% reduction
+
+  - Technique: Remove redundant modifiers
+    Examples:
+      - 'Replace "absolutely essential" with "essential"'
+      - 'Replace "completely unique" with "unique"'
+      - 'Replace "very important" with "important" or use Warn/Req'
+    Impact: 5% reduction
+
+  - Technique: Intensive Ref usage
+    Impact: 20-30% reduction (highest impact)
+    Ref: PHASE-DEDUPLICATE
+
+  - Technique: Telegraphic sentence structure
+    Example:
+      Before: "The user is required to enter their password."
+      After: "Req: User enters password."
+    Impact: 10-15% reduction
+
+# 6. Quality Metrics
+
+Quality_Metrics:
+  - Metric: Token Efficiency Ratio (TER)
+    Formula: TER = (source_tokens - artifact_tokens) / source_tokens
+    Target: TER >= 0.30 (30% reduction)
+    Excellent: TER >= 0.50 (50% reduction)
+
+  - Metric: Fidelity Score (FS)
+    Formula: FS = (preserved_facts / source_facts) * 100
+    Target: FS = 100% (zero information loss)
+    Prohib: FS < 100%
+
+  - Metric: Reference Density (RD)
+    Formula: RD = (Ref_usages / total_definitions)
+    Target: RD >= 2.0 (each definition referenced at least twice)
+    Note: Higher RD indicates better deduplication
+
+  - Metric: Structural Integrity (SI)
+    Assessment: Manual verification
+    Criteria:
+      - All hierarchies preserved
+      - All tables intact
+      - All list orderings maintained
+    Target: SI = 100%
+
+# 7. Example Transformations
+
+Examples:
+  - Example: Prose paragraph to KODA
+    Source: |
+      "The authentication system is designed to ensure that users are who they claim to be. It's really important that we validate credentials before granting access. The system must support multiple authentication methods including passwords, biometrics, and two-factor authentication."
+
+    Source_Tokens: 52
+
+    KODA_Artifact: |
+      Auth_System:
+        Purp: Ensure user identity validation
+        Req: Validate credentials before access grant
+        Methods:
+          - Password
+          - Biometrics
+          - Two-factor authentication
+
+    Artifact_Tokens: 28
+    TER: 46% reduction
+    FS: 100%
+
+  - Example: Repeated concept deduplication
+    Source: |
+      "Section 1: Data validation is critical. We must validate all inputs.
+      Section 2: Data validation must be performed on user submissions.
+      Section 3: Before processing, apply data validation rules."
+
+    Source_Tokens: 36
+
+    KODA_Artifact: |
+      Definitions:
+        - ID: PROC-DATA-VALIDATION
+          Def: Validate all inputs
+
+      Section_1:
+        Criticality:
+          Ref: PROC-DATA-VALIDATION
+      Section_2:
+        Req:
+          Ref: PROC-DATA-VALIDATION
+          Context: On user submissions
+      Section_3:
+        Req:
+          Ref: PROC-DATA-VALIDATION
+          Timing: Before processing
+
+    Artifact_Tokens: 24
+    TER: 33% reduction
+    FS: 100%
+    RD: 3.0
+
+# 8. Workflow Summary
+
+Workflow:
+  Steps:
+    - "Analyze: Identify meat vs fat"
+    - "Telegrafize: Remove fat, apply keyword markup"
+    - "Deduplicate: Intensive Ref usage for ALL repetitions"
+    - "Validate: Checklist verification before delivery"
+
+  Critical_Success_Factors:
+    - Zero information loss (100% fidelity)
+    - Aggressive deduplication (high Ref density)
+    - Preserve structure (hierarchy, tables, lists)
+    - Achieve token target (30-50% reduction)
