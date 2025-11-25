@@ -3,7 +3,7 @@
 # Federated, Cross-Repository Knowledge Management
 
 _manifest:
-  urn: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
+  urn: "urn:knowledge:koda:core:hub:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,9 +15,9 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
+      - urn: "urn:knowledge:koda:core:life:1.0.0"
         reason: "Agent lifecycle integration"
-      - urn: "urn:knowledge:sanixai:core:koda-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
         reason: "Structural format specification"
   provenance:
     created_by: "FS"
@@ -86,7 +86,7 @@ Philosophy:
     - ID: PRINCIPLE-KODA-LIFE-INTEGRATION
       Name: KODA/Life Integration
       Def: Implements knowledge layer of KODA/Life framework.
-      Ctx: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
+      Ctx: "urn:knowledge:koda:core:life:1.0.0"
 
     - ID: PRINCIPLE-FEDERATION
       Name: Federated Addressability
@@ -116,13 +116,13 @@ URN_Scheme:
   Components:
     - Component: namespace
       Def: Organization publishing artifact.
-      Ex: sanixai, gorenuble, fxsl
+      Ex: koda, sanixai, gorenuble, fxsl
     - Component: domain
       Def: Thematic domain.
       Ex: core, agents, procurement
     - Component: artifact-id
       Def: Unique ID in kebab-case.
-      Ex: koda-hub-master, circular-33
+      Ex: spec, hub, transform, circular-33
     - Component: version
       Def: Semantic version or latest/stable.
 
@@ -131,23 +131,36 @@ URN_Scheme:
     Purp: Registry of official KODA ecosystem namespaces.
     
     Registry:
-      - Namespace: sanixai
-        Owner: "SANIXAI"
-        Type: "Profesional/Comercial"
-        Scope: "Framework KODA, productos comerciales, agentes oficiales"
-        Repository: "github.com/sanixai/KODA"
+      - Namespace: koda
+        Owner: "KODA Framework (Open Source)"
+        Type: "Framework/Base"
+        Scope: "Framework KODA - base para todos los demás namespaces"
+        Repository: "github.com/koda-framework/koda"
+        Path: "~/Developer/koda/"
         License: "CC-BY-4.0"
         Domains:
-          - core: "Framework KODA (spec, transform, hub, life, agent, test)"
-          - agents: "Agentes oficiales KODA"
-          - products: "Productos comerciales"
-          - templates: "Templates reutilizables"
+          - core: "Especificaciones (spec, transform, hub, life, agent, test)"
+          - agents: "Agentes oficiales del framework"
+
+      - Namespace: sanixai
+        Owner: "SANIXAI"
+        Type: "Comercial/Profesional"
+        Scope: "Productos comerciales, proyectos clientes, agentes comerciales"
+        Repository: "github.com/sanixai/knowledge-hub"
+        Path: "~/Developer/sanixai/"
+        License: "Proprietary"
+        Domains:
+          - products: "Documentación de productos"
+          - clients: "Conocimiento específico de clientes"
+          - internal: "Procesos internos SANIXAI"
+          - agents: "Agentes comerciales"
 
       - Namespace: gorenuble
         Owner: "Gobierno Regional de Ñuble"
         Type: "Institucional/Público"
         Scope: "Conocimiento institucional GORE Ñuble"
-        Repository: "github.com/gore-nuble/knowledge-hub"
+        Repository: "github.com/gorenuble/knowledge-hub"
+        Path: "~/Developer/gorenuble/knowledge-hub/"
         License: "Uso institucional"
         Domains:
           - normativa: "Leyes, circulares, reglamentos"
@@ -160,6 +173,7 @@ URN_Scheme:
         Type: "Privado/Personal"
         Scope: "Proyectos personales, experimentación, aprendizaje"
         Repository: "github.com/fxsl/private-kb (privado)"
+        Path: "~/Developer/fxsl/private-kb/"
         License: "Propietario"
         Domains:
           - experiments: "Experimentos y prototipos"
@@ -167,7 +181,7 @@ URN_Scheme:
           - personal: "Proyectos personales"
 
   Examples:
-    - "urn:knowledge:sanixai:core:koda-hub-master:2.0.0"
+    - "urn:knowledge:koda:core:hub:2.0.0"
     - "urn:knowledge:gorenuble:normativa:circular-33:1.0.0"
     - "urn:knowledge:fxsl:experiments:llm-testing:0.1.0"
 
@@ -427,35 +441,47 @@ Resolver:
     ID: GUIDE-KODA-HUB-MULTI-REPO-01
     Purp: Federated knowledge across multiple Git repositories.
     
-    Pattern: Organization-Based Directory Structure
-    Def: Group repositories by organization under ~/Developer/.
+    Pattern: Namespace-Based Directory Structure
+    Def: Each namespace is a sibling directory under ~/Developer/.
     Layout: |
       ~/Developer/
-      ├── sanixai/                   # SANIXAI organization
-      │   ├── KODA/                  # Framework (this repo)
-      │   ├── products/              # Commercial products
-      │   └── clients/               # Client projects
-      ├── gorenuble/                 # GORE Ñuble organization
-      │   └── knowledge-hub/         # Institutional KB
-      └── fxsl/                      # Personal organization
-          └── private-kb/            # Experiments & learning
+      ├── koda/                      # namespace: koda (framework base)
+      │   ├── knowledge/core/        # Especificaciones del framework
+      │   ├── agents/                # Agentes oficiales
+      │   └── schemas/               # JSON Schemas
+      ├── sanixai/                   # namespace: sanixai (comercial)
+      │   ├── knowledge/
+      │   │   ├── products/          # Documentación productos
+      │   │   ├── clients/           # Conocimiento clientes
+      │   │   └── internal/          # Procesos internos
+      │   └── agents/                # Agentes comerciales
+      ├── gorenuble/                 # namespace: gorenuble
+      │   └── knowledge-hub/         # KB institucional GORE
+      └── fxsl/                      # namespace: fxsl
+          └── private-kb/            # Experimentos personales
     
     Resolver_Config: |
       namespaces:
-        sanixai:
+        koda:
           type: local
           base_path: "./"
-          description: "SANIXAI - KODA Framework y productos comerciales"
+          description: "KODA Framework"
+        
+        sanixai:
+          type: local
+          base_path: "../sanixai/"
+          fallback: "https://raw.githubusercontent.com/sanixai/knowledge-hub/main/"
+          description: "SANIXAI - Productos comerciales"
         
         gorenuble:
           type: local
-          base_path: "../../gorenuble/knowledge-hub/"
+          base_path: "../gorenuble/knowledge-hub/"
           fallback: "https://raw.githubusercontent.com/gorenuble/knowledge-hub/main/"
           description: "Gobierno Regional de Ñuble"
         
         fxsl:
           type: local
-          base_path: "../../fxsl/private-kb/"
+          base_path: "../fxsl/private-kb/"
           fallback: "https://raw.githubusercontent.com/fxsl/private-kb/main/"
           description: "FXSL - Proyectos personales"
     
@@ -500,11 +526,11 @@ Agent_Composition:
         RESOLUTION_MODE: graceful
         SOURCE_ARTIFACTS:
           - path: "knowledge/domains/gn/kb_gn_001.yml"  # Local
-          - urn: "urn:knowledge:sanixai:core:koda-life-master:latest"  # Federated
+          - urn: "urn:knowledge:koda:core:life:latest"  # Federated
             required: true
           - urn: "urn:knowledge:external:legal:gdpr:2.0.0"  # Cross-repo
             cache_ttl: 604800
-          - urn: "urn:knowledge:sanixai:procurement:circular-33:1.0.0"
+          - urn: "urn:knowledge:gorenuble:procurement:circular-33:1.0.0"
             local_override: "./staging/circular-33-wip.yml"  # Dev override
 
 # =============================================================================

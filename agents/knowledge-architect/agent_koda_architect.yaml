@@ -4,7 +4,7 @@
 ---
 
 _manifest:
-  urn: "urn:knowledge:sanixai:agents:koda-architect:1.0.0"
+  urn: "urn:knowledge:koda:agents:architect:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,20 +15,20 @@ _manifest:
     canonical_url: "file://agents/knowledge-architect/agent_koda_architect.yaml"
   dependencies:
     requires:
-      - urn: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
-      - urn: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-agent-construct:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:schema-versioning:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:quickstart:1.0.0"
+      - urn: "urn:knowledge:koda:core:spec:1.1.0"
+      - urn: "urn:knowledge:koda:core:transform:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub:1.0.0"
+      - urn: "urn:knowledge:koda:core:life:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
+      - urn: "urn:knowledge:koda:core:test:1.0.0"
+      - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
+      - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
   provenance:
     created_by: "FS"
     created_at: "2025-11-25"
     last_modified_at: "2025-11-25"
-    version_notes: "Added PRINCIPLE-NAMESPACE-ISOLATION, multi-repo architecture"
+    version_notes: "Migrated to koda namespace, simplified URNs (core:spec vs core:koda-spec)"
     model_collaborators: ["IA-CLAUDE", "IA-GEMINI"]
 
 KODA_Runtime_Instructions:
@@ -75,16 +75,16 @@ knowledge_base_interaction_and_governance_rules:
   usage_policy_and_source_management:
     policy: EXCLUSIVE_USE
     source_artifacts:
-      - urn: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
-      - urn: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-agent-construct:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:schema-versioning:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:quickstart:1.0.0"
-      - urn: "urn:knowledge:sanixai:core:koda-agent-schema:1.0.0"
+      - urn: "urn:knowledge:koda:core:spec:1.1.0"
+      - urn: "urn:knowledge:koda:core:transform:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub:1.0.0"
+      - urn: "urn:knowledge:koda:core:life:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
+      - urn: "urn:knowledge:koda:core:test:1.0.0"
+      - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
+      - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
   citation_formatting:
     style: OFFICIAL_SOURCE_NAME
@@ -188,25 +188,25 @@ private_internal_reasoning_processes:
     _meta: { expose: false }
     routing_map:
       - query_category: "Formato KODA/Spec, keywords, estructura YAML, principios de densidad"
-        route_to: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
+        route_to: "urn:knowledge:koda:core:spec:1.1.0"
       - query_category: "Transformar documentos, 4 fases, telegrafización, deduplicación, métricas TER/FS/RD"
-        route_to: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
+        route_to: "urn:knowledge:koda:core:transform:1.0.0"
       - query_category: "Knowledge Hub, URNs, manifiestos, catálogo, federación, directorios, namespaces, multi-repo, aislamiento"
-        route_to: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
+        route_to: "urn:knowledge:koda:core:hub:1.0.0"
       - query_category: "Ciclo de vida agentes, 5 fases KODA/Life, Git, patrones arquitectónicos"
-        route_to: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
+        route_to: "urn:knowledge:koda:core:life:1.0.0"
       - query_category: "Especificación KODA/Agent, 7 principios, namespaces, Guard Set, lexicon"
-        route_to: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
+        route_to: "urn:knowledge:koda:core:agent:1.0.0"
       - query_category: "Construir agentes, 5 fases construcción, anti-patrones, checklist validación"
-        route_to: "urn:knowledge:sanixai:core:koda-agent-construct:1.0.0"
+        route_to: "urn:knowledge:koda:core:agent-construct:1.0.0"
       - query_category: "Testing agentes, KODA/Test, pruebas adversariales, seguridad, regresión"
-        route_to: "urn:knowledge:sanixai:core:koda-test-spec:1.0.0"
+        route_to: "urn:knowledge:koda:core:test:1.0.0"
       - query_category: "Versionado schemas, compatibilidad, migración, breaking changes"
-        route_to: "urn:knowledge:sanixai:core:schema-versioning:1.0.0"
+        route_to: "urn:knowledge:koda:core:schema-versioning:1.0.0"
       - query_category: "Inicio rápido, primer agente, templates mínimos, errores comunes"
-        route_to: "urn:knowledge:sanixai:core:quickstart:1.0.0"
+        route_to: "urn:knowledge:koda:core:quickstart:1.0.0"
       - query_category: "Validación JSON Schema, estructura agent.yaml"
-        route_to: "urn:knowledge:sanixai:core:koda-agent-schema:1.0.0"
+        route_to: "urn:knowledge:koda:core:agent-schema:1.0.0"
 
   CM-INTENT-ANALYZER:
     _meta: { expose: false }
@@ -246,8 +246,8 @@ private_internal_reasoning_processes:
       - "DIRECTORIES: /knowledge/, /sources/, /staging/, /agents/"
       - "NAMING: {tipo}_{dominio}_{id-num}_{descripcion}_{formato}.yml"
       - "NAMESPACE_ISOLATION: 1 namespace = 1 repository = 1 organization"
-      - "MULTI_REPO: ~/Developer/{org}/{repo}/ with hybrid resolution (local + fallback)"
-      - "OFFICIAL_NAMESPACES: sanixai (KODA), gorenuble (GORE Ñuble), fxsl (personal)"
+      - "MULTI_REPO: ~/Developer/{namespace}/ with hybrid resolution (local + fallback)"
+      - "OFFICIAL_NAMESPACES: koda (framework base), sanixai (comercial), gorenuble (GORE), fxsl (personal)"
 
   CM-VALIDATION-ENGINE:
     _meta: { expose: false }
@@ -387,7 +387,7 @@ few_shot_behavior_examples:
       
       **Ejemplo:**
       ```
-      urn:knowledge:sanixai:core:koda-spec:1.1.0
+      urn:knowledge:koda:core:spec:1.1.0
       ```
       
       | Componente | Valor | Significado |

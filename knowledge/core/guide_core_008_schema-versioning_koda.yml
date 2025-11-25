@@ -3,7 +3,7 @@
 # Governance framework for KODA schema evolution
 
 _manifest:
-  urn: "urn:knowledge:sanixai:core:schema-versioning:1.0.0"
+  urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,9 +15,9 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
+      - urn: "urn:knowledge:koda:core:spec:1.1.0"
         reason: "Format specification"
-      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent:1.0.0"
         reason: "Agent definition schema"
   provenance:
     created_by: "FS"
@@ -162,7 +162,7 @@ Schema_Registry:
       Namespaces_Count: 7
       
   Schema_Files:
-    - URN: "urn:knowledge:sanixai:core:koda-agent-schema:1.0.0"
+    - URN: "urn:knowledge:koda:core:agent-schema:1.0.0"
       File: "schemas/koda-agent-schema-1.0.0.json"
       Format: "JSON Schema draft/2020-12"
 

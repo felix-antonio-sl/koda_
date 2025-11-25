@@ -3,7 +3,7 @@
 # Formal specification of KODA/Agent schema and semantics
 
 _manifest:
-  urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
+  urn: "urn:knowledge:koda:core:agent:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,9 +15,9 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:sanixai:core:koda-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
         reason: "Structural format specification"
-      - urn: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub:1.0.0"
         reason: "Knowledge federation model"
   provenance:
     created_by: "FS"
@@ -128,7 +128,7 @@ Principles:
       Def: Agent knowledge bases composed via URN references.
       Mech: source_artifacts with URN identifiers.
       Res: Cross-repository sharing without duplication.
-      Ctx: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
+      Ctx: "urn:knowledge:koda:core:hub:1.0.0"
 
 # =============================================================================
 # 3. YAML SCHEMA

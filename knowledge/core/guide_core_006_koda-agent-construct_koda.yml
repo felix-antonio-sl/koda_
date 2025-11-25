@@ -3,7 +3,7 @@
 # Prescriptive methodology for building KODA-compliant agents
 
 _manifest:
-  urn: "urn:knowledge:sanixai:core:koda-agent-construct:1.0.0"
+  urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,11 +15,11 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent:1.0.0"
         reason: "KODA/Agent schema specification"
-      - urn: "urn:knowledge:sanixai:core:koda-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
         reason: "Structural format specification"
-      - urn: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
+      - urn: "urn:knowledge:koda:core:life:1.0.0"
         reason: "Agent lifecycle integration"
   provenance:
     created_by: "FS"
@@ -440,7 +440,7 @@ Patterns:
         - Leverage resolver for local overrides
       Example: |
         source_artifacts:
-          - urn: "urn:knowledge:sanixai:core:guide:1.0.0"
+          - urn: "urn:knowledge:koda:core:guide:1.0.0"
           - urn: "urn:knowledge:external:legal:compliance:latest"
       Res: No duplication, version control, federation.
 
@@ -451,7 +451,7 @@ Patterns:
         - Define initial_prompt for first interaction
         - Handle Direct vs Indirect execution models
         - Configure platform-specific adaptations
-      Ctx: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
+      Ctx: "urn:knowledge:koda:core:life:1.0.0"
 
 # =============================================================================
 # 4. ANTI-PATTERNS (AVOID)
@@ -645,8 +645,8 @@ Example:
     Language: es-CL
     Knowledge_Policy: EXCLUSIVE_USE
     Sources:
-      - "urn:knowledge:sanixai:gore_nuble:guia-circ33:1.0.0"
-      - "urn:knowledge:sanixai:gore_nuble:guia-fril:1.0.0"
+      - "urn:knowledge:gorenuble:guia-circ33:1.0.0"
+      - "urn:knowledge:gorenuble:guia-fril:1.0.0"
 
   Agent_Definition: |
     # KODA Agent Definition for GPT-ASISTENTE-IPR
@@ -666,8 +666,8 @@ Example:
       usage_policy_and_source_management:
         policy: EXCLUSIVE_USE
         source_artifacts:
-          - urn: "urn:knowledge:sanixai:gore_nuble:guia-circ33:1.0.0"
-          - urn: "urn:knowledge:sanixai:gore_nuble:guia-fril:1.0.0"
+          - urn: "urn:knowledge:gorenuble:guia-circ33:1.0.0"
+          - urn: "urn:knowledge:gorenuble:guia-fril:1.0.0"
       uncertainty_protocol: "DECLARE_ABSENCE"
       citation_formatting:
         style: OFFICIAL_SOURCE_NAME
@@ -731,8 +731,8 @@ Example:
       CM-KB-GUIDANCE:
         _meta: { expose: false }
         dimensions:
-          - "CIRCULAR33: urn:knowledge:sanixai:gore_nuble:guia-circ33:1.0.0"
-          - "FRIL: urn:knowledge:sanixai:gore_nuble:guia-fril:1.0.0"
+          - "CIRCULAR33: urn:knowledge:gorenuble:guia-circ33:1.0.0"
+          - "FRIL: urn:knowledge:gorenuble:guia-fril:1.0.0"
 
       CM-ANALYSIS-STRATEGIC:
         _meta: { expose: false }

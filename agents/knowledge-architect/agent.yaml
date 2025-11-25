@@ -3,7 +3,7 @@
 ---
 
 _manifest:
-  urn: "urn:knowledge:sanixai:agents:knowledge-architect:1.0.0"
+  urn: "urn:knowledge:koda:agents:knowledge-architect:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -14,7 +14,7 @@ _manifest:
     canonical_url: "file://agents/knowledge-architect/agent.yaml"
   dependencies:
     requires:
-      - urn: "urn:knowledge:sanixai:core:koda-agent-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent:1.0.0"
         reason: "Schema structure for this agent definition"
   provenance:
     created_by: "FS"
