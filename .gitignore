@@ -32,8 +32,9 @@ venv/
 .venv/
 env/
 
-# Staging/WIP files (local only)
-staging/
+# Staging/WIP files (local only, except .gitkeep)
+staging/*
+!staging/.gitkeep
 *.wip.yml
 *.wip.yaml
 *.draft.yml

@@ -93,6 +93,17 @@ Philosophy:
       Def: Every artifact is addressable independent of physical location via URN.
       Analogy: Like DOI—stable identifier, mutable location.
 
+    - ID: PRINCIPLE-NAMESPACE-ISOLATION
+      Name: Namespace Repository Isolation
+      Def: Each namespace MUST correspond to exactly one Git repository.
+      Rationale:
+        - Ownership boundaries per organization
+        - Independent access control (public/private/institutional)
+        - Separate versioning and release cycles
+        - Distinct licensing per namespace
+      Rule: "1 namespace = 1 repository = 1 organization"
+      Prohib: Multiple namespaces in same repository; namespace split across repos.
+
 # =============================================================================
 # 2. KNOWLEDGE URN SCHEME
 # =============================================================================
