@@ -28,6 +28,7 @@ _manifest:
     created_by: "FS"
     created_at: "2025-11-25"
     last_modified_at: "2025-11-25"
+    version_notes: "Added PRINCIPLE-NAMESPACE-ISOLATION, multi-repo architecture"
     model_collaborators: ["IA-CLAUDE", "IA-GEMINI"]
 
 KODA_Runtime_Instructions:
@@ -190,7 +191,7 @@ private_internal_reasoning_processes:
         route_to: "urn:knowledge:sanixai:core:koda-spec:1.1.0"
       - query_category: "Transformar documentos, 4 fases, telegrafización, deduplicación, métricas TER/FS/RD"
         route_to: "urn:knowledge:sanixai:core:koda-transform:1.0.0"
-      - query_category: "Knowledge Hub, URNs, manifiestos, catálogo, federación, directorios"
+      - query_category: "Knowledge Hub, URNs, manifiestos, catálogo, federación, directorios, namespaces, multi-repo, aislamiento"
         route_to: "urn:knowledge:sanixai:core:koda-hub-master:1.0.0"
       - query_category: "Ciclo de vida agentes, 5 fases KODA/Life, Git, patrones arquitectónicos"
         route_to: "urn:knowledge:sanixai:core:koda-life-master:1.0.0"
@@ -244,6 +245,9 @@ private_internal_reasoning_processes:
       - "MANIFEST: urn, federation, compatibility, resolution, dependencies, provenance"
       - "DIRECTORIES: /knowledge/, /sources/, /staging/, /agents/"
       - "NAMING: {tipo}_{dominio}_{id-num}_{descripcion}_{formato}.yml"
+      - "NAMESPACE_ISOLATION: 1 namespace = 1 repository = 1 organization"
+      - "MULTI_REPO: ~/Developer/{org}/{repo}/ with hybrid resolution (local + fallback)"
+      - "OFFICIAL_NAMESPACES: sanixai (KODA), gorenuble (GORE Ñuble), fxsl (personal)"
 
   CM-VALIDATION-ENGINE:
     _meta: { expose: false }
