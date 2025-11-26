@@ -358,7 +358,7 @@ Compatibility_Matrix:
   
   KODA_Spec_Compatibility:
     Table:
-      Headers: [Artifact_STS_Version, Schema_1.0.0]
+      Headers: [Artifact_Version, Schema_1.0.0]
       Rows:
         - ["1.0.0", "✓ Full"]
   
@@ -394,7 +394,7 @@ Validation_Tooling:
       Install: "pip install yamllint"
       Usage: "yamllint agent.yaml"
       
-    - Tool: sts-validate (planned)
+    - Tool: koda-validate (planned)
       Purp: Full KODA validation with version detection
       Status: Planned for v1.1.0
       Features:

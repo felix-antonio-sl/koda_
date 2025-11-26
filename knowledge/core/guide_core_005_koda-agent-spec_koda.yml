@@ -267,7 +267,7 @@ KODA_Runtime_Instructions:
           - "SECURITY: block_instructions + forbid_internal_jargon are HARD constraints."
           - "EVALUATION: Run checklist before EVERY response. Apply corrections. Deliver only after all pass."
 
-  Integration_With_STS:
+  Integration_With_KODA_Spec:
     Def: KODA Runtime Instructions complement, not replace, KODA Parsing Instructions.
     Structure:
       - Layer_1: KODA Parsing (for artifacts the agent consumes as knowledge)

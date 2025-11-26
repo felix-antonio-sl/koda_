@@ -111,7 +111,7 @@ Step_1_Stack:
       When_To_Use: Managing the full project.
 
   Key_Principle: |
-    agent.yaml (ADP) + knowledge/*.yml (STS) = Complete Agent
+    agent.yaml (ADP) + knowledge/*.yml (KODA/Spec) = Complete Agent
 
 # =============================================================================
 # STEP 2: CREATE AGENT.YAML (15 min)

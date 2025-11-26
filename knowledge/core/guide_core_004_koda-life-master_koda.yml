@@ -203,7 +203,7 @@ Agent_Lifecycle:
     Acts:
       - Act: 2.1 - Knowledge Transcription and Refactoring
         Procs:
-          - Proc: Apply KODA-YAML methodology (sts_transformation_methodology.yml + sts_yaml_specification.yml) to refactor all textual knowledge into KODA-YAML artifacts.
+          - Proc: Apply KODA methodology (KODA/Transform + KODA/Spec) to refactor all textual knowledge into KODA artifacts.
           - Proc: Apply specialized SFD schemas implemented as KODA-YAML to represent all form-based knowledge as structured artifacts.
 
       - Act: 2.2 - KB Packaging and Consolidation Strategy
@@ -367,7 +367,7 @@ Git_Management:
         Cpt: Feature_Branch
         Purp: Develop new features or add/update knowledge artifacts in isolation.
         Ex:
-          - feature/add-sts-onboarding-artifact
+          - feature/add-onboarding-artifact
           - feature/update-core-objective
         Proc: Branched from develop and merged back via Pull Request.
 
@@ -425,7 +425,7 @@ Git_Management:
         Act: Create KODA-YAML artifact under /knowledge/.
         Proc:
           - "git add knowledge/new_artifact.yml"
-          - "git commit -m 'kb(new_artifact): add new sts-yaml artifact'"
+          - "git commit -m 'kb(new_artifact): add new KODA artifact'"
       - Step: 3 - Update agent definition to use new artifact
         Act: Modify agent.yaml to add workflow referencing the new artifact.
         Proc:
