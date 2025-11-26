@@ -80,7 +80,7 @@
           "properties": {
             "policy": {
               "type": "string",
-              "enum": ["EXCLUSIVE_USE", "ALLOW_GENERAL_KNOWLEDGE"]
+              "enum": ["EXCLUSIVE_USE", "ALLOW_GENERAL_KNOWLEDGE", "LLM_NATIVE", "WEB_AUGMENTED", "HYBRID_WEB_KB"]
             },
             "source_artifacts": {
               "type": "array",
@@ -121,7 +121,7 @@
         },
         "uncertainty_protocol": {
           "type": "string",
-          "enum": ["DECLARE_ABSENCE", "DECLARE_UNCERTAINTY_WITH_REASONING"]
+          "enum": ["DECLARE_ABSENCE", "DECLARE_UNCERTAINTY_WITH_REASONING", "SEARCH_WEB_FALLBACK"]
         },
         "citation_formatting": {
           "type": "object",
@@ -129,8 +129,52 @@
           "properties": {
             "style": {
               "type": "string",
-              "enum": ["OFFICIAL_SOURCE_NAME", "FILENAME", "INLINE_REASONING_TRACE"]
+              "enum": ["OFFICIAL_SOURCE_NAME", "FILENAME", "INLINE_REASONING_TRACE", "WEB_URL", "HYBRID_SOURCE"]
             }
+          }
+        },
+        "catalog_resolution": {
+          "type": "object",
+          "description": "Catalog-based URN resolution configuration",
+          "properties": {
+            "catalog_urn": {
+              "type": "string",
+              "pattern": "^urn:knowledge:[a-z][a-z0-9-]*:catalog:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
+            },
+            "resolution_strategy": {
+              "type": "string",
+              "enum": ["CATALOG_FIRST", "STATIC_ONLY", "CATALOG_ONLY"]
+            },
+            "fallback": {
+              "type": "string",
+              "enum": ["STATIC_ROUTING", "NONE", "ERROR"]
+            },
+            "instructions": { "type": "string" }
+          }
+        },
+        "web_search_configuration": {
+          "type": "object",
+          "description": "Web search configuration for WEB_AUGMENTED and HYBRID agents",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "provider": {
+              "type": "string",
+              "enum": ["native", "tavily", "serper", "brave", "google"]
+            },
+            "search_scope": {
+              "type": "string",
+              "enum": ["general", "academic", "news", "domain_specific"]
+            },
+            "max_results": { "type": "integer", "minimum": 1, "maximum": 20 },
+            "freshness": {
+              "type": "string",
+              "enum": ["any", "day", "week", "month", "year"]
+            },
+            "domain_filter": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "citation_required": { "type": "boolean" }
           }
         }
       }
@@ -193,7 +237,7 @@
       "patternProperties": {
         "^CM-[A-Z0-9-]+$": {
           "type": "object",
-          "required": ["_meta", "dimensions"],
+          "required": ["_meta"],
           "properties": {
             "_meta": {
               "type": "object",
@@ -205,16 +249,42 @@
                 }
               }
             },
+            "purpose": { "type": "string" },
             "dimensions": {
               "type": "array",
               "items": { "type": "string" },
               "minItems": 1
             },
+            "process": {
+              "type": "array",
+              "items": { "type": "string" },
+              "maxItems": 5
+            },
+            "routing_map": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "query_category": { "type": "string" },
+                  "route_to": { "type": "string" }
+                }
+              }
+            },
+            "resolution_protocol": { "type": "string" },
+            "catalog_sections": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "uncertainty_triggers": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
             "apply_on_trigger": {
               "type": "string",
               "description": "Documentation of invoking state"
             }
-          }
+          },
+          "additionalProperties": true
         }
       },
       "additionalProperties": false

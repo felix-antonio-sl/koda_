@@ -8,7 +8,7 @@
 _meta:
   resolver_version: "1.0.0"
   koda_compatibility: ">=1.0.0 <2.0.0"
-  last_sync: "2025-11-25T20:49:54Z"
+  last_sync: "2025-11-26T00:13:00Z"
   health_check_interval: weekly
 
 # =============================================================================
@@ -74,6 +74,9 @@ resolution_rules:
   
   # Agents
   "urn:knowledge:koda:agents:architect:*": "./agents/knowledge-architect/agent_koda_architect.yaml"
+  "urn:knowledge:koda:agents:transformer:*": "./agents/koda-transformer/agent_koda_transformer.yaml"
+  "urn:knowledge:koda:agents:smith:*": "./agents/koda-smith/agent_koda_smith.yaml"
+  "urn:knowledge:koda:agents:guardian:*": "./agents/koda-guardian/agent_koda_guardian.yaml"
   
   # Registry
   "urn:knowledge:koda:registry:namespaces:*": "./registry/namespaces.yml"

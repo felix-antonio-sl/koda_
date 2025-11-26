@@ -24,6 +24,7 @@ _manifest:
     created_at: "2025-11-25"
     last_modified_by: "FS"
     last_modified_at: "2025-11-25"
+    changelog: "Completed LLM_Parsing_Instructions template"
     signature: null
 
 ID: FEDERATION-PROTOCOL-01
@@ -39,11 +40,18 @@ Ctx: Protocol for secure, resilient federation of knowledge artifacts and agents
 LLM_Parsing_Instructions:
   ID: KODA-LLM-PARSER-01
   Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
   Content: |
     BEGIN_LLM_INSTRUCTIONS
     You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
-    FIDELITY: Preserve meat and skeleton with zero loss. Ignore fat.
-    LEXICON: Def->Definition, Req->Requirement, Prohib->Prohibition, Warn->Warning, Rec->Recommendation
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
     END_LLM_INSTRUCTIONS
 
 Purp: Define the protocol that enables knowledge artifacts and agent definitions to form a coherent, secure, and resilient federated graph across multiple repositories and organizations.

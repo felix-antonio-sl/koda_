@@ -109,7 +109,7 @@ quickstart (entry point, sin dependencias)
      │                                               │
      ├──▶ transform                                  │
      │                                               │
-     ├──▶ hub ◀────▶ life ◀────▶ agent ─────────────┤
+     ├──▶ hub ──────▶ life ◀────▶ agent ────────────┤
      │     │            │           │                │
      │     │            ▼           ▼                │
      │     │        test      agent-construct        │

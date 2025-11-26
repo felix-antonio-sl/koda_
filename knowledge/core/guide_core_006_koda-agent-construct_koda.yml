@@ -29,14 +29,14 @@ _manifest:
     signature: null
 
 ID: KODA-AGENT-CONSTRUCT-01
-Version: 1.0.0
+Version: 1.1.0
 Status: Published
 Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-06-29
 Modification-Date: 2025-11-25
-Version-Notes: Added Knowledge Modes (LLM_NATIVE, WEB_AUGMENTED, HYBRID); patterns PATTERN-LLM-NATIVE, PATTERN-WEB-SEARCH, PATTERN-HYBRID-ROUTER; CM-WEB-SEARCH, CM-LLM-BOUNDARY templates
+Version-Notes: "v1.1.0 - Added §9 HOA Construction: extended phases, fleet design, HOA patterns (TESTING, PIPELINE, MULTI-PERSPECTIVE), anti-patterns"
 Source: GUIDE-KODA-MASTER-03
 Ctx: Prescriptive methodology for constructing KODA-compliant AI agents
 
@@ -1197,3 +1197,248 @@ Workflow:
     - Security completeness (Minimum Guard Set)
     - Knowledge traceability (CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE chain)
     - Categorical coherence (valid state machine)
+
+# =============================================================================
+# 9. HIGHER-ORDER AGENT (HOA) CONSTRUCTION
+# =============================================================================
+
+HOA_Construction:
+  ID: KODA-HOA-CONSTRUCT-01
+  Purp: Methodology for constructing Higher-Order Agents that orchestrate sub-agent fleets.
+  Ctx: "urn:knowledge:koda:core:agent:1.0.0 §9 Orchestration"
+
+  Overview:
+    Def: |
+      Higher-Order Agents (HOAs) require additional design considerations beyond
+      standard agents. They coordinate fleets of sub-agents through delegation,
+      communication, and synthesis.
+    When_To_Use:
+      - Complex tasks requiring multiple specialized capabilities
+      - Testing/validation workflows needing agent-under-test isolation
+      - Multi-perspective analysis requiring parallel processing
+      - Pipeline processing with staged sub-agent execution
+    When_NOT_To_Use:
+      - Simple single-domain tasks
+      - When a single agent with multiple states suffices
+      - When sub-agent communication overhead exceeds benefit
+
+  Extended_Phases:
+    Phase_0_HOA_Assessment:
+      ID: HOA-PHASE-0
+      Purp: Determine if HOA architecture is appropriate.
+      Process:
+        - "1. Identify if task requires multiple distinct agent capabilities"
+        - "2. Evaluate if capabilities can be composed via orchestration"
+        - "3. Assess complexity vs benefit of HOA approach"
+        - "4. Decide: HOA or standard agent with rich state machine"
+      Decision_Matrix:
+        - Condition: "Single domain, multiple modes"
+          Result: "Standard agent with states"
+        - Condition: "Multiple domains, need isolation"
+          Result: "HOA with specialized sub-agents"
+        - Condition: "Testing another agent"
+          Result: "HOA with TESTER + AGENT_UNDER_TEST"
+        - Condition: "Pipeline with distinct stages"
+          Result: "HOA with SEQUENTIAL delegation"
+
+    Phase_1_Extended_Requirements:
+      ID: HOA-PHASE-1
+      Purp: Capture HOA-specific requirements beyond standard FTCF.
+      Extends: PHASE-1-REQUIREMENTS
+      Additional_Captures:
+        Fleet_Requirements:
+          - "What sub-agents are needed?"
+          - "Which are static (pre-defined) vs dynamic (runtime-loaded)?"
+          - "What capabilities does each provide?"
+        Orchestration_Requirements:
+          - "What is the primary delegation pattern? (SEQUENTIAL, PARALLEL, CONDITIONAL, ITERATIVE)"
+          - "How should results be synthesized?"
+          - "What error handling is needed?"
+        Context_Requirements:
+          - "What state needs to be shared between sub-agents?"
+          - "What evidence needs to be captured?"
+
+    Phase_2_Fleet_Design:
+      ID: HOA-PHASE-2-FLEET
+      Purp: Design the sub-agent fleet architecture.
+      Process:
+        - "1. Define each sub-agent: id, role, source, capabilities"
+        - "2. Classify instantiation: STATIC vs DYNAMIC"
+        - "3. Map delegation flow between HOA and sub-agents"
+        - "4. Define synthesis points where outputs merge"
+        - "5. Design shared context schema"
+      Deliverables:
+        - Fleet definition with all sub-agents
+        - Delegation flow diagram
+        - Shared context schema
+        - Synthesis rules
+
+    Phase_2_Extended_Architecture:
+      ID: HOA-PHASE-2-ARCH
+      Purp: Design HOA state machine with orchestration states.
+      Extends: PHASE-2-ARCHITECTURE
+      HOA_Specific_States:
+        - State: S-LOADER
+          Purp: "Load dynamic sub-agents when needed"
+          Applies: "HOAs with DYNAMIC sub-agents"
+        - State: S-PLANNER
+          Purp: "Coordinate with sub-agents to plan execution"
+          Applies: "Complex orchestrations"
+        - State: S-EXECUTOR
+          Purp: "Execute delegation loop"
+          Applies: "All HOAs"
+        - State: S-SYNTHESIZER
+          Purp: "Combine sub-agent outputs"
+          Applies: "PARALLEL and multi-stage orchestrations"
+      HOA_Specific_CMs:
+        - CM: CM-AGENT-LOADER
+          Purp: "Parse and validate dynamic agent definitions"
+          Applies: "HOAs with DYNAMIC sub-agents"
+        - CM: CM-DELEGATION-DISPATCHER
+          Purp: "Format and send delegation requests to sub-agents"
+          Applies: "All HOAs"
+        - CM: CM-EVIDENCE-COLLECTOR
+          Purp: "Capture and store delegation responses"
+          Applies: "HOAs requiring audit trails"
+        - CM: CM-ORCHESTRATION-CONTROLLER
+          Purp: "Manage orchestration state and flow"
+          Applies: "All HOAs"
+        - CM: CM-SYNTHESIS-ENGINE
+          Purp: "Combine outputs from multiple sub-agents"
+          Applies: "PARALLEL and complex orchestrations"
+
+    Phase_3_Extended_Construction:
+      ID: HOA-PHASE-3-CONSTRUCT
+      Purp: Build HOA artifact with orchestration namespace.
+      Extends: PHASE-3-CONSTRUCTION
+      Additional_Namespace:
+        orchestration_fleet_and_protocol:
+          fleet_definition:
+            sub_agents: "[SubAgentSpec list]"
+          orchestration_protocol:
+            objective: "string"
+            delegation_pattern: "SEQUENTIAL | PARALLEL | CONDITIONAL | ITERATIVE | CUSTOM"
+            workflow: "object"
+            synthesis_rules: "[string list]"
+            error_handling: "object (optional)"
+          shared_context: "object (optional)"
+      Runtime_Instructions_Extension: |
+        HOAs MUST add point 8 to KODA_Runtime_Instructions:
+        
+        8. ORCHESTRATION: You coordinate a fleet of sub-agents. Delegate tasks
+           according to orchestration_protocol. Never execute sub-agent roles
+           yourself—delegate and synthesize. Mark all evidence as REAL or SIMULATED.
+
+    Phase_4_Extended_Validation:
+      ID: HOA-PHASE-4-VALIDATE
+      Purp: Validate HOA-specific requirements.
+      Extends: PHASE-4-VALIDATION
+      HOA_Checklist:
+        Fleet_Validation:
+          - "Fleet has at least one sub-agent"
+          - "All sub-agent IDs are unique"
+          - "Static sources are valid URNs in catalog"
+          - "Dynamic source patterns are valid"
+        Protocol_Validation:
+          - "Delegation pattern is defined"
+          - "Workflow references only defined sub-agents"
+          - "Synthesis rules are present"
+        Runtime_Validation:
+          - "Point 8 (ORCHESTRATION) present in Runtime Instructions"
+          - "No self-delegation in workflow"
+        Self_Evaluation_Checks:
+          - "ORCHESTRATION_FIDELITY in checklist"
+          - "EVIDENCE_INTEGRITY in checklist"
+          - "DELEGATION_VALID in checklist"
+
+    Phase_5_Extended_Deployment:
+      ID: HOA-PHASE-5-DEPLOY
+      Purp: Deploy HOA with sub-agent dependencies.
+      Extends: PHASE-5-DEPLOYMENT
+      HOA_Specific:
+        - "Ensure all STATIC sub-agents are registered in catalog"
+        - "Document dynamic agent requirements for users"
+        - "Mark HOA in catalog with `higher_order: true`"
+        - "Update fleet agents to know about HOA (optional)"
+
+  HOA_Patterns:
+    PATTERN-HOA-TESTING:
+      ID: PATTERN-HOA-TESTING
+      Purp: Pattern for HOA that tests other agents.
+      Use: Testing/validation orchestration.
+      Fleet:
+        - id: TESTER
+          role: "Generate tests, evaluate responses"
+          source: "URN to testing agent"
+          instantiation: STATIC
+        - id: AGENT_UNDER_TEST
+          role: "Agent being tested"
+          source: "dynamic:loaded_from_user_input"
+          instantiation: DYNAMIC
+      Delegation_Pattern: ITERATIVE
+      Workflow: |
+        1. Load agent under test
+        2. TESTER generates test suite
+        3. Loop: Send test to AUT, capture response, TESTER evaluates
+        4. TESTER synthesizes report
+
+    PATTERN-HOA-PIPELINE:
+      ID: PATTERN-HOA-PIPELINE
+      Purp: Pattern for sequential multi-stage processing.
+      Use: Document processing, staged analysis.
+      Fleet:
+        - id: STAGE_1_AGENT
+          role: "First stage processing"
+          source: "URN"
+          instantiation: STATIC
+        - id: STAGE_2_AGENT
+          role: "Second stage processing"
+          source: "URN"
+          instantiation: STATIC
+      Delegation_Pattern: SEQUENTIAL
+      Workflow: |
+        1. Receive input
+        2. Delegate to STAGE_1, capture output
+        3. Pass STAGE_1 output to STAGE_2, capture output
+        4. Synthesize final result
+
+    PATTERN-HOA-MULTI-PERSPECTIVE:
+      ID: PATTERN-HOA-MULTI-PERSPECTIVE
+      Purp: Pattern for gathering multiple viewpoints.
+      Use: Analysis requiring diverse perspectives.
+      Fleet:
+        - id: PERSPECTIVE_A
+          role: "Analysis from perspective A"
+          source: "URN"
+          instantiation: STATIC
+        - id: PERSPECTIVE_B
+          role: "Analysis from perspective B"
+          source: "URN"
+          instantiation: STATIC
+      Delegation_Pattern: PARALLEL
+      Workflow: |
+        1. Receive query
+        2. Delegate same query to all perspectives in parallel
+        3. Collect all responses
+        4. Synthesize unified analysis
+
+  HOA_Anti_Patterns:
+    - Anti_Pattern: "HOA executing sub-agent roles"
+      Problem: "HOA should delegate, not execute"
+      Solution: "Always delegate via orchestration_protocol, mark what you do directly vs delegate"
+
+    - Anti_Pattern: "Ambiguous evidence"
+      Problem: "Mixing real captures with inferred behavior"
+      Solution: "Always mark evidence as REAL_CAPTURE or SIMULATED"
+
+    - Anti_Pattern: "Missing synthesis"
+      Problem: "Returning raw sub-agent outputs without integration"
+      Solution: "Apply synthesis_rules before responding to user"
+
+    - Anti_Pattern: "Unbounded iteration"
+      Problem: "ITERATIVE delegation without max_iterations"
+      Solution: "Always set max_iterations in ITERATIVE patterns"
+
+    - Anti_Pattern: "Fleet without purpose"
+      Problem: "Creating HOA when single agent suffices"
+      Solution: "Use Phase 0 assessment to validate HOA need"

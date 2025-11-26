@@ -27,14 +27,14 @@ _manifest:
     signature: null
 
 ID: KODA-AGENT-SPEC-01
-Version: 1.0.0
+Version: 1.1.0
 Status: Published
 Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-06-29
 Modification-Date: 2025-11-25
-Version-Notes: Added LLM_NATIVE, WEB_AUGMENTED, HYBRID_WEB_KB policies; web_search_configuration; WEB_SEARCH_COMPLIANCE, LLM_BOUNDARY checks
+Version-Notes: "v1.1.0 - Complete HOA specification: delegation patterns, communication protocol, shared context, dynamic agents, HOA validation and checks"
 Source: GUIDE-KODA-MASTER-03
 Ctx: Technical specification of KODA as YAML schema for declarative agent definition
 
@@ -630,23 +630,236 @@ Correction_Protocol:
 
 Orchestration:
   ID: KODA-ORCHESTRATION-01
-  Purp: Structure for Manager Agents orchestrating sub-agent fleets.
+  Purp: Complete specification for Higher-Order Agents (HOA) orchestrating sub-agent fleets.
   Key: orchestration_fleet_and_protocol
   Ctx: Higher-Order Agents only.
 
+  HOA_Definition:
+    ID: KODA-HOA-DEFINITION-01
+    Def: |
+      A Higher-Order Agent (HOA) is an agent that coordinates other agents (sub-agents)
+      to accomplish complex tasks through delegation, communication, and synthesis.
+    Characteristics:
+      - Maintains its own state machine for orchestration flow
+      - Does NOT execute sub-agent tasks itself—delegates to fleet members
+      - Manages shared context between sub-agents
+      - Synthesizes outputs from multiple sub-agents
+      - May include dynamic sub-agents loaded at runtime
+    Categorical_Foundation: |
+      HOA acts as Functor F: Cat_Request -> Cat_Composition
+      - Objects in Cat_Request: User intents
+      - Objects in Cat_Composition: Compositions of sub-agent executions
+      - Morphisms: Delegation and synthesis operations
+      Composition law: F(g ∘ f) = F(g) ∘ F(f) ensures consistent orchestration.
+
   Fleet_Definition:
     ID: KODA-ORCHESTRATION-FLEET-01
-    Path: orchestration_fleet_and_protocol.fleet_definition.sub_agents
-    Item_Schema:
+    Path: orchestration_fleet_and_protocol.fleet_definition
+    Schema:
+      - Field: sub_agents
+        Type: list[SubAgentSpec]
+        Def: List of sub-agents in the fleet.
+        Req: At least one sub-agent required.
+
+    SubAgent_Schema:
       - Field: id
         Type: string
-        Def: Unique identifier for sub-agent.
+        Def: Unique identifier for sub-agent within this fleet.
+        Format: UPPERCASE-KEBAB-CASE
+        Ex: TESTER, AGENT_UNDER_TEST, VALIDATOR
+        Req: Required
+
       - Field: role
         Type: string
-        Def: Functional role description.
+        Def: Functional role description of what this sub-agent does.
+        Req: Required
+
       - Field: source
         Type: string
-        Def: URN or path to agent definition file.
+        Def: Reference to sub-agent definition.
+        Formats:
+          - "URN: urn:knowledge:{namespace}:agents:{id}:{version} for registered agents"
+          - "Dynamic: dynamic:{source_type} for runtime-loaded agents"
+        Ex_URN: "urn:knowledge:koda:agents:tester:1.0.0"
+        Ex_Dynamic: "dynamic:loaded_from_user_input"
+        Req: Required
+
+      - Field: capabilities
+        Type: list[string]
+        Def: List of capabilities this sub-agent provides to the HOA.
+        Purp: Documents what the HOA can delegate to this sub-agent.
+        Req: Recommended
+
+      - Field: instantiation
+        Type: enum
+        Values: [STATIC, DYNAMIC]
+        Def_STATIC: Sub-agent is pre-defined and always available.
+        Def_DYNAMIC: Sub-agent is instantiated at runtime from provided definition.
+        Default: STATIC
+        Req: Optional
+
+  Dynamic_Agents:
+    ID: KODA-ORCHESTRATION-DYNAMIC-01
+    Purp: Specification for dynamically loaded sub-agents.
+    Def: |
+      Dynamic agents are instantiated at runtime from YAML definitions provided
+      by the user or retrieved from external sources.
+    Source_Patterns:
+      - Pattern: "dynamic:loaded_from_user_input"
+        Def: Agent definition provided by user during session.
+        Use: Testing, validation of user-provided agents.
+      - Pattern: "dynamic:loaded_from_catalog:{urn}"
+        Def: Agent retrieved from catalog at runtime.
+        Use: Flexible orchestration with registered agents.
+      - Pattern: "dynamic:loaded_from_url:{url}"
+        Def: Agent retrieved from external URL.
+        Use: Cross-repository orchestration.
+    Instantiation_Protocol:
+      - "1. Receive agent definition (YAML content or reference)"
+      - "2. Validate against KODA/Agent schema"
+      - "3. Extract identity, states, transitions, CMs"
+      - "4. Prepare execution context for sub-agent"
+      - "5. Sub-agent is now available for delegation"
+
+  Delegation_Patterns:
+    ID: KODA-ORCHESTRATION-DELEGATION-01
+    Purp: Define how HOA delegates tasks to sub-agents.
+
+    Patterns:
+      - Pattern: SEQUENTIAL
+        ID: DELEGATION-SEQUENTIAL
+        Def: Execute sub-agents one after another, passing output as input.
+        Use: Pipeline processing, multi-stage workflows.
+        Schema: |
+          delegation_pattern: SEQUENTIAL
+          sequence:
+            - agent: SUB_AGENT_1
+              input: "{user_request}"
+              output_as: "stage_1_result"
+            - agent: SUB_AGENT_2
+              input: "{stage_1_result}"
+              output_as: "stage_2_result"
+
+      - Pattern: PARALLEL
+        ID: DELEGATION-PARALLEL
+        Def: Execute multiple sub-agents simultaneously, then synthesize.
+        Use: Gathering multiple perspectives, parallel processing.
+        Schema: |
+          delegation_pattern: PARALLEL
+          parallel_agents:
+            - agent: SUB_AGENT_1
+              input: "{user_request}"
+              output_as: "result_1"
+            - agent: SUB_AGENT_2
+              input: "{user_request}"
+              output_as: "result_2"
+          synthesis: "Combine result_1 and result_2"
+
+      - Pattern: CONDITIONAL
+        ID: DELEGATION-CONDITIONAL
+        Def: Select sub-agent based on conditions.
+        Use: Routing, specialized handling.
+        Schema: |
+          delegation_pattern: CONDITIONAL
+          conditions:
+            - if: "{condition_1}"
+              delegate_to: SUB_AGENT_1
+            - if: "{condition_2}"
+              delegate_to: SUB_AGENT_2
+            - else:
+              delegate_to: SUB_AGENT_DEFAULT
+
+      - Pattern: ITERATIVE
+        ID: DELEGATION-ITERATIVE
+        Def: Repeatedly delegate to sub-agent until condition met.
+        Use: Testing loops, refinement cycles, polling.
+        Schema: |
+          delegation_pattern: ITERATIVE
+          iterate:
+            agent: SUB_AGENT_1
+            input: "{current_state}"
+            until: "{completion_condition}"
+            max_iterations: 10
+
+  Communication_Protocol:
+    ID: KODA-ORCHESTRATION-COMMUNICATION-01
+    Purp: Define how HOA communicates with sub-agents.
+
+    Message_Types:
+      - Type: DELEGATION_REQUEST
+        Def: HOA sends task to sub-agent.
+        Schema:
+          - from: HOA_ID
+          - to: SUB_AGENT_ID
+          - task: string (what to do)
+          - context: object (shared state)
+          - expected_output: string (what HOA expects back)
+
+      - Type: DELEGATION_RESPONSE
+        Def: Sub-agent returns result to HOA.
+        Schema:
+          - from: SUB_AGENT_ID
+          - to: HOA_ID
+          - result: object (output of task)
+          - status: enum [SUCCESS, PARTIAL, FAILURE]
+          - evidence: object (supporting data, optional)
+
+      - Type: CONTEXT_UPDATE
+        Def: HOA updates shared context for all sub-agents.
+        Schema:
+          - from: HOA_ID
+          - to: BROADCAST | SUB_AGENT_ID
+          - context_delta: object (changes to shared context)
+
+    Simulation_Mode:
+      Def: |
+        When HOA cannot actually instantiate separate agent processes,
+        it simulates communication by:
+        1. Adopting the sub-agent's identity temporarily
+        2. Processing the delegation request as that sub-agent would
+        3. Returning to HOA identity with the result
+        4. Clearly marking this as SIMULATED in evidence
+      Prohib: Mixing simulated and real responses without clear labeling.
+
+  Shared_Context:
+    ID: KODA-ORCHESTRATION-CONTEXT-01
+    Purp: Define shared state management between HOA and sub-agents.
+    Path: orchestration_fleet_and_protocol.shared_context
+
+    Schema:
+      - Field: session_id
+        Type: string
+        Def: Unique identifier for this orchestration session.
+
+      - Field: orchestration_state
+        Type: enum
+        Values: [INITIALIZING, PLANNING, EXECUTING, EVALUATING, SYNTHESIZING, COMPLETE, ERROR]
+        Def: Current phase of orchestration.
+
+      - Field: context_store
+        Type: object
+        Def: Key-value store for shared data between sub-agents.
+        Use: Pass results from one sub-agent to another.
+
+      - Field: evidence_log
+        Type: list[EvidenceEntry]
+        Def: Audit trail of all delegations and responses.
+
+    Evidence_Entry_Schema:
+      - Field: timestamp
+        Type: ISO8601
+      - Field: delegation_id
+        Type: string
+      - Field: from_agent
+        Type: string
+      - Field: to_agent
+        Type: string
+      - Field: message_type
+        Type: enum [DELEGATION_REQUEST, DELEGATION_RESPONSE, CONTEXT_UPDATE]
+      - Field: content
+        Type: object
+      - Field: evidence_type
+        Type: enum [REAL_CAPTURE, SIMULATED]
 
   Orchestration_Protocol:
     ID: KODA-ORCHESTRATION-PROTOCOL-01
@@ -655,16 +868,123 @@ Orchestration:
       - Field: objective
         Type: string
         Def: Ultimate goal of orchestration.
+        Req: Required
+
+      - Field: delegation_pattern
+        Type: enum
+        Values: [SEQUENTIAL, PARALLEL, CONDITIONAL, ITERATIVE, CUSTOM]
+        Def: Primary delegation pattern used.
+        Req: Required
+
       - Field: workflow
         Type: object
-        Def: Declarative mapping User Intent -> Delegation -> Synthesis.
+        Def: Declarative mapping of orchestration steps.
+        Req: Required
+
       - Field: synthesis_rules
         Type: list[string]
-        Def: Instructions for aggregating collective output.
+        Def: Instructions for aggregating outputs from sub-agents.
+        Req: Required
 
-    Categorical_Note: |
-      Acts as Functor F: Cat_Request -> Cat_Composition
-      Maps high-level request to composition of sub-agent executions.
+      - Field: error_handling
+        Type: object
+        Def: How to handle sub-agent failures.
+        Schema:
+          - on_failure: enum [ABORT, RETRY, FALLBACK, CONTINUE]
+          - max_retries: integer
+          - fallback_agent: string (optional)
+        Req: Recommended
+
+  HOA_Runtime_Instructions:
+    ID: KODA-ORCHESTRATION-RUNTIME-01
+    Purp: Extended runtime instructions for Higher-Order Agents.
+    Def: |
+      HOAs must include an additional runtime instruction (point 8) in their
+      KODA_Runtime_Instructions block:
+
+      8. ORCHESTRATION: You coordinate a fleet of sub-agents. Delegate tasks
+         according to orchestration_protocol. Never execute sub-agent roles
+         yourself—delegate and synthesize. Mark all evidence as REAL or SIMULATED.
+
+  HOA_Lexicon:
+    ID: KODA-ORCHESTRATION-LEXICON-01
+    Purp: Canonical paths for HOA-specific configuration.
+
+    Paths:
+      - Path: orchestration_fleet_and_protocol.fleet_definition.sub_agents
+        Type: list[SubAgentSpec]
+        Req: Required for HOA
+
+      - Path: orchestration_fleet_and_protocol.fleet_definition.sub_agents[].id
+        Type: string
+        Req: Required
+
+      - Path: orchestration_fleet_and_protocol.fleet_definition.sub_agents[].source
+        Type: string
+        Req: Required
+
+      - Path: orchestration_fleet_and_protocol.orchestration_protocol.delegation_pattern
+        Type: enum
+        Req: Required
+
+      - Path: orchestration_fleet_and_protocol.orchestration_protocol.workflow
+        Type: object
+        Req: Required
+
+      - Path: orchestration_fleet_and_protocol.shared_context
+        Type: object
+        Req: Recommended
+
+  HOA_Validation:
+    ID: KODA-ORCHESTRATION-VALIDATION-01
+    Purp: Validation rules specific to Higher-Order Agents.
+
+    Rules:
+      - Rule: Fleet not empty
+        Test: fleet_definition.sub_agents has at least one entry.
+
+      - Rule: Sub-agent IDs unique
+        Test: All sub_agents[].id values are unique within fleet.
+
+      - Rule: Static sources valid
+        Test: All non-dynamic sources are valid URNs in catalog.
+
+      - Rule: Delegation pattern defined
+        Test: orchestration_protocol.delegation_pattern is set.
+
+      - Rule: Workflow references valid sub-agents
+        Test: All agent references in workflow exist in fleet_definition.
+
+      - Rule: HOA runtime instruction present
+        Test: KODA_Runtime_Instructions includes point 8 (ORCHESTRATION).
+
+      - Rule: No self-delegation
+        Test: HOA does not delegate to itself.
+
+  HOA_Checks:
+    ID: KODA-ORCHESTRATION-CHECKS-01
+    Purp: Self-evaluation checks specific to HOAs.
+
+    Standard_Checks:
+      - Check: ORCHESTRATION_FIDELITY
+        Purp: HOA delegates according to protocol, does not execute sub-agent roles.
+        Applies: All HOAs
+
+      - Check: EVIDENCE_INTEGRITY
+        Purp: All evidence is marked as REAL_CAPTURE or SIMULATED, never ambiguous.
+        Applies: All HOAs
+
+      - Check: DELEGATION_VALID
+        Purp: All delegations target sub-agents defined in fleet.
+        Applies: All HOAs
+
+      - Check: SYNTHESIS_COMPLETE
+        Purp: HOA synthesizes all sub-agent outputs before responding.
+        Applies: All HOAs
+
+      - Check: CONTEXT_CONSISTENCY
+        Purp: Shared context is updated correctly after each delegation.
+        Applies: HOAs using shared_context
 
 # =============================================================================
 # 10. VALIDATION SCHEMA

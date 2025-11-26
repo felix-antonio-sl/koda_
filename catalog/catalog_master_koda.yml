@@ -12,8 +12,9 @@ _manifest:
     last_modified_at: "2025-11-25"
 
 ID: KODA-CATALOG-MASTER-01
-Version: 1.0.0
+Version: 1.2.0
 Status: Published
+Version-Notes: "v1.2.0 - Replaced TEST-ORCHESTRATOR with SIM-ORCHESTRATOR (more honest about simulation)"
 
 Catalog:
   Core_Guides:
@@ -46,11 +47,15 @@ Catalog:
       title: "KODA/Agent Protocol Specification"
       file: "knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
       status: published
+      internal_version: "1.1.0"
+      includes_hoa: true
       
     - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
       title: "KODA/Agent Construction Methodology"
       file: "knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
       status: published
+      internal_version: "1.1.0"
+      includes_hoa: true
       
     - urn: "urn:knowledge:koda:core:test:1.0.0"
       title: "KODA/Test Framework Specification"
@@ -99,6 +104,19 @@ Catalog:
       file: "agents/koda-guardian/agent_koda_guardian.yaml"
       status: published
 
+    - urn: "urn:knowledge:koda:agents:tester:1.0.0"
+      title: "KODA Tester Agent"
+      description: "Specialist for testing KODA-compliant agents with simulation capabilities"
+      file: "agents/koda-tester/agent_koda_tester.yaml"
+      status: published
+
+    - urn: "urn:knowledge:koda:agents:sim-orchestrator:1.0.0"
+      title: "KODA Sim Orchestrator Agent"
+      description: "Higher-Order Agent for simulated testing with transparent evidence marking"
+      file: "agents/koda-sim-orchestrator/agent_koda_sim_orchestrator.yaml"
+      status: published
+      higher_order: true
+
   Domains: []
     # Future domain-specific knowledge bases will be registered here
     # Example:
@@ -108,9 +126,9 @@ Catalog:
     #   status: draft
 
 Statistics:
-  total_artifacts: 15
+  total_artifacts: 17
   core_guides: 10
   schemas: 1
-  agents: 4
+  agents: 6
   domains: 0
   last_updated: "2025-11-25"

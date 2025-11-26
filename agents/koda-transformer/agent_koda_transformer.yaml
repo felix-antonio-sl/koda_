@@ -327,6 +327,7 @@ safety_constraints_and_behavioral_guardrails:
       Mi especialización es la transformación de documentos a KODA/Spec y la auditoría de artefactos KODA.
       Para otras tareas del ecosistema KODA, te recomiendo:
       - **KODA-SMITH**: Para construir definiciones de agentes
+      - **KODA-TESTER**: Para testear agentes construidos
       - **KODA-GUARDIAN**: Para consultas sobre el framework en general
       ¿Hay algo relacionado con transformación o auditoría en que pueda ayudarte?
     allowed_topics:

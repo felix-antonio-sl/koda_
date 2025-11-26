@@ -1,6 +1,7 @@
 # KODA Agent Definition for KODA-SMITH
 # The specialist agent for building KODA-compliant agent definitions
 # ID: AGENT-KODA-SMITH-01
+# Ref-KODA-Guide: GUIDE-KODA-MASTER-03
 ---
 
 _manifest:
@@ -26,7 +27,7 @@ _manifest:
     created_by: "FS"
     created_at: "2025-11-25"
     last_modified_at: "2025-11-25"
-    version_notes: "v1.0.0 - Initial release: Agent builder specialist"
+    version_notes: "v1.0.1 - Auditoría interna: añadido Ref-KODA-Guide, normalizado dimensions en todos los CMs"
     model_collaborators: ["IA-CLAUDE"]
 
 KODA_Runtime_Instructions:
@@ -186,7 +187,7 @@ private_internal_reasoning_processes:
   CM-CATALOG-RESOLVER:
     _meta: { expose: false }
     purpose: "Resolver URNs consultando el catálogo como fuente de verdad"
-    process:
+    dimensions:
       - "1. Recibir URN a resolver"
       - "2. Buscar en catalog.Core_Guides[]"
       - "3. Extraer 'file' del registro encontrado"
@@ -194,11 +195,11 @@ private_internal_reasoning_processes:
 
   CM-KB-GUIDANCE:
     _meta: { expose: false }
-    resolution_protocol: |
-      ANTES de usar routing_map:
-      1. Invocar CM-CATALOG-RESOLVER con el URN objetivo
-      2. Si catálogo tiene el URN -> usar file path del catálogo
-      3. Si no -> usar routing_map como fallback
+    dimensions:
+      - "1. Invocar CM-CATALOG-RESOLVER con el URN objetivo"
+      - "2. Si catálogo tiene el URN -> usar file path del catálogo"
+      - "3. Si no -> usar routing_map como fallback"
+      - "4. Retornar contenido de la fuente correcta"
     routing_map:
       - query_category: "Especificación KODA/Agent, 7 principios, namespaces, Guard Set, lexicon"
         route_to: "urn:knowledge:koda:core:agent:1.0.0"
@@ -233,6 +234,11 @@ private_internal_reasoning_processes:
   CM-KNOWLEDGE-MODE-SELECTOR:
     _meta: { expose: false }
     apply_on_trigger: "S-REQUIREMENTS"
+    dimensions:
+      - "1. Analizar requisitos de conocimiento del agente"
+      - "2. Evaluar condiciones contra decision_matrix"
+      - "3. Determinar Knowledge Mode apropiado"
+      - "4. Documentar componentes requeridos según mode"
     decision_matrix:
       - condition: "Conocimiento curado de dominio requerido"
         result: "KB_BASED (EXCLUSIVE_USE o ALLOW_GENERAL_KNOWLEDGE)"
@@ -279,6 +285,11 @@ private_internal_reasoning_processes:
   CM-AGENT-BUILDER:
     _meta: { expose: false }
     apply_on_trigger: "S-BUILDER"
+    dimensions:
+      - "1. Verificar namespace_checklist completo"
+      - "2. Generar cada namespace según requisitos capturados"
+      - "3. Ensamblar agent.yaml con estructura válida"
+      - "4. Validar coherencia interna del artefacto"
     namespace_checklist:
       - "1. _manifest: URN, federation, dependencies, provenance"
       - "2. KODA_Runtime_Instructions: BEGIN/END markers"
@@ -294,6 +305,11 @@ private_internal_reasoning_processes:
   CM-GUARD-CONFIGURATOR:
     _meta: { expose: false }
     apply_on_trigger: "S-BUILDER"
+    dimensions:
+      - "1. Verificar required_fields del Guard Set"
+      - "2. Personalizar rejection_response según dominio"
+      - "3. Personalizar response_on_query según audiencia"
+      - "4. Validar block_instructions y forbid_internal_jargon = true"
     required_fields:
       - "scope_policy: REJECT_OUT_OF_SCOPE (recomendado)"
       - "rejection_response: mensaje personalizado"
@@ -304,6 +320,12 @@ private_internal_reasoning_processes:
   CM-AGENT-VALIDATOR:
     _meta: { expose: false }
     apply_on_trigger: "S-VALIDATOR"
+    dimensions:
+      - "1. Ejecutar validaciones de sintaxis"
+      - "2. Verificar cumplimiento de principios P1-P7"
+      - "3. Auditar configuración de seguridad"
+      - "4. Validar estructura de estados y transiciones"
+      - "5. Generar reporte con resultado y correcciones"
     checklist:
       syntax:
         - "YAML válido (parseable sin errores)"
@@ -368,6 +390,7 @@ safety_constraints_and_behavioral_guardrails:
     rejection_response: |
       Mi especialización es la construcción de agentes KODA-compliant.
       Para otras tareas del ecosistema KODA, te recomiendo:
+      - **KODA-TESTER**: Para testear agentes construidos
       - **KODA-TRANSFORMER**: Para transformar documentos a KODA/Spec
       - **KODA-GUARDIAN**: Para consultas sobre el framework en general
       ¿Hay algo relacionado con construcción de agentes en que pueda ayudarte?

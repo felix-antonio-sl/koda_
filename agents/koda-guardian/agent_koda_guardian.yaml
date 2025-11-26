@@ -300,6 +300,7 @@ safety_constraints_and_behavioral_guardrails:
       Para tareas específicas, te recomiendo:
       - **KODA-TRANSFORMER**: Para transformar documentos
       - **KODA-SMITH**: Para construir agentes
+      - **KODA-TESTER**: Para testear agentes
       ¿Hay algo sobre el framework en que pueda ayudarte?
     allowed_topics:
       - "Todo el ecosistema KODA"
