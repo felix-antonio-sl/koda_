@@ -311,9 +311,11 @@ echo ""
 
 TOTAL_ARTIFACTS=$(find knowledge -name "*.yml" 2>/dev/null | wc -l | tr -d ' ')
 TOTAL_AGENTS=$(find agents -name "*.yaml" 2>/dev/null | wc -l | tr -d ' ')
+TOTAL_SCHEMAS=$(find schemas -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
 
 echo -e "  Knowledge artifacts: ${CYAN}${TOTAL_ARTIFACTS}${NC}"
 echo -e "  Agent definitions:   ${CYAN}${TOTAL_AGENTS}${NC}"
+echo -e "  Schema files:        ${CYAN}${TOTAL_SCHEMAS}${NC}"
 
 # Check for drafts
 DRAFTS=$(grep -l "Status: Draft" knowledge/**/*.yml 2>/dev/null | wc -l | tr -d ' ')
@@ -338,9 +340,9 @@ echo ""
 CATALOG_FILE=$(find catalog -name "catalog_master_*.yml" 2>/dev/null | head -1)
 
 if [ -n "$CATALOG_FILE" ]; then
-    # Count entries in catalog
-    CATALOG_COUNT=$(grep -c "urn:" "$CATALOG_FILE" 2>/dev/null || echo "0")
-    ACTUAL_COUNT=$((TOTAL_ARTIFACTS + TOTAL_AGENTS))
+    # Count entries in catalog (only file: entries, not manifest URNs or comments)
+    CATALOG_COUNT=$(grep -E "^\s+file:" "$CATALOG_FILE" 2>/dev/null | wc -l | tr -d ' ')
+    ACTUAL_COUNT=$((TOTAL_ARTIFACTS + TOTAL_AGENTS + TOTAL_SCHEMAS))
     
     echo -e "  Catalog entries: ${CYAN}${CATALOG_COUNT}${NC}"
     echo -e "  Actual files:    ${CYAN}${ACTUAL_COUNT}${NC}"
