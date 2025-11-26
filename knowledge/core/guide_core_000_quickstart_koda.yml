@@ -3,7 +3,7 @@
 # Fast-track guide to building your first KODA-compliant agent
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
+  urn: "urn:knowledge:koda:core:quickstart:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -111,7 +111,7 @@ Step_1_Stack:
       When_To_Use: Managing the full project.
 
   Key_Principle: |
-    agent.yaml (ADP) + knowledge/*.yml (STS) = Complete Agent
+    agent.yaml (ADP) + knowledge/*.yml (KODA/Spec) = Complete Agent
 
 # =============================================================================
 # STEP 2: CREATE AGENT.YAML (15 min)
@@ -125,7 +125,7 @@ Step_2_Agent:
   Minimal_Template: |
     # KODA Agent Definition for My-First-Agent
     # ID: AGENT-FIRST-01
-    # Ref-KODA-Guide: GUIDE-KODA-MASTER-03
+    # Ref: urn:knowledge:koda:core:agent:1.0.0
     ---
     
     # === 1. IDENTITY ===
@@ -402,16 +402,16 @@ Next_Steps:
 
   After_First_Agent:
     - Step: "Read full KODA-AGENT-SPEC for advanced features"
-      Ctx_Required: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+      Ctx_Required: "urn:knowledge:koda:core:agent:1.0.0"
       
     - Step: "Learn transformation methodology for KB creation"
-      Ctx_Required: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
+      Ctx_Required: "urn:knowledge:koda:core:transform:1.0.0"
       
     - Step: "Understand full lifecycle for production agents"
-      Ctx_Required: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+      Ctx_Required: "urn:knowledge:koda:core:life:1.0.0"
       
     - Step: "Set up testing framework"
-      Ctx_Required: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
+      Ctx_Required: "urn:knowledge:koda:core:test:1.0.0"
 
   Advanced_Patterns:
     - Pattern: "Multi-state workflows with complex routing"

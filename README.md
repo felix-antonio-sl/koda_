@@ -4,6 +4,8 @@
 > **Format**: KODA-YAML (Knowledge-Oriented Declarative Architecture)  
 > **License**: CC-BY-4.0
 
+*[Versión en español](README_es.md)*
+
 ## Overview
 
 This corpus contains the foundational artifacts for **Agent Engineering** using the KODA Framework. It provides a complete, coherent framework for:
@@ -18,22 +20,51 @@ This corpus contains the foundational artifacts for **Agent Engineering** using 
 
 **New to the framework?** Start with the Quickstart guide:
 ```
-guide_core_000_quickstart_koda.yml → Build your first agent in 30 minutes
+knowledge/core/guide_core_000_quickstart_koda.yml → Build your first agent in 30 minutes
+```
+
+## Repository Structure
+
+```
+KODA/
+├── knowledge/               # All knowledge artifacts
+│   ├── core/               # Framework specifications (10 guides)
+│   │   └── guide_core_*.yml
+│   └── domains/            # Domain-specific KBs
+├── agents/                 # Agent definitions
+├── schemas/                # JSON Schemas
+├── catalog/                # Artifact inventory
+├── registry/               # Federation namespace registry
+├── scripts/                # CLI tools
+│   ├── koda              # Main CLI entry point
+│   ├── koda-init.sh      # Initialize new repo
+│   ├── koda-validate.sh  # Validate repository
+│   ├── koda-add-artifact.sh  # Create artifact (interactive)
+│   └── koda-health.sh    # Federation health check
+├── templates/              # Artifact templates
+│   ├── artifact.template.yml
+│   └── agent.template.yml
+├── .github/workflows/      # CI/CD automation
+├── sources/                # Source materials
+└── staging/                # Work-in-progress (gitignored)
 ```
 
 ## Artifact Inventory
 
+All core guides located in `knowledge/core/`:
+
 | # | File | URN | Purpose |
 |---|------|-----|---------|
-| 000 | `guide_core_000_quickstart_koda.yml` | `urn:knowledge:gorenuble:core:quickstart:1.0.0` | **Quick start guide (START HERE)** |
-| 001 | `guide_core_001_koda-spec_koda.yml` | `urn:knowledge:gorenuble:core:koda-spec:1.1.0` | KODA/Spec format specification (ROOT) |
-| 002 | `guide_core_002_koda-transform_koda.yml` | `urn:knowledge:gorenuble:core:koda-transform:1.0.0` | KODA/Spec transformation methodology |
-| 003 | `guide_core_003_koda-hub-master_koda.yml` | `urn:knowledge:gorenuble:core:koda-hub-master:1.0.0` | KODA/Hub Management |
-| 004 | `guide_core_004_koda-life-master_koda.yml` | `urn:knowledge:gorenuble:core:koda-life-master:1.0.0` | KODA/Life Management |
-| 005 | `guide_core_005_koda-agent-spec_koda.yml` | `urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0` | KODA/Agent Protocol spec |
-| 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0` | KODA/Agent construction methodology |
-| 007 | `guide_core_007_koda-test-spec_koda.yml` | `urn:knowledge:gorenuble:core:koda-test-spec:1.0.0` | KODA/Test Framework |
-| 008 | `guide_core_008_schema-versioning_koda.yml` | `urn:knowledge:gorenuble:core:schema-versioning:1.0.0` | Schema versioning policy |
+| 000 | `guide_core_000_quickstart_koda.yml` | `urn:knowledge:koda:core:quickstart:1.0.0` | **Quick start guide (START HERE)** |
+| 001 | `guide_core_001_koda-spec_koda.yml` | `urn:knowledge:koda:core:spec:1.0.0` | KODA/Spec format specification (ROOT) |
+| 002 | `guide_core_002_koda-transform_koda.yml` | `urn:knowledge:koda:core:transform:1.0.0` | KODA/Spec transformation methodology |
+| 003 | `guide_core_003_koda-hub-master_koda.yml` | `urn:knowledge:koda:core:hub:1.0.0` | KODA/Hub Management |
+| 004 | `guide_core_004_koda-life-master_koda.yml` | `urn:knowledge:koda:core:life:1.0.0` | KODA/Life Management |
+| 005 | `guide_core_005_koda-agent-spec_koda.yml` | `urn:knowledge:koda:core:agent:1.0.0` | KODA/Agent Protocol spec |
+| 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:koda:core:agent-construct:1.0.0` | KODA/Agent construction methodology |
+| 007 | `guide_core_007_koda-test-spec_koda.yml` | `urn:knowledge:koda:core:test:1.0.0` | KODA/Test Framework |
+| 008 | `guide_core_008_schema-versioning_koda.yml` | `urn:knowledge:koda:core:schema-versioning:1.0.0` | Schema versioning policy |
+| 009 | `guide_core_009_federation-protocol_koda.yml` | `urn:knowledge:koda:core:federation:1.0.0` | Cross-repo federation protocol |
 
 ### Schema Files
 
@@ -69,7 +100,7 @@ koda-spec (001) ─────────────────────�
 - YAML-compliant format for RAG-optimized knowledge artifacts
 - **Principles**: Fidelity, Density, Structural Semantics, Internal Referencing
 - **Lexicon**: 20 Tier-1 keywords + open Tier-2 semantic vocabulary
-- **New in v1.1**: `Ctx_Required` and `Ctx_Optional` for explicit dependency classification
+- **Keywords**: `Ctx_Required` and `Ctx_Optional` for explicit dependency classification
 
 ### KODA/Hub (Knowledge Hub Management)
 
@@ -163,14 +194,58 @@ All artifacts pass:
 ### Quick Validation Commands
 
 ```bash
-# YAML syntax validation
+# Using KODA CLI (recommended)
+./scripts/koda validate
+
+# Manual YAML validation
 for f in guide_core_*.yml; do
   python -c "import yaml; yaml.safe_load(open('$f'))" && echo "✓ $f" || echo "✗ $f"
 done
 
 # Agent.yaml schema validation (requires ajv-cli)
 npm install -g ajv-cli
-ajv validate --spec=draft2020 -s schemas/koda-agent-schema-1.0.0.json -d agent.yaml
+ajv validate -s schemas/koda-agent-schema-1.0.0.json -d agents/*/agent*.yaml
+
+# Or use built-in strict validation
+./scripts/koda validate --strict
+```
+
+## CLI Tools
+
+KODA includes interactive CLI tools for common operations:
+
+```bash
+# See all commands
+./scripts/koda --help
+
+# Initialize a new KODA-compliant repository
+./scripts/koda init <namespace> --type commercial
+
+# Validate current repository
+./scripts/koda validate
+./scripts/koda validate --strict  # Include JSON Schema validation
+
+# Add new artifact interactively
+./scripts/koda add
+
+# Check federation health
+./scripts/koda health
+./scripts/koda health --full  # Include remote checks
+
+# Sync with federation registry
+./scripts/koda sync
+```
+
+### Global Installation (optional)
+
+```bash
+# Add to PATH for global access
+echo 'export PATH="$HOME/Developer/koda/scripts:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+# Now use from anywhere
+koda validate
+koda health
 ```
 
 ## Naming Convention
@@ -211,9 +286,7 @@ format: koda
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.0.0 | 2025-11-25 | **KODA Rebrand**: Renamed from STS to KODA Framework. Full terminology migration. |
-| 1.1.0 | 2025-11-25 | Added: quickstart guide, KODA/Test framework, JSON Schema, schema versioning policy. |
-| 1.0.0 | 2025-11-25 | Initial baseline release. All artifacts standardized. |
+| 1.0.0 | 2025-11-25 | Initial release. Complete KODA Framework with 10 core guides (including Federation Protocol), JSON Schema, reference agent, CLI tools, templates, registry, and GitHub Actions automation. |
 
 ## Authors
 

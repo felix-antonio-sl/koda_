@@ -1,0 +1,79 @@
+name: 🔗 Federation Issue
+description: Report a problem with cross-repository federation
+title: "[Federation] "
+labels: ["federation", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a federation issue. Please provide as much detail as possible.
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      options:
+        - URN resolution failure
+        - Namespace unreachable
+        - Dependency version conflict
+        - Resolver configuration error
+        - Sync failure
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: namespace
+    attributes:
+      label: Affected Namespace
+      description: Which namespace is affected?
+      placeholder: "e.g., koda, sanixai, gorenuble"
+    validations:
+      required: true
+
+  - type: textarea
+    id: urn
+    attributes:
+      label: Affected URN(s)
+      description: List the URN(s) that are failing
+      placeholder: |
+        urn:knowledge:koda:core:spec:1.0.0
+        urn:knowledge:sanixai:legal:contracts:1.0.0
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened? What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: resolver-config
+    attributes:
+      label: Resolver Configuration
+      description: Paste relevant sections of your .knowledge-resolver.yml
+      render: yaml
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: Any error messages or logs
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Troubleshooting Checklist
+      options:
+        - label: I verified the namespace is declared in my resolver
+        - label: I tested the fallback URL manually
+        - label: I ran `koda validate` (or equivalent)
+        - label: I checked the upstream repository is accessible

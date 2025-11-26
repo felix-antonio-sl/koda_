@@ -3,7 +3,7 @@
 # Governance framework for KODA schema evolution
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
+  urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -15,15 +15,16 @@ _manifest:
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
         reason: "Format specification"
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent:1.0.0"
         reason: "Agent definition schema"
   provenance:
     created_by: "FS"
     created_at: "2025-11-25"
     last_modified_by: "FS"
     last_modified_at: "2025-11-25"
+    changelog: "Unified to single version 1.0.0"
     signature: null
 
 ID: SCHEMA-VERSIONING-01
@@ -135,22 +136,15 @@ Schema_Registry:
   
   KODA_Spec_Schema_Versions:
     - Version: "1.0.0"
-      Status: Deprecated
-      Release_Date: "2025-11-21"
-      Deprecation_Date: "2025-11-25"
-      Keywords_Count: 18
-      Breaking_From: null
-      
-    - Version: "1.1.0"
       Status: Current
-      Release_Date: "2025-11-25"
+      Release_Date: "2025-11-21"
       Deprecation_Date: null
       Keywords_Count: 20
       Breaking_From: null
-      Changes:
-        - "Added Ctx_Required keyword"
-        - "Added Ctx_Optional keyword"
-        - "Updated REFERENCE POLICY"
+      Keywords_Included:
+        - "Ctx_Required"
+        - "Ctx_Optional"
+        - "Full REFERENCE POLICY"
 
   KODA_Agent_Schema_Versions:
     - Version: "1.0.0"
@@ -162,7 +156,7 @@ Schema_Registry:
       Namespaces_Count: 7
       
   Schema_Files:
-    - URN: "urn:knowledge:gorenuble:core:koda-agent-schema:1.0.0"
+    - URN: "urn:knowledge:koda:core:agent-schema:1.0.0"
       File: "schemas/koda-agent-schema-1.0.0.json"
       Format: "JSON Schema draft/2020-12"
 
@@ -364,10 +358,9 @@ Compatibility_Matrix:
   
   KODA_Spec_Compatibility:
     Table:
-      Headers: [Artifact_STS_Version, Schema_1.0.0, Schema_1.1.0]
+      Headers: [Artifact_Version, Schema_1.0.0]
       Rows:
-        - ["1.0.0", "✓ Full", "✓ Full (backward compatible)"]
-        - ["1.1.0 (uses Ctx_Required)", "✗ Unknown keyword", "✓ Full"]
+        - ["1.0.0", "✓ Full"]
   
   KODA_Agent_Compatibility:
     Table:
@@ -401,7 +394,7 @@ Validation_Tooling:
       Install: "pip install yamllint"
       Usage: "yamllint agent.yaml"
       
-    - Tool: sts-validate (planned)
+    - Tool: koda-validate (planned)
       Purp: Full KODA validation with version detection
       Status: Planned for v1.1.0
       Features:

@@ -1,0 +1,116 @@
+name: 📝 Register Namespace
+description: Request to register a new namespace in the KODA federation
+title: "Register namespace: "
+labels: ["namespace-registration"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Register Your Namespace
+        
+        Fill out this form to register your repository as a KODA-compliant namespace.
+
+  - type: input
+    id: namespace
+    attributes:
+      label: Namespace Name
+      description: Lowercase, unique identifier for your namespace
+      placeholder: "acme"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Namespace Type
+      options:
+        - commercial
+        - institutional
+        - personal
+        - opensource
+    validations:
+      required: true
+
+  - type: input
+    id: owner
+    attributes:
+      label: Owner/Organization
+      placeholder: "ACME Corporation"
+    validations:
+      required: true
+
+  - type: input
+    id: repository
+    attributes:
+      label: Repository URL
+      description: Full GitHub repository path
+      placeholder: "github.com/acme-corp/knowledge-hub"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: visibility
+    attributes:
+      label: Visibility
+      options:
+        - public
+        - internal
+        - private
+    validations:
+      required: true
+
+  - type: input
+    id: license
+    attributes:
+      label: License
+      placeholder: "CC-BY-4.0, MIT, Proprietary, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Brief description of your knowledge base
+      placeholder: "Knowledge base for ACME products and services"
+    validations:
+      required: true
+
+  - type: textarea
+    id: domains
+    attributes:
+      label: Domains
+      description: List the knowledge domains in your repository (one per line)
+      placeholder: |
+        products
+        services
+        internal
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: compliance
+    attributes:
+      label: KODA Compliance Checklist
+      description: Confirm your repository meets these requirements
+      options:
+        - label: ".knowledge-resolver.yml exists at repository root"
+          required: true
+        - label: "_meta.resolver_version is 1.0.0 or higher"
+          required: true
+        - label: "self.namespace matches the namespace I'm registering"
+          required: true
+        - label: "koda namespace is configured as upstream with fallback URL"
+          required: true
+        - label: "catalog/catalog_master_{namespace}.yml exists"
+          required: true
+        - label: "Repository is accessible (public) or I'll provide access"
+          required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Any other relevant information
+    validations:
+      required: false

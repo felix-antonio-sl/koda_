@@ -1,0 +1,164 @@
+#!/bin/bash
+# KODA CLI - Main entry point
+# Usage: koda <command> [options]
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+VERSION="1.0.0"
+
+show_banner() {
+    echo -e "${BLUE}"
+    echo "  ██╗  ██╗ ██████╗ ██████╗  █████╗ "
+    echo "  ██║ ██╔╝██╔═══██╗██╔══██╗██╔══██╗"
+    echo "  █████╔╝ ██║   ██║██║  ██║███████║"
+    echo "  ██╔═██╗ ██║   ██║██║  ██║██╔══██║"
+    echo "  ██║  ██╗╚██████╔╝██████╔╝██║  ██║"
+    echo "  ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝"
+    echo -e "${NC}"
+    echo -e "  ${CYAN}Knowledge-Oriented Design Architecture${NC}"
+    echo -e "  Version ${VERSION}"
+    echo ""
+}
+
+show_help() {
+    show_banner
+    echo -e "${BOLD}Usage:${NC} koda <command> [options]"
+    echo ""
+    echo -e "${BOLD}Commands:${NC}"
+    echo ""
+    echo -e "  ${GREEN}init${NC} <namespace>     Initialize a new KODA-compliant repository"
+    echo -e "  ${GREEN}validate${NC}             Validate current repository structure"
+    echo -e "  ${GREEN}add${NC}                  Add a new artifact (interactive)"
+    echo -e "  ${GREEN}health${NC}               Check federation health status"
+    echo -e "  ${GREEN}sync${NC}                 Sync with federation registry"
+    echo ""
+    echo -e "${BOLD}Options:${NC}"
+    echo ""
+    echo -e "  ${CYAN}--help, -h${NC}           Show this help message"
+    echo -e "  ${CYAN}--version, -v${NC}        Show version"
+    echo ""
+    echo -e "${BOLD}Examples:${NC}"
+    echo ""
+    echo -e "  ${CYAN}koda init acme${NC}              Create new repo for 'acme' namespace"
+    echo -e "  ${CYAN}koda validate${NC}               Check if current repo is valid"
+    echo -e "  ${CYAN}koda add${NC}                    Add new artifact interactively"
+    echo -e "  ${CYAN}koda health --full${NC}          Full federation health check"
+    echo ""
+    echo -e "${BOLD}Documentation:${NC}"
+    echo ""
+    echo -e "  https://github.com/koda-framework/koda"
+    echo ""
+}
+
+show_version() {
+    echo "KODA CLI v${VERSION}"
+}
+
+# Main command router
+case "${1:-}" in
+    init)
+        shift
+        if [ -f "${SCRIPT_DIR}/koda-init.sh" ]; then
+            "${SCRIPT_DIR}/koda-init.sh" "$@"
+        else
+            echo -e "${RED}Error: koda-init.sh not found${NC}"
+            exit 1
+        fi
+        ;;
+    
+    validate)
+        shift
+        if [ -f "${SCRIPT_DIR}/koda-validate.sh" ]; then
+            "${SCRIPT_DIR}/koda-validate.sh" "$@"
+        else
+            echo -e "${RED}Error: koda-validate.sh not found${NC}"
+            exit 1
+        fi
+        ;;
+    
+    add|new|create)
+        shift
+        if [ -f "${SCRIPT_DIR}/koda-add-artifact.sh" ]; then
+            "${SCRIPT_DIR}/koda-add-artifact.sh" "$@"
+        else
+            echo -e "${RED}Error: koda-add-artifact.sh not found${NC}"
+            exit 1
+        fi
+        ;;
+    
+    health|status)
+        shift
+        if [ -f "${SCRIPT_DIR}/koda-health.sh" ]; then
+            "${SCRIPT_DIR}/koda-health.sh" "$@"
+        else
+            echo -e "${RED}Error: koda-health.sh not found${NC}"
+            exit 1
+        fi
+        ;;
+    
+    sync)
+        shift
+        echo -e "${YELLOW}Syncing with federation registry...${NC}"
+        echo ""
+        
+        # Update last_sync timestamp
+        if [ -f ".knowledge-resolver.yml" ]; then
+            NEW_SYNC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            
+            # Check if we can fetch registry (try both remote and local)
+            REGISTRY_OK=false
+            
+            if curl -sf --connect-timeout 5 "https://raw.githubusercontent.com/koda-framework/koda/main/registry/namespaces.yml" > /dev/null 2>&1; then
+                echo -e "  ${GREEN}✓${NC} Remote registry reachable"
+                REGISTRY_OK=true
+            elif [ -f "registry/namespaces.yml" ]; then
+                echo -e "  ${YELLOW}◐${NC} Using local registry (remote unavailable)"
+                REGISTRY_OK=true
+            else
+                echo -e "  ${YELLOW}⚠${NC} Registry unavailable (continuing anyway)"
+                REGISTRY_OK=true  # Allow sync even without registry
+            fi
+            
+            if [ "$REGISTRY_OK" = true ]; then
+                # Update timestamp
+                if [[ "$OSTYPE" == "darwin"* ]]; then
+                    sed -i '' "s/last_sync:.*/last_sync: \"${NEW_SYNC}\"/" .knowledge-resolver.yml
+                else
+                    sed -i "s/last_sync:.*/last_sync: \"${NEW_SYNC}\"/" .knowledge-resolver.yml
+                fi
+                
+                echo -e "  ${GREEN}✓${NC} Updated last_sync to ${NEW_SYNC}"
+            fi
+        else
+            echo -e "${RED}Error: Not in a KODA repository${NC}"
+            exit 1
+        fi
+        
+        echo ""
+        echo -e "${GREEN}Sync complete!${NC}"
+        ;;
+    
+    --version|-v)
+        show_version
+        ;;
+    
+    --help|-h|help|"")
+        show_help
+        ;;
+    
+    *)
+        echo -e "${RED}Unknown command: $1${NC}"
+        echo ""
+        echo "Run 'koda --help' for usage information."
+        exit 1
+        ;;
+esac

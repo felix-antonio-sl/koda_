@@ -3,7 +3,7 @@
 # Foundation layer of the knowledge engineering stack
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
+  urn: "urn:knowledge:koda:core:spec:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -23,7 +23,7 @@ _manifest:
     signature: null
 
 ID: KODA-SPEC-01
-Version: 1.1.0
+Version: 1.0.0
 Status: Published
 Human-Creator: FS
 Human-Editor: FS

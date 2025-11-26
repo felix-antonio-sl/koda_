@@ -1,6 +1,6 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:knowledge:gorenuble:core:koda-agent-schema:1.0.0",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:knowledge:koda:core:agent-schema:1.0.0",
   "title": "KODA Agent Protocol Schema",
   "description": "JSON Schema for validating agent.yaml files conforming to KODA/Agent v1.0.0",
   "type": "object",
@@ -14,6 +14,85 @@
     "self_evaluation_and_correction_mechanisms"
   ],
   "properties": {
+    "_manifest": {
+      "type": "object",
+      "description": "Agent manifest with federation and compatibility metadata",
+      "required": ["urn", "compatibility"],
+      "properties": {
+        "urn": {
+          "type": "string",
+          "pattern": "^urn:knowledge:[a-z][a-z0-9-]*:agents:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$",
+          "description": "Unique identifier for the agent"
+        },
+        "federation": {
+          "type": "object",
+          "properties": {
+            "visibility": {
+              "type": "string",
+              "enum": ["public", "internal", "private"]
+            },
+            "license": { "type": "string" }
+          }
+        },
+        "compatibility": {
+          "type": "object",
+          "required": ["min_consumer_version", "requires_koda_agent_schema"],
+          "properties": {
+            "min_consumer_version": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$",
+              "description": "Minimum version of consumer that can use this agent"
+            },
+            "requires_koda_agent_schema": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$",
+              "description": "Version of KODA/Agent schema this agent conforms to"
+            }
+          }
+        },
+        "resolution": {
+          "type": "object",
+          "properties": {
+            "canonical_url": { "type": "string" }
+          }
+        },
+        "dependencies": {
+          "type": "object",
+          "properties": {
+            "catalog": {
+              "type": "object",
+              "properties": {
+                "urn": { "type": "string" },
+                "file": { "type": "string" },
+                "role": { "type": "string", "enum": ["SOURCE_OF_TRUTH", "REFERENCE"] }
+              }
+            },
+            "requires": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "urn": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "created_by": { "type": "string" },
+            "created_at": { "type": "string" },
+            "last_modified_at": { "type": "string" },
+            "version_notes": { "type": "string" },
+            "model_collaborators": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
     "KODA_Runtime_Instructions": {
       "type": "object",
       "description": "Runtime instructions that transform LLM into agent interpreter",
@@ -80,7 +159,7 @@
           "properties": {
             "policy": {
               "type": "string",
-              "enum": ["EXCLUSIVE_USE", "ALLOW_GENERAL_KNOWLEDGE"]
+              "enum": ["EXCLUSIVE_USE", "ALLOW_GENERAL_KNOWLEDGE", "LLM_NATIVE", "WEB_AUGMENTED", "HYBRID_WEB_KB"]
             },
             "source_artifacts": {
               "type": "array",
@@ -121,7 +200,7 @@
         },
         "uncertainty_protocol": {
           "type": "string",
-          "enum": ["DECLARE_ABSENCE", "DECLARE_UNCERTAINTY_WITH_REASONING"]
+          "enum": ["DECLARE_ABSENCE", "DECLARE_UNCERTAINTY_WITH_REASONING", "SEARCH_WEB_FALLBACK"]
         },
         "citation_formatting": {
           "type": "object",
@@ -129,8 +208,52 @@
           "properties": {
             "style": {
               "type": "string",
-              "enum": ["OFFICIAL_SOURCE_NAME", "FILENAME", "INLINE_REASONING_TRACE"]
+              "enum": ["OFFICIAL_SOURCE_NAME", "FILENAME", "INLINE_REASONING_TRACE", "WEB_URL", "HYBRID_SOURCE"]
             }
+          }
+        },
+        "catalog_resolution": {
+          "type": "object",
+          "description": "Catalog-based URN resolution configuration",
+          "properties": {
+            "catalog_urn": {
+              "type": "string",
+              "pattern": "^urn:knowledge:[a-z][a-z0-9-]*:catalog:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
+            },
+            "resolution_strategy": {
+              "type": "string",
+              "enum": ["CATALOG_FIRST", "STATIC_ONLY", "CATALOG_ONLY"]
+            },
+            "fallback": {
+              "type": "string",
+              "enum": ["STATIC_ROUTING", "NONE", "ERROR"]
+            },
+            "instructions": { "type": "string" }
+          }
+        },
+        "web_search_configuration": {
+          "type": "object",
+          "description": "Web search configuration for WEB_AUGMENTED and HYBRID agents",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "provider": {
+              "type": "string",
+              "enum": ["native", "tavily", "serper", "brave", "google"]
+            },
+            "search_scope": {
+              "type": "string",
+              "enum": ["general", "academic", "news", "domain_specific"]
+            },
+            "max_results": { "type": "integer", "minimum": 1, "maximum": 20 },
+            "freshness": {
+              "type": "string",
+              "enum": ["any", "day", "week", "month", "year"]
+            },
+            "domain_filter": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "citation_required": { "type": "boolean" }
           }
         }
       }
@@ -193,7 +316,7 @@
       "patternProperties": {
         "^CM-[A-Z0-9-]+$": {
           "type": "object",
-          "required": ["_meta", "dimensions"],
+          "required": ["_meta"],
           "properties": {
             "_meta": {
               "type": "object",
@@ -205,16 +328,42 @@
                 }
               }
             },
+            "purpose": { "type": "string" },
             "dimensions": {
               "type": "array",
               "items": { "type": "string" },
               "minItems": 1
             },
+            "process": {
+              "type": "array",
+              "items": { "type": "string" },
+              "maxItems": 5
+            },
+            "routing_map": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "query_category": { "type": "string" },
+                  "route_to": { "type": "string" }
+                }
+              }
+            },
+            "resolution_protocol": { "type": "string" },
+            "catalog_sections": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "uncertainty_triggers": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
             "apply_on_trigger": {
               "type": "string",
               "description": "Documentation of invoking state"
             }
-          }
+          },
+          "additionalProperties": true
         }
       },
       "additionalProperties": false
@@ -333,10 +482,10 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^IF check '.+' fails -> (REFINE_DRAFT_INTERNALLY|TRANSITION_TO_STATE: S-[A-Z0-9-]+)$"
+            "pattern": "^IF .+ fails? -> .+$"
           },
           "minItems": 1,
-          "description": "Actions on failed checks"
+          "description": "Actions on failed checks. Format: IF <condition> fails -> <action>"
         }
       }
     },

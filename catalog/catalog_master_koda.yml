@@ -2,7 +2,7 @@
 # Central inventory of all KODA artifacts
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:catalog:master:1.0.0"
+  urn: "urn:knowledge:koda:catalog:master:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -14,83 +14,116 @@ _manifest:
 ID: KODA-CATALOG-MASTER-01
 Version: 1.0.0
 Status: Published
+Version-Notes: "v1.0.0 - Initial release with complete KODA ecosystem"
 
 Catalog:
   Core_Guides:
-    - urn: "urn:knowledge:gorenuble:core:quickstart:1.0.0"
+    - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
       title: "KODA Quickstart Guide"
-      file: "guide_core_000_quickstart_koda.yml"
+      file: "knowledge/core/guide_core_000_quickstart_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-spec:1.1.0"
+    - urn: "urn:knowledge:koda:core:spec:1.0.0"
       title: "KODA/Spec Specification"
-      file: "guide_core_001_koda-spec_koda.yml"
+      file: "knowledge/core/guide_core_001_koda-spec_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-transform:1.0.0"
+    - urn: "urn:knowledge:koda:core:transform:1.0.0"
       title: "KODA Transformation Methodology"
-      file: "guide_core_002_koda-transform_koda.yml"
+      file: "knowledge/core/guide_core_002_koda-transform_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-hub-master:1.0.0"
+    - urn: "urn:knowledge:koda:core:hub:1.0.0"
       title: "KODA/Hub Management Guide"
-      file: "guide_core_003_koda-hub-master_koda.yml"
+      file: "knowledge/core/guide_core_003_koda-hub-master_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+    - urn: "urn:knowledge:koda:core:life:1.0.0"
       title: "KODA/Life Management Guide"
-      file: "guide_core_004_koda-life-master_koda.yml"
+      file: "knowledge/core/guide_core_004_koda-life-master_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+    - urn: "urn:knowledge:koda:core:agent:1.0.0"
       title: "KODA/Agent Protocol Specification"
-      file: "guide_core_005_koda-agent-spec_koda.yml"
+      file: "knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
       status: published
-      
-    - urn: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
+    - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
       title: "KODA/Agent Construction Methodology"
-      file: "guide_core_006_koda-agent-construct_koda.yml"
+      file: "knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:koda-test-spec:1.0.0"
+    - urn: "urn:knowledge:koda:core:test:1.0.0"
       title: "KODA/Test Framework Specification"
-      file: "guide_core_007_koda-test-spec_koda.yml"
+      file: "knowledge/core/guide_core_007_koda-test-spec_koda.yml"
       status: published
       
-    - urn: "urn:knowledge:gorenuble:core:schema-versioning:1.0.0"
+    - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
       title: "Schema Versioning Policy"
-      file: "guide_core_008_schema-versioning_koda.yml"
+      file: "knowledge/core/guide_core_008_schema-versioning_koda.yml"
+      status: published
+      
+    - urn: "urn:knowledge:koda:core:federation:1.0.0"
+      title: "Federation Protocol"
+      file: "knowledge/core/guide_core_009_federation-protocol_koda.yml"
       status: published
 
   Schemas:
-    - urn: "urn:knowledge:gorenuble:core:koda-agent-schema:1.0.0"
+    - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       title: "KODA/Agent JSON Schema"
       file: "schemas/koda-agent-schema-1.0.0.json"
       status: published
 
   Agents:
-    - urn: "urn:knowledge:gorenuble:agents:koda-architect:1.0.0"
+    - urn: "urn:knowledge:koda:agents:architect:1.0.0"
       title: "KODA Architect Agent"
+      description: "Official agent embodying the KODA Framework"
       file: "agents/knowledge-architect/agent_koda_architect.yaml"
       status: published
-      
-    - urn: "urn:knowledge:gorenuble:agents:knowledge-architect:1.0.0"
-      title: "Compositional Knowledge Architect Agent"
-      file: "agents/knowledge-architect/agent.yaml"
+      primary: true
+
+    - urn: "urn:knowledge:koda:agents:transformer:1.0.0"
+      title: "KODA Transformer Agent"
+      description: "Specialist for document transformation and KODA artifact auditing"
+      file: "agents/koda-transformer/agent_koda_transformer.yaml"
       status: published
+
+    - urn: "urn:knowledge:koda:agents:smith:1.0.0"
+      title: "KODA Smith Agent"
+      description: "Specialist for building KODA-compliant agent definitions"
+      file: "agents/koda-smith/agent_koda_smith.yaml"
+      status: published
+
+    - urn: "urn:knowledge:koda:agents:guardian:1.0.0"
+      title: "KODA Guardian Agent"
+      description: "Representative, defender, and evangelist of the KODA Framework"
+      file: "agents/koda-guardian/agent_koda_guardian.yaml"
+      status: published
+
+    - urn: "urn:knowledge:koda:agents:tester:1.0.0"
+      title: "KODA Tester Agent"
+      description: "Specialist for testing KODA-compliant agents with simulation capabilities"
+      file: "agents/koda-tester/agent_koda_tester.yaml"
+      status: published
+
+    - urn: "urn:knowledge:koda:agents:sim-orchestrator:1.0.0"
+      title: "KODA Sim Orchestrator Agent"
+      description: "Higher-Order Agent for simulated testing with transparent evidence marking"
+      file: "agents/koda-sim-orchestrator/agent_koda_sim_orchestrator.yaml"
+      status: published
+      higher_order: true
 
   Domains: []
     # Future domain-specific knowledge bases will be registered here
     # Example:
-    # - urn: "urn:knowledge:gorenuble:legal:contracts:1.0.0"
+    # - urn: "urn:knowledge:sanixai:legal:contracts:1.0.0"
     #   title: "Contracts Knowledge Base"
     #   file: "domains/legal/kb_legal_001_contracts_koda.yml"
     #   status: draft
 
 Statistics:
-  total_artifacts: 12
-  core_guides: 9
+  total_artifacts: 17
+  core_guides: 10
   schemas: 1
-  agents: 2
+  agents: 6
   domains: 0
   last_updated: "2025-11-25"

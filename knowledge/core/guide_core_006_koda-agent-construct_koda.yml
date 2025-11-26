@@ -3,7 +3,7 @@
 # Prescriptive methodology for building KODA-compliant agents
 
 _manifest:
-  urn: "urn:knowledge:gorenuble:core:koda-agent-construct:1.0.0"
+  urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
   federation:
     visibility: public
     license: "CC-BY-4.0"
@@ -11,15 +11,15 @@ _manifest:
     min_consumer_version: "1.0.0"
     breaking_changes_from: null
   resolution:
-    canonical_url: "file://knowledge/core/guide_core_006_koda-agent-construct_sts.yml"
+    canonical_url: "file://knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
     mirrors: []
   dependencies:
     requires:
-      - urn: "urn:knowledge:gorenuble:core:koda-agent-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:agent:1.0.0"
         reason: "KODA/Agent schema specification"
-      - urn: "urn:knowledge:gorenuble:core:koda-spec:1.0.0"
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
         reason: "Structural format specification"
-      - urn: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+      - urn: "urn:knowledge:koda:core:life:1.0.0"
         reason: "Agent lifecycle integration"
   provenance:
     created_by: "FS"
@@ -36,6 +36,7 @@ Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-06-29
 Modification-Date: 2025-11-25
+Version-Notes: "v1.0.0 - Initial release with complete construction methodology including HOA support"
 Source: GUIDE-KODA-MASTER-03
 Ctx: Prescriptive methodology for constructing KODA-compliant AI agents
 
@@ -150,14 +151,58 @@ Phase2_Architecture:
       Constraint: Public process blocks <= 5 steps
       Output: Cognitive model specifications
 
-    - Step: Design KB Guidance Map
+    - Step: Determine Knowledge Mode
+      Proc:
+        - Evaluate knowledge requirements for agent
+        - Select appropriate policy based on needs
+        - Configure corresponding components
+      Decision_Matrix:
+        - IF curated domain knowledge required -> KB_BASED (EXCLUSIVE_USE or ALLOW_GENERAL_KNOWLEDGE)
+        - IF real-time data needed + domain KB -> HYBRID (HYBRID_WEB_KB)
+        - IF real-time data only, no domain KB -> WEB_AUGMENTED
+        - IF general reasoning, no specific data -> LLM_NATIVE
+      Output: Knowledge policy selection
+
+    - Step: Design Catalog Resolution (KB-BASED and HYBRID only)
+      Condition: policy ∈ {EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, HYBRID_WEB_KB}
+      Proc:
+        - Identify namespace catalog URN
+        - Define resolution_strategy (CATALOG_FIRST recommended)
+        - Create CM-CATALOG-RESOLVER for URN-to-file resolution
+        - Configure fallback behavior (STATIC_ROUTING)
+      Skip_If: policy ∈ {LLM_NATIVE, WEB_AUGMENTED}
+      Output: Catalog resolution configuration
+
+    - Step: Design KB Guidance Map (KB-BASED and HYBRID only)
+      Condition: policy ∈ {EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, HYBRID_WEB_KB}
       Proc:
         - List all knowledge topics/domains
-        - Map each topic to specific source artifact
+        - Map each topic to specific source artifact URN
         - Create CM-KB-GUIDANCE with explicit routing
-        - Ensure every KB access path is documented
-      Prohib: Implicit document selection
-      Output: KB Guidance cognitive model
+        - Ensure every KB access uses CM-CATALOG-RESOLVER first
+      Skip_If: policy ∈ {LLM_NATIVE, WEB_AUGMENTED}
+      Prohib: Implicit document selection, direct file access
+      Output: KB Guidance cognitive model with catalog integration
+
+    - Step: Design Web Search Configuration (WEB policies only)
+      Condition: policy ∈ {WEB_AUGMENTED, HYBRID_WEB_KB}
+      Proc:
+        - Select web search provider (native, tavily, serper, brave, bing)
+        - Define search scope (general, academic, news, domain_specific)
+        - Configure freshness requirements (any, day, week, month)
+        - Set domain whitelist/blacklist if needed
+        - Create CM-WEB-SEARCH cognitive model
+      Skip_If: policy ∈ {EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, LLM_NATIVE}
+      Output: Web search configuration + CM-WEB-SEARCH
+
+    - Step: Design LLM Boundary Handling (LLM_NATIVE only)
+      Condition: policy = LLM_NATIVE
+      Proc:
+        - Define knowledge domains agent can address
+        - Create uncertainty thresholds
+        - Configure LLM_BOUNDARY check in evaluation
+      Skip_If: policy ≠ LLM_NATIVE
+      Output: LLM boundary configuration
 
     - Step: Design Self-Evaluation Checklist
       Proc:
@@ -179,7 +224,7 @@ Phase3_Construction:
       Template: |
         # KODA Agent Definition for <AGENT_NAME>
         # ID: <AGENT_ID>
-        # Ref-KODA-Guide: GUIDE-KODA-MASTER-03
+        # Ref: urn:knowledge:koda:core:agent:1.0.0
         ---
 
     - Step: Add KODA Runtime Instructions
@@ -213,9 +258,71 @@ Phase3_Construction:
     - Step: Build Knowledge Block
       Path: knowledge_base_interaction_and_governance_rules
       Contains:
+        - catalog_resolution (optional for KB-less agents)
         - usage_policy_and_source_management (policy, source_artifacts)
+        - web_search_configuration (for WEB policies)
         - uncertainty_protocol
         - citation_formatting
+      
+      Templates_By_Policy:
+        KB_BASED_Template: |
+          catalog_resolution:
+            catalog_urn: "urn:knowledge:{namespace}:catalog:master:1.0.0"
+            resolution_strategy: CATALOG_FIRST
+            fallback: STATIC_ROUTING
+          usage_policy_and_source_management:
+            policy: EXCLUSIVE_USE  # or ALLOW_GENERAL_KNOWLEDGE
+            source_artifacts:
+              - urn: "urn:knowledge:{namespace}:{domain}:{artifact}:1.0.0"
+          uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
+          citation_formatting:
+            style: OFFICIAL_SOURCE_NAME
+
+        LLM_NATIVE_Template: |
+          # No catalog_resolution needed
+          usage_policy_and_source_management:
+            policy: LLM_NATIVE
+            # No source_artifacts needed
+          uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
+          citation_formatting:
+            style: INLINE_REASONING_TRACE
+
+        WEB_AUGMENTED_Template: |
+          # No catalog_resolution needed
+          usage_policy_and_source_management:
+            policy: WEB_AUGMENTED
+            # No source_artifacts needed
+          web_search_configuration:
+            enabled: true
+            provider: native  # or tavily, serper, brave, bing
+            search_scope: general  # or academic, news, domain_specific
+            max_results: 5
+            freshness: any  # or day, week, month, year
+            citation_required: true
+          uncertainty_protocol: SEARCH_WEB_FALLBACK
+          citation_formatting:
+            style: WEB_URL
+
+        HYBRID_WEB_KB_Template: |
+          catalog_resolution:
+            catalog_urn: "urn:knowledge:{namespace}:catalog:master:1.0.0"
+            resolution_strategy: CATALOG_FIRST
+            fallback: STATIC_ROUTING
+          usage_policy_and_source_management:
+            policy: HYBRID_WEB_KB
+            source_artifacts:
+              - urn: "urn:knowledge:{namespace}:{domain}:{artifact}:1.0.0"
+          web_search_configuration:
+            enabled: true
+            provider: native
+            search_scope: domain_specific
+            max_results: 3
+            freshness: week
+            domain_whitelist: ["example.com", "trusted-source.org"]
+            citation_required: true
+          uncertainty_protocol: SEARCH_WEB_FALLBACK
+          citation_formatting:
+            style: HYBRID_SOURCE
 
     - Step: Build Workflow Block
       Path: public_behavior_workflows_and_states
@@ -227,10 +334,77 @@ Phase3_Construction:
     - Step: Build Reasoning Block
       Path: private_internal_reasoning_processes
       Contains:
-        - All cognitive models with _meta expose false
-        - CM-KB-GUIDANCE with explicit mapping
+        - CM-CATALOG-RESOLVER (KB-based policies only)
+        - CM-KB-GUIDANCE (KB-based policies only)
+        - CM-WEB-SEARCH (WEB policies only)
+        - CM-CONTEXT-MANAGER (all agents)
         - Domain-specific analysis models
+        - All cognitive models with _meta expose false
       Req: Every CM must have _meta and dimensions
+      
+      Templates_By_Policy:
+        KB_BASED_CMs: |
+          CM-CATALOG-RESOLVER:
+            _meta: { expose: false }
+            purpose: "Resolver URNs consultando el catálogo como fuente de verdad"
+            process:
+              - "1. Recibir URN a resolver"
+              - "2. Buscar en catalog.Core_Guides[], catalog.Schemas[], catalog.Agents[], catalog.Domains[]"
+              - "3. Extraer 'file' del registro encontrado"
+              - "4. Retornar path para acceso al contenido"
+          
+          CM-KB-GUIDANCE:
+            _meta: { expose: false }
+            resolution_protocol: |
+              ANTES de usar routing_map:
+              1. Invocar CM-CATALOG-RESOLVER con el URN objetivo
+              2. Si catálogo tiene el URN -> usar file path del catálogo
+              3. Si no -> usar routing_map como fallback
+            routing_map:
+              - query_category: "Topic A"
+                route_to: "urn:knowledge:namespace:domain:artifact-a:1.0.0"
+
+        WEB_AUGMENTED_CMs: |
+          CM-WEB-SEARCH:
+            _meta: { expose: false }
+            purpose: "Execute web searches following web_search_configuration"
+            process:
+              - "1. Formular query de búsqueda basada en intent del usuario"
+              - "2. Aplicar filtros de scope, freshness, domain constraints"
+              - "3. Ejecutar búsqueda vía provider configurado"
+              - "4. Evaluar relevancia y credibilidad de resultados"
+              - "5. Sintetizar información con citación de fuentes"
+            constraints:
+              - "Respetar domain_whitelist/blacklist"
+              - "Citar URLs cuando citation_required=true"
+              - "Declarar incertidumbre si resultados insuficientes"
+
+        LLM_NATIVE_CMs: |
+          CM-LLM-BOUNDARY:
+            _meta: { expose: false }
+            purpose: "Monitor knowledge boundaries and declare uncertainty"
+            process:
+              - "1. Evaluar si query está dentro del dominio de conocimiento del LLM"
+              - "2. Detectar preguntas sobre eventos post-training cutoff"
+              - "3. Identificar solicitudes de datos específicos/actuales"
+              - "4. Aplicar uncertainty_protocol cuando límites excedidos"
+            uncertainty_triggers:
+              - "Eventos después de training cutoff"
+              - "Datos numéricos específicos (precios, estadísticas actuales)"
+              - "Información personal o privada"
+              - "Predicciones de futuro"
+
+        HYBRID_CMs: |
+          # Incluye tanto CM-CATALOG-RESOLVER + CM-KB-GUIDANCE como CM-WEB-SEARCH
+          # KB para conocimiento curado, Web para datos en tiempo real
+          CM-KNOWLEDGE-ROUTER:
+            _meta: { expose: false }
+            purpose: "Route queries to KB or Web based on nature"
+            process:
+              - "1. Clasificar query: domain_knowledge vs real_time_data"
+              - "2. IF domain_knowledge -> CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE"
+              - "3. IF real_time_data -> CM-WEB-SEARCH"
+              - "4. IF ambiguous -> KB first, web fallback"
 
     - Step: Build IO Block
       Path: input_output_style_format_and_interaction
@@ -283,8 +457,8 @@ Phase4_Validation:
         Pass: Consistent separation
 
       - Check: P4 Explicit Knowledge Cartography
-        Test: CM-KB-GUIDANCE exists with complete mapping
-        Pass: No implicit retrieval paths
+        Test: CM-CATALOG-RESOLVER + CM-KB-GUIDANCE exist with complete mapping
+        Pass: No implicit retrieval paths, catalog is SOURCE_OF_TRUTH
 
       - Check: P5 Semantic Abstraction
         Test: forbid_internal_jargon is true
@@ -373,20 +547,143 @@ Patterns:
   Purp: Proven architectural patterns for agent construction.
 
   Architectural_Patterns:
+    - Pattern: Catalog as Source of Truth
+      ID: PATTERN-CATALOG-SOT
+      Def: "Catalog is the authoritative source for URN-to-file resolution."
+      Principle: "Catalog First, Static Fallback"
+      Applies: KB-based policies (EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, HYBRID_WEB_KB)
+      Implementation:
+        - Declare catalog in _manifest.dependencies with role: SOURCE_OF_TRUTH
+        - Add catalog_resolution block with CATALOG_FIRST strategy
+        - Create CM-CATALOG-RESOLVER to query catalog
+        - Chain CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE for all KB access
+      Example: |
+        _manifest:
+          dependencies:
+            catalog:
+              urn: "urn:knowledge:namespace:catalog:master:1.0.0"
+              role: SOURCE_OF_TRUTH
+        
+        CM-CATALOG-RESOLVER:
+          _meta: { expose: false }
+          process:
+            - "1. Receive URN to resolve"
+            - "2. Query catalog for matching entry"
+            - "3. Return file path from catalog"
+      Res: Single source of truth, consistent resolution, easy maintenance.
+
+    - Pattern: LLM Native Knowledge
+      ID: PATTERN-LLM-NATIVE
+      Def: "Agent relies solely on LLM's pre-trained knowledge without external sources."
+      Principle: "Trust LLM, Declare Boundaries"
+      Applies: LLM_NATIVE policy only
+      Use_Cases:
+        - General-purpose assistants
+        - Creative writing agents
+        - Reasoning/analysis agents without domain-specific data needs
+        - Prototyping before KB construction
+      Implementation:
+        - Set policy: LLM_NATIVE
+        - Omit catalog_resolution and source_artifacts
+        - Create CM-LLM-BOUNDARY for uncertainty handling
+        - Configure LLM_BOUNDARY check in evaluation
+      Example: |
+        usage_policy_and_source_management:
+          policy: LLM_NATIVE
+        uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
+        
+        CM-LLM-BOUNDARY:
+          _meta: { expose: false }
+          uncertainty_triggers:
+            - "Post-cutoff events"
+            - "Specific current data"
+      Res: Lightweight agent, fast deployment, clear uncertainty boundaries.
+
+    - Pattern: Web Search Augmentation
+      ID: PATTERN-WEB-SEARCH
+      Def: "Agent uses web search for real-time information without curated KB."
+      Principle: "Search, Verify, Cite"
+      Applies: WEB_AUGMENTED policy
+      Use_Cases:
+        - News/current events agents
+        - Research assistants
+        - Price/availability checkers
+        - Trend analysis agents
+      Implementation:
+        - Set policy: WEB_AUGMENTED
+        - Configure web_search_configuration (provider, scope, freshness)
+        - Create CM-WEB-SEARCH for search execution
+        - Set uncertainty_protocol: SEARCH_WEB_FALLBACK
+        - Configure WEB_SEARCH_COMPLIANCE check
+      Example: |
+        usage_policy_and_source_management:
+          policy: WEB_AUGMENTED
+        web_search_configuration:
+          enabled: true
+          provider: native
+          search_scope: news
+          freshness: week
+          citation_required: true
+        
+        CM-WEB-SEARCH:
+          _meta: { expose: false }
+          process:
+            - "1. Formulate search query"
+            - "2. Apply scope/freshness filters"
+            - "3. Execute search"
+            - "4. Synthesize with citations"
+      Res: Real-time data access, always current, source transparency.
+
+    - Pattern: Hybrid Knowledge Router
+      ID: PATTERN-HYBRID-ROUTER
+      Def: "Agent combines curated KB with web search for comprehensive coverage."
+      Principle: "KB for depth, Web for freshness"
+      Applies: HYBRID_WEB_KB policy
+      Use_Cases:
+        - Domain experts needing current data
+        - Compliance agents with regulatory updates
+        - Product agents with market data
+      Implementation:
+        - Set policy: HYBRID_WEB_KB
+        - Configure both catalog_resolution AND web_search_configuration
+        - Create CM-KNOWLEDGE-ROUTER to classify queries
+        - Route domain queries to KB, real-time queries to web
+      Example: |
+        usage_policy_and_source_management:
+          policy: HYBRID_WEB_KB
+          source_artifacts:
+            - urn: "urn:knowledge:ns:domain:core-knowledge:1.0.0"
+        web_search_configuration:
+          enabled: true
+          search_scope: domain_specific
+          domain_whitelist: ["official-source.gov"]
+        
+        CM-KNOWLEDGE-ROUTER:
+          _meta: { expose: false }
+          process:
+            - "1. Classify: domain_knowledge vs real_time"
+            - "2. Route to KB or Web accordingly"
+      Res: Best of both worlds, depth + freshness, controlled augmentation.
+
     - Pattern: KB Guidance Pattern (Functorial)
       ID: PATTERN-KB-FUNCTOR
       Def: "Functor F: Cat_Query -> Cat_KB preserves structure from user intent to document."
       Implementation:
         - Create CM-KB-GUIDANCE cognitive model
+        - Add resolution_protocol that invokes CM-CATALOG-RESOLVER first
         - Map each query category to specific source URN
         - Reference from states that need KB access
       Example: |
         CM-KB-GUIDANCE:
           _meta: { expose: false }
-          dimensions:
-            - "TOPIC_A: urn:knowledge:namespace:domain:artifact-a:1.0.0"
-            - "TOPIC_B: urn:knowledge:namespace:domain:artifact-b:1.0.0"
-      Res: Deterministic, auditable knowledge retrieval.
+          resolution_protocol: |
+            1. Invoke CM-CATALOG-RESOLVER with target URN
+            2. If catalog has URN -> use file path from catalog
+            3. If not -> use routing_map as fallback
+          routing_map:
+            - query_category: "TOPIC_A"
+              route_to: "urn:knowledge:namespace:domain:artifact-a:1.0.0"
+      Res: Deterministic, catalog-backed, auditable knowledge retrieval.
 
     - Pattern: Monadic Process Encapsulation
       ID: PATTERN-MONADIC
@@ -440,7 +737,7 @@ Patterns:
         - Leverage resolver for local overrides
       Example: |
         source_artifacts:
-          - urn: "urn:knowledge:gorenuble:core:guide:1.0.0"
+          - urn: "urn:knowledge:koda:core:guide:1.0.0"
           - urn: "urn:knowledge:external:legal:compliance:latest"
       Res: No duplication, version control, federation.
 
@@ -451,7 +748,7 @@ Patterns:
         - Define initial_prompt for first interaction
         - Handle Direct vs Indirect execution models
         - Configure platform-specific adaptations
-      Ctx: "urn:knowledge:gorenuble:core:koda-life-master:1.0.0"
+      Ctx: "urn:knowledge:koda:core:life:1.0.0"
 
 # =============================================================================
 # 4. ANTI-PATTERNS (AVOID)
@@ -482,6 +779,30 @@ Anti_Patterns:
           - "3. Present formatted results"
       Mitigation: Extract to private cognitive model.
 
+    - Anti_Pattern: No Catalog Resolution
+      ID: ANTI-NO-CATALOG
+      Def: Accessing KB without consulting catalog as source of truth.
+      Symptom: No CM-CATALOG-RESOLVER, no catalog_resolution block.
+      Example_Wrong: |
+        CM-KB-GUIDANCE:
+          routing_map:
+            - query_category: "Topic A"
+              route_to: "urn:knowledge:ns:domain:artifact:1.0.0"
+        # No catalog integration, static routing only
+      Example_Right: |
+        catalog_resolution:
+          catalog_urn: "urn:knowledge:ns:catalog:master:1.0.0"
+          resolution_strategy: CATALOG_FIRST
+        
+        CM-CATALOG-RESOLVER:
+          process:
+            - "1. Query catalog for URN"
+            - "2. Return file path"
+        
+        CM-KB-GUIDANCE:
+          resolution_protocol: "Invoke CM-CATALOG-RESOLVER first"
+      Mitigation: Implement Catalog as Source of Truth pattern.
+
     - Anti_Pattern: Implicit Knowledge Retrieval
       ID: ANTI-IMPLICIT-KB
       Def: Auto-choosing documents by semantic similarity.
@@ -491,9 +812,9 @@ Anti_Patterns:
           - "Search KB for relevant information"
       Example_Right: |
         process:
-          - "Consult CM-KB-GUIDANCE for source mapping"
-          - "Retrieve from specified artifact"
-      Mitigation: Implement KB Guidance Pattern.
+          - "Consult CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE for source mapping"
+          - "Retrieve from catalog-resolved artifact"
+      Mitigation: Implement Catalog SOT + KB Guidance Pattern.
 
     - Anti_Pattern: Hardcoded File Paths
       ID: ANTI-HARDCODED-PATHS
@@ -645,13 +966,13 @@ Example:
     Language: es-CL
     Knowledge_Policy: EXCLUSIVE_USE
     Sources:
-      - "urn:knowledge:gorenuble:gore_nuble:guia-circ33:1.0.0"
-      - "urn:knowledge:gorenuble:gore_nuble:guia-fril:1.0.0"
+      - "urn:knowledge:gorenuble:guia-circ33:1.0.0"
+      - "urn:knowledge:gorenuble:guia-fril:1.0.0"
 
   Agent_Definition: |
     # KODA Agent Definition for GPT-ASISTENTE-IPR
     # ID: ASIS-IPR-GN-V3
-    # Ref-KODA-Guide: GUIDE-KODA-MASTER-03
+    # Ref: urn:knowledge:koda:core:agent:1.0.0
     ---
 
     agent_identity_and_global_configuration:
@@ -663,11 +984,15 @@ Example:
         content_lang: "es-CL"
 
     knowledge_base_interaction_and_governance_rules:
+      catalog_resolution:
+        catalog_urn: "urn:knowledge:gorenuble:catalog:master:1.0.0"
+        resolution_strategy: CATALOG_FIRST
+        fallback: STATIC_ROUTING
       usage_policy_and_source_management:
         policy: EXCLUSIVE_USE
         source_artifacts:
-          - urn: "urn:knowledge:gorenuble:gore_nuble:guia-circ33:1.0.0"
-          - urn: "urn:knowledge:gorenuble:gore_nuble:guia-fril:1.0.0"
+          - urn: "urn:knowledge:gorenuble:guia-circ33:1.0.0"
+          - urn: "urn:knowledge:gorenuble:guia-fril:1.0.0"
       uncertainty_protocol: "DECLARE_ABSENCE"
       citation_formatting:
         style: OFFICIAL_SOURCE_NAME
@@ -722,6 +1047,14 @@ Example:
           transitions: []
 
     private_internal_reasoning_processes:
+      CM-CATALOG-RESOLVER:
+        _meta: { expose: false }
+        purpose: "Resolver URNs consultando el catálogo gorenuble"
+        process:
+          - "1. Recibir URN a resolver"
+          - "2. Buscar en catalog_master_gorenuble.yml"
+          - "3. Retornar file path del catálogo"
+
       CM-CONTEXT-MANAGER:
         _meta: { expose: false }
         dimensions:
@@ -730,9 +1063,12 @@ Example:
 
       CM-KB-GUIDANCE:
         _meta: { expose: false }
-        dimensions:
-          - "CIRCULAR33: urn:knowledge:gorenuble:gore_nuble:guia-circ33:1.0.0"
-          - "FRIL: urn:knowledge:gorenuble:gore_nuble:guia-fril:1.0.0"
+        resolution_protocol: "Invocar CM-CATALOG-RESOLVER antes de usar routing_map"
+        routing_map:
+          - query_category: "CIRCULAR33"
+            route_to: "urn:knowledge:gorenuble:guia-circ33:1.0.0"
+          - query_category: "FRIL"
+            route_to: "urn:knowledge:gorenuble:guia-fril:1.0.0"
 
       CM-ANALYSIS-STRATEGIC:
         _meta: { expose: false }
@@ -773,15 +1109,17 @@ Example:
       evaluation_process:
         pre_response_hook: true
         checklist:
-          - "FIDELITY_STANDARD: Fuente correcta vía CM-KB-GUIDANCE"
-          - "CITATION_COMPLIANCE: Fuente citada"
+          - "CATALOG_RESOLUTION: URN resuelto vía catálogo"
+          - "FIDELITY_STANDARD: Fuente correcta vía CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE"
+          - "CITATION_COMPLIANCE: Fuente citada con file path del catálogo"
           - "STATE_AWARENESS: Coherente con estado"
           - "SEMANTIC_ABSTRACTION: Sin IDs internos"
           - "CONTEXT_SHIFT: Cambio de tema"
           - "EXECUTION_FIDELITY: State machine respetada"
           - "ENCAPSULATION: CMs no expuestos"
-          - "KB_ROUTING: Acceso KB explícito"
+          - "KB_ROUTING: Acceso KB explícito vía catálogo"
       correction_protocol:
+        - "IF check 'CATALOG_RESOLUTION' fails -> INVOKE CM-CATALOG-RESOLVER, retry"
         - "IF check 'CONTEXT_SHIFT' fails -> TRANSITION_TO_STATE: S-DISPATCHER"
         - "IF any other check fails -> REFINE_DRAFT_INTERNALLY"
 
@@ -847,14 +1185,260 @@ Workflow:
   ID: KODA-WORKFLOW-01
   Steps:
     - "1. Requirements: Define identity, knowledge, boundaries, workflows"
-    - "2. Architecture: Design state machine, cognitive models, KB guidance"
-    - "3. Construction: Build artifact following KODA/Agent schema"
-    - "4. Validation: Execute checklist, fix failures"
-    - "5. Deployment: Register, prepare KB, integrate platform"
+    - "2. Architecture: Design state machine, catalog resolution, cognitive models, KB guidance"
+    - "3. Construction: Build artifact following KODA/Agent schema with catalog integration"
+    - "4. Validation: Execute checklist (including CATALOG_RESOLUTION), fix failures"
+    - "5. Deployment: Register in catalog, prepare KB, integrate platform"
 
   Critical_Success_Factors:
+    - Catalog as SOURCE_OF_TRUTH (URN resolution via catalog first)
     - Maximum behavioral fidelity (agent behaves as specified)
     - Complete principle compliance (all 7 KODA/Agent principles)
     - Security completeness (Minimum Guard Set)
-    - Knowledge traceability (explicit KB routing)
+    - Knowledge traceability (CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE chain)
     - Categorical coherence (valid state machine)
+
+# =============================================================================
+# 9. HIGHER-ORDER AGENT (HOA) CONSTRUCTION
+# =============================================================================
+
+HOA_Construction:
+  ID: KODA-HOA-CONSTRUCT-01
+  Purp: Methodology for constructing Higher-Order Agents that orchestrate sub-agent fleets.
+  Ctx: "urn:knowledge:koda:core:agent:1.0.0 §9 Orchestration"
+
+  Overview:
+    Def: |
+      Higher-Order Agents (HOAs) require additional design considerations beyond
+      standard agents. They coordinate fleets of sub-agents through delegation,
+      communication, and synthesis.
+    When_To_Use:
+      - Complex tasks requiring multiple specialized capabilities
+      - Testing/validation workflows needing agent-under-test isolation
+      - Multi-perspective analysis requiring parallel processing
+      - Pipeline processing with staged sub-agent execution
+    When_NOT_To_Use:
+      - Simple single-domain tasks
+      - When a single agent with multiple states suffices
+      - When sub-agent communication overhead exceeds benefit
+
+  Extended_Phases:
+    Phase_0_HOA_Assessment:
+      ID: HOA-PHASE-0
+      Purp: Determine if HOA architecture is appropriate.
+      Process:
+        - "1. Identify if task requires multiple distinct agent capabilities"
+        - "2. Evaluate if capabilities can be composed via orchestration"
+        - "3. Assess complexity vs benefit of HOA approach"
+        - "4. Decide: HOA or standard agent with rich state machine"
+      Decision_Matrix:
+        - Condition: "Single domain, multiple modes"
+          Result: "Standard agent with states"
+        - Condition: "Multiple domains, need isolation"
+          Result: "HOA with specialized sub-agents"
+        - Condition: "Testing another agent"
+          Result: "HOA with TESTER + AGENT_UNDER_TEST"
+        - Condition: "Pipeline with distinct stages"
+          Result: "HOA with SEQUENTIAL delegation"
+
+    Phase_1_Extended_Requirements:
+      ID: HOA-PHASE-1
+      Purp: Capture HOA-specific requirements beyond standard FTCF.
+      Extends: PHASE-1-REQUIREMENTS
+      Additional_Captures:
+        Fleet_Requirements:
+          - "What sub-agents are needed?"
+          - "Which are static (pre-defined) vs dynamic (runtime-loaded)?"
+          - "What capabilities does each provide?"
+        Orchestration_Requirements:
+          - "What is the primary delegation pattern? (SEQUENTIAL, PARALLEL, CONDITIONAL, ITERATIVE)"
+          - "How should results be synthesized?"
+          - "What error handling is needed?"
+        Context_Requirements:
+          - "What state needs to be shared between sub-agents?"
+          - "What evidence needs to be captured?"
+
+    Phase_2_Fleet_Design:
+      ID: HOA-PHASE-2-FLEET
+      Purp: Design the sub-agent fleet architecture.
+      Process:
+        - "1. Define each sub-agent: id, role, source, capabilities"
+        - "2. Classify instantiation: STATIC vs DYNAMIC"
+        - "3. Map delegation flow between HOA and sub-agents"
+        - "4. Define synthesis points where outputs merge"
+        - "5. Design shared context schema"
+      Deliverables:
+        - Fleet definition with all sub-agents
+        - Delegation flow diagram
+        - Shared context schema
+        - Synthesis rules
+
+    Phase_2_Extended_Architecture:
+      ID: HOA-PHASE-2-ARCH
+      Purp: Design HOA state machine with orchestration states.
+      Extends: PHASE-2-ARCHITECTURE
+      HOA_Specific_States:
+        - State: S-LOADER
+          Purp: "Load dynamic sub-agents when needed"
+          Applies: "HOAs with DYNAMIC sub-agents"
+        - State: S-PLANNER
+          Purp: "Coordinate with sub-agents to plan execution"
+          Applies: "Complex orchestrations"
+        - State: S-EXECUTOR
+          Purp: "Execute delegation loop"
+          Applies: "All HOAs"
+        - State: S-SYNTHESIZER
+          Purp: "Combine sub-agent outputs"
+          Applies: "PARALLEL and multi-stage orchestrations"
+      HOA_Specific_CMs:
+        - CM: CM-AGENT-LOADER
+          Purp: "Parse and validate dynamic agent definitions"
+          Applies: "HOAs with DYNAMIC sub-agents"
+        - CM: CM-DELEGATION-DISPATCHER
+          Purp: "Format and send delegation requests to sub-agents"
+          Applies: "All HOAs"
+        - CM: CM-EVIDENCE-COLLECTOR
+          Purp: "Capture and store delegation responses"
+          Applies: "HOAs requiring audit trails"
+        - CM: CM-ORCHESTRATION-CONTROLLER
+          Purp: "Manage orchestration state and flow"
+          Applies: "All HOAs"
+        - CM: CM-SYNTHESIS-ENGINE
+          Purp: "Combine outputs from multiple sub-agents"
+          Applies: "PARALLEL and complex orchestrations"
+
+    Phase_3_Extended_Construction:
+      ID: HOA-PHASE-3-CONSTRUCT
+      Purp: Build HOA artifact with orchestration namespace.
+      Extends: PHASE-3-CONSTRUCTION
+      Additional_Namespace:
+        orchestration_fleet_and_protocol:
+          fleet_definition:
+            sub_agents: "[SubAgentSpec list]"
+          orchestration_protocol:
+            objective: "string"
+            delegation_pattern: "SEQUENTIAL | PARALLEL | CONDITIONAL | ITERATIVE | CUSTOM"
+            workflow: "object"
+            synthesis_rules: "[string list]"
+            error_handling: "object (optional)"
+          shared_context: "object (optional)"
+      Runtime_Instructions_Extension: |
+        HOAs MUST add point 8 to KODA_Runtime_Instructions:
+        
+        8. ORCHESTRATION: You coordinate a fleet of sub-agents. Delegate tasks
+           according to orchestration_protocol. Never execute sub-agent roles
+           yourself—delegate and synthesize. Mark all evidence as REAL or SIMULATED.
+
+    Phase_4_Extended_Validation:
+      ID: HOA-PHASE-4-VALIDATE
+      Purp: Validate HOA-specific requirements.
+      Extends: PHASE-4-VALIDATION
+      HOA_Checklist:
+        Fleet_Validation:
+          - "Fleet has at least one sub-agent"
+          - "All sub-agent IDs are unique"
+          - "Static sources are valid URNs in catalog"
+          - "Dynamic source patterns are valid"
+        Protocol_Validation:
+          - "Delegation pattern is defined"
+          - "Workflow references only defined sub-agents"
+          - "Synthesis rules are present"
+        Runtime_Validation:
+          - "Point 8 (ORCHESTRATION) present in Runtime Instructions"
+          - "No self-delegation in workflow"
+        Self_Evaluation_Checks:
+          - "ORCHESTRATION_FIDELITY in checklist"
+          - "EVIDENCE_INTEGRITY in checklist"
+          - "DELEGATION_VALID in checklist"
+
+    Phase_5_Extended_Deployment:
+      ID: HOA-PHASE-5-DEPLOY
+      Purp: Deploy HOA with sub-agent dependencies.
+      Extends: PHASE-5-DEPLOYMENT
+      HOA_Specific:
+        - "Ensure all STATIC sub-agents are registered in catalog"
+        - "Document dynamic agent requirements for users"
+        - "Mark HOA in catalog with `higher_order: true`"
+        - "Update fleet agents to know about HOA (optional)"
+
+  HOA_Patterns:
+    PATTERN-HOA-TESTING:
+      ID: PATTERN-HOA-TESTING
+      Purp: Pattern for HOA that tests other agents.
+      Use: Testing/validation orchestration.
+      Fleet:
+        - id: TESTER
+          role: "Generate tests, evaluate responses"
+          source: "URN to testing agent"
+          instantiation: STATIC
+        - id: AGENT_UNDER_TEST
+          role: "Agent being tested"
+          source: "dynamic:loaded_from_user_input"
+          instantiation: DYNAMIC
+      Delegation_Pattern: ITERATIVE
+      Workflow: |
+        1. Load agent under test
+        2. TESTER generates test suite
+        3. Loop: Send test to AUT, capture response, TESTER evaluates
+        4. TESTER synthesizes report
+
+    PATTERN-HOA-PIPELINE:
+      ID: PATTERN-HOA-PIPELINE
+      Purp: Pattern for sequential multi-stage processing.
+      Use: Document processing, staged analysis.
+      Fleet:
+        - id: STAGE_1_AGENT
+          role: "First stage processing"
+          source: "URN"
+          instantiation: STATIC
+        - id: STAGE_2_AGENT
+          role: "Second stage processing"
+          source: "URN"
+          instantiation: STATIC
+      Delegation_Pattern: SEQUENTIAL
+      Workflow: |
+        1. Receive input
+        2. Delegate to STAGE_1, capture output
+        3. Pass STAGE_1 output to STAGE_2, capture output
+        4. Synthesize final result
+
+    PATTERN-HOA-MULTI-PERSPECTIVE:
+      ID: PATTERN-HOA-MULTI-PERSPECTIVE
+      Purp: Pattern for gathering multiple viewpoints.
+      Use: Analysis requiring diverse perspectives.
+      Fleet:
+        - id: PERSPECTIVE_A
+          role: "Analysis from perspective A"
+          source: "URN"
+          instantiation: STATIC
+        - id: PERSPECTIVE_B
+          role: "Analysis from perspective B"
+          source: "URN"
+          instantiation: STATIC
+      Delegation_Pattern: PARALLEL
+      Workflow: |
+        1. Receive query
+        2. Delegate same query to all perspectives in parallel
+        3. Collect all responses
+        4. Synthesize unified analysis
+
+  HOA_Anti_Patterns:
+    - Anti_Pattern: "HOA executing sub-agent roles"
+      Problem: "HOA should delegate, not execute"
+      Solution: "Always delegate via orchestration_protocol, mark what you do directly vs delegate"
+
+    - Anti_Pattern: "Ambiguous evidence"
+      Problem: "Mixing real captures with inferred behavior"
+      Solution: "Always mark evidence as REAL_CAPTURE or SIMULATED"
+
+    - Anti_Pattern: "Missing synthesis"
+      Problem: "Returning raw sub-agent outputs without integration"
+      Solution: "Apply synthesis_rules before responding to user"
+
+    - Anti_Pattern: "Unbounded iteration"
+      Problem: "ITERATIVE delegation without max_iterations"
+      Solution: "Always set max_iterations in ITERATIVE patterns"
+
+    - Anti_Pattern: "Fleet without purpose"
+      Problem: "Creating HOA when single agent suffices"
+      Solution: "Use Phase 0 assessment to validate HOA need"
