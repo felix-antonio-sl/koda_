@@ -224,7 +224,7 @@ Phase3_Construction:
       Template: |
         # KODA Agent Definition for <AGENT_NAME>
         # ID: <AGENT_ID>
-        # Ref-KODA-Guide: GUIDE-KODA-MASTER-03
+        # Ref: urn:knowledge:koda:core:agent:1.0.0
         ---
 
     - Step: Add KODA Runtime Instructions
@@ -972,7 +972,7 @@ Example:
   Agent_Definition: |
     # KODA Agent Definition for GPT-ASISTENTE-IPR
     # ID: ASIS-IPR-GN-V3
-    # Ref-KODA-Guide: GUIDE-KODA-MASTER-03
+    # Ref: urn:knowledge:koda:core:agent:1.0.0
     ---
 
     agent_identity_and_global_configuration:

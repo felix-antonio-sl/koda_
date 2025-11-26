@@ -125,7 +125,7 @@ Step_2_Agent:
   Minimal_Template: |
     # KODA Agent Definition for My-First-Agent
     # ID: AGENT-FIRST-01
-    # Ref-KODA-Guide: GUIDE-KODA-MASTER-03
+    # Ref: urn:knowledge:koda:core:agent:1.0.0
     ---
     
     # === 1. IDENTITY ===

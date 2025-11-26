@@ -1,7 +1,7 @@
 # KODA Agent Definition for KODA-SIM-ORCHESTRATOR
 # Higher-Order Agent for simulated agent testing
 # ID: AGENT-KODA-SIM-ORCHESTRATOR-01
-# Ref-KODA-Guide: GUIDE-KODA-MASTER-03
+# Ref: urn:knowledge:koda:core:agent:1.0.0
 ---
 
 _manifest:
@@ -307,7 +307,7 @@ private_internal_reasoning_processes:
       Solicitud: Genera suite de tests para este agente
       Agente: {target_agent.name}
       Estados: {target_agent.states}
-      Tipos requeridos: cobertura, transiciones, adversarial
+      Tipos requeridos: cobertura, transiciones, adversarial, needle-haystack
 
   CM-SIMULATION-ENGINE:
     _meta: { expose: false }

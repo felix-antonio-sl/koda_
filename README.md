@@ -204,7 +204,10 @@ done
 
 # Agent.yaml schema validation (requires ajv-cli)
 npm install -g ajv-cli
-ajv validate --spec=draft2020 -s schemas/koda-agent-schema-1.0.0.json -d agent.yaml
+ajv validate -s schemas/koda-agent-schema-1.0.0.json -d agents/*/agent*.yaml
+
+# Or use built-in strict validation
+./scripts/koda validate --strict
 ```
 
 ## CLI Tools
@@ -220,6 +223,7 @@ KODA includes interactive CLI tools for common operations:
 
 # Validate current repository
 ./scripts/koda validate
+./scripts/koda validate --strict  # Include JSON Schema validation
 
 # Add new artifact interactively
 ./scripts/koda add

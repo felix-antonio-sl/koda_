@@ -35,8 +35,12 @@ Thank you for your interest in contributing to KODA!
 
 1. Follow KODA/Agent protocol (`guide_core_005_koda-agent-spec_koda.yml`)
 2. Use `guide_core_006_koda-agent-construct_koda.yml` methodology
-3. Validate against `schemas/koda-agent-schema-1.0.0.json`
-4. Place in `agents/{agent-name}/agent.yaml`
+3. Validate against schema:
+   ```bash
+   ./scripts/koda validate --strict
+   # Or manually: ajv validate -s schemas/koda-agent-schema-1.0.0.json -d agents/*/agent*.yaml
+   ```
+4. Place in `agents/{agent-name}/agent_{agent-name}.yaml`
 
 ### Improving Documentation
 

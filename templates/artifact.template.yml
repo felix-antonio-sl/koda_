@@ -1,6 +1,7 @@
 # KODA Knowledge Artifact Template
+# Schema: KODA/Spec v1.0.0
 # Replace all {PLACEHOLDERS} with your values
-# Spec: urn:knowledge:koda:core:spec:1.0.0
+# Ref: urn:knowledge:koda:core:spec:1.0.0
 
 _manifest:
   urn: "urn:knowledge:{NAMESPACE}:{DOMAIN}:{ARTIFACT-ID}:1.0.0"

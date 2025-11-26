@@ -1,7 +1,7 @@
 # KODA Agent Definition for KODA-SMITH
 # The specialist agent for building KODA-compliant agent definitions
 # ID: AGENT-KODA-SMITH-01
-# Ref-KODA-Guide: GUIDE-KODA-MASTER-03
+# Ref: urn:knowledge:koda:core:agent:1.0.0
 ---
 
 _manifest:
