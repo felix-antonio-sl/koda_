@@ -37,13 +37,13 @@ namespaces:
   sanixai:
     status: active
     type: commercial
-    owner: "SANIXAI"
-    repository: "github.com/sanixai/knowledge-hub"
-    fallback_url: "https://raw.githubusercontent.com/sanixai/knowledge-hub/main/"
-    visibility: public
+    owner: "SanixAI"
+    repository: "github.com/felix-antonio-sl/sanixai"
+    fallback_url: "https://raw.githubusercontent.com/felix-antonio-sl/sanixai/main/"
+    visibility: private
     license: "Proprietary"
     registered: "2025-11-25"
-    description: "SANIXAI - Commercial products and client projects"
+    description: "SanixAI - Commercial and serious projects umbrella"
     domains:
       - products
       - clients
@@ -56,16 +56,31 @@ namespaces:
     status: active
     type: institutional
     owner: "Gobierno Regional de Ñuble"
-    repository: "github.com/gorenuble/knowledge-hub"
-    fallback_url: "https://raw.githubusercontent.com/gorenuble/knowledge-hub/main/"
-    visibility: public
+    repository: "github.com/felix-antonio-sl/gorenuble"
+    fallback_url: "https://raw.githubusercontent.com/felix-antonio-sl/gorenuble/main/"
+    visibility: private
     license: "Institutional Use"
     registered: "2025-11-25"
-    description: "GORE Ñuble - Institutional knowledge and procedures"
+    description: "GORE Ñuble - Knowledge base escalable a otros GOREs de Chile"
     domains:
       - normativa
       - procesos
       - servicios
+
+  tde:
+    status: active
+    type: institutional
+    owner: "Transformación Digital del Estado"
+    repository: "github.com/felix-antonio-sl/tde"
+    fallback_url: "https://raw.githubusercontent.com/felix-antonio-sl/tde/main/"
+    visibility: private
+    license: "Institutional Use"
+    registered: "2025-11-25"
+    description: "TDE - Transformación Digital del Estado de Chile"
+    domains:
+      - normativa
+      - procesos
+      - interoperabilidad
 
   # ============================================================================
   # PERSONAL/PRIVATE
@@ -74,15 +89,16 @@ namespaces:
     status: active
     type: personal
     owner: "Félix Sanhueza"
-    repository: "github.com/fxsl/private-kb"
+    repository: "github.com/felix-antonio-sl/fxsl"
     fallback_url: null  # Private repo, no public fallback
     visibility: private
     license: "Proprietary"
     registered: "2025-11-25"
-    description: "FXSL - Personal experiments and learning"
+    description: "FXSL - Personal knowledge base and learnings"
     domains:
       - experiments
       - learning
+      - notes
 
 # ============================================================================
 # REGISTRATION REQUIREMENTS
