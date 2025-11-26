@@ -27,7 +27,7 @@ _manifest:
     created_by: "FS"
     created_at: "2025-11-25"
     last_modified_at: "2025-11-25"
-    version_notes: "v1.0.1 - Auditoría interna: añadido Ref-KODA-Guide, normalizado dimensions en todos los CMs"
+    version_notes: "v1.0.0 - Initial release: Agent construction specialist"
     model_collaborators: ["IA-CLAUDE"]
 
 KODA_Runtime_Instructions:

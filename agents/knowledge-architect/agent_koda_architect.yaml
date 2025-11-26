@@ -34,7 +34,7 @@ _manifest:
     created_by: "FS"
     created_at: "2025-11-25"
     last_modified_at: "2025-11-25"
-    version_notes: "v1.0.4 - Updated to KODA-SIM-ORCHESTRATOR pattern (replaced TEST-ORCHESTRATOR)"
+    version_notes: "v1.0.0 - Initial release: Official KODA Framework embodiment"
     model_collaborators: ["IA-CLAUDE", "IA-GEMINI"]
 
 KODA_Runtime_Instructions:

@@ -27,14 +27,14 @@ _manifest:
     signature: null
 
 ID: KODA-AGENT-SPEC-01
-Version: 1.1.0
+Version: 1.0.0
 Status: Published
 Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-06-29
 Modification-Date: 2025-11-25
-Version-Notes: "v1.1.0 - Complete HOA specification: delegation patterns, communication protocol, shared context, dynamic agents, HOA validation and checks"
+Version-Notes: "v1.0.0 - Initial release with complete agent specification including HOA support"
 Source: GUIDE-KODA-MASTER-03
 Ctx: Technical specification of KODA as YAML schema for declarative agent definition
 

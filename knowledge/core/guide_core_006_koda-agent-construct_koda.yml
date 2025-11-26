@@ -29,14 +29,14 @@ _manifest:
     signature: null
 
 ID: KODA-AGENT-CONSTRUCT-01
-Version: 1.1.0
+Version: 1.0.0
 Status: Published
 Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-06-29
 Modification-Date: 2025-11-25
-Version-Notes: "v1.1.0 - Added §9 HOA Construction: extended phases, fleet design, HOA patterns (TESTING, PIPELINE, MULTI-PERSPECTIVE), anti-patterns"
+Version-Notes: "v1.0.0 - Initial release with complete construction methodology including HOA support"
 Source: GUIDE-KODA-MASTER-03
 Ctx: Prescriptive methodology for constructing KODA-compliant AI agents
 

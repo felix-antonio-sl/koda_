@@ -12,9 +12,9 @@ _manifest:
     last_modified_at: "2025-11-25"
 
 ID: KODA-CATALOG-MASTER-01
-Version: 1.2.0
+Version: 1.0.0
 Status: Published
-Version-Notes: "v1.2.0 - Replaced TEST-ORCHESTRATOR with SIM-ORCHESTRATOR (more honest about simulation)"
+Version-Notes: "v1.0.0 - Initial release with complete KODA ecosystem"
 
 Catalog:
   Core_Guides:
@@ -47,15 +47,10 @@ Catalog:
       title: "KODA/Agent Protocol Specification"
       file: "knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
       status: published
-      internal_version: "1.1.0"
-      includes_hoa: true
-      
     - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
       title: "KODA/Agent Construction Methodology"
       file: "knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
       status: published
-      internal_version: "1.1.0"
-      includes_hoa: true
       
     - urn: "urn:knowledge:koda:core:test:1.0.0"
       title: "KODA/Test Framework Specification"
