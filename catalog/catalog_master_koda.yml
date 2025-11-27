@@ -112,6 +112,13 @@ Catalog:
       status: published
       higher_order: true
 
+    - urn: "urn:knowledge:koda:agents:orquestador-generico:1.0.0"
+      title: "KODA Orquestador Genérico"
+      description: "Higher-Order Agent para orquestación multi-agente sobre catálogos federados"
+      file: "agents/orquestador-generico/agent_orquestador_generico.yaml"
+      status: published
+      higher_order: true
+
   Domains: []
     # Future domain-specific knowledge bases will be registered here
     # Example:
