@@ -23,18 +23,18 @@ _manifest:
     created_by: "FS"
     created_at: "2025-07-06"
     last_modified_by: "FS"
-    last_modified_at: "2025-11-25"
+    last_modified_at: "2025-12-01"
     signature: null
 
 ID: KODA-HUB-MASTER-01
-Version: 1.0.0
+Version: 1.0.1
 Status: Published
 Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-07-06
-Modification-Date: 2025-11-25
-Version-Notes: Added Source_Of_Truth_Pattern, KB_Less_Agents documentation for LLM_NATIVE and WEB_AUGMENTED policies
+Modification-Date: 2025-12-01
+Version-Notes: "v1.0.1 - Corrected namespace paths to match actual directory structure; added TDE namespace"
 Source: GUIDE-KODA-HUB-MASTER-01
 Ctx: Master guide for federated knowledge hub management
 
@@ -147,7 +147,7 @@ URN_Scheme:
         Owner: "SANIXAI"
         Type: "Comercial/Profesional"
         Scope: "Productos comerciales, proyectos clientes, agentes comerciales"
-        Repository: "github.com/sanixai/knowledge-hub"
+        Repository: "github.com/felix-antonio-sl/sanixai"
         Path: "~/Developer/sanixai/"
         License: "Proprietary"
         Domains:
@@ -159,27 +159,37 @@ URN_Scheme:
       - Namespace: gorenuble
         Owner: "Gobierno Regional de Ñuble"
         Type: "Institucional/Público"
-        Scope: "Conocimiento institucional GORE Ñuble"
-        Repository: "github.com/gorenuble/knowledge-hub"
-        Path: "~/Developer/gorenuble/knowledge-hub/"
+        Scope: "Conocimiento institucional GORE Ñuble, escalable a otros GOREs"
+        Repository: "github.com/felix-antonio-sl/gorenuble"
+        Path: "~/Developer/gorenuble/"
         License: "Uso institucional"
         Domains:
-          - normativa: "Leyes, circulares, reglamentos"
-          - procesos: "Procedimientos institucionales"
-          - servicios: "Servicios ciudadanos"
-          - agents: "Agentes institucionales"
+          - core: "Conocimiento transversal (estructura Estado)"
+          - gn: "Dominio específico GORE Ñuble"
+          - agents: "Agentes institucionales (Goreólogo)"
+
+      - Namespace: tde
+        Owner: "Transformación Digital del Estado"
+        Type: "Institucional/Público"
+        Scope: "Conocimiento sobre TDE Chile, Ley 21.180, modernización"
+        Repository: "github.com/felix-antonio-sl/tde"
+        Path: "~/Developer/tde/"
+        License: "CC-BY-4.0"
+        Domains:
+          - core: "Guías y especificaciones TDE"
+          - agents: "Agentes de transformación digital"
 
       - Namespace: fxsl
         Owner: "Félix Sanhueza (Personal)"
         Type: "Privado/Personal"
-        Scope: "Proyectos personales, experimentación, aprendizaje"
-        Repository: "github.com/fxsl/private-kb (privado)"
-        Path: "~/Developer/fxsl/private-kb/"
+        Scope: "Proyectos personales, experimentación, agentes especializados"
+        Repository: "github.com/felix-antonio-sl/fxsl"
+        Path: "~/Developer/fxsl/"
         License: "Propietario"
         Domains:
-          - experiments: "Experimentos y prototipos"
-          - learning: "Notas de aprendizaje"
-          - personal: "Proyectos personales"
+          - inteligencia: "Conocimiento sobre inteligencia y cognición"
+          - medicina: "Conocimiento médico-legal"
+          - agents: "Agentes personales especializados"
 
   Examples:
     - "urn:knowledge:koda:core:hub:2.0.0"

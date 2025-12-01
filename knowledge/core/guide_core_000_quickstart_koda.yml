@@ -19,17 +19,18 @@ _manifest:
     created_by: "FS"
     created_at: "2025-11-25"
     last_modified_by: "FS"
-    last_modified_at: "2025-11-25"
+    last_modified_at: "2025-12-01"
     signature: null
 
 ID: QUICKSTART-01
-Version: 1.0.0
+Version: 1.0.1
 Status: Published
 Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-11-25
-Modification-Date: 2025-11-25
+Modification-Date: 2025-12-01
+Version-Notes: "v1.0.1 - Added Step_3B with LLM_NATIVE, WEB_AUGMENTED, HYBRID_WEB_KB templates"
 Ctx: Fast-track entry point for agent engineering framework
 
 LLM_Parsing_Instructions:
@@ -316,6 +317,149 @@ Step_3_Knowledge:
       Def: [Definition of concept 2]
       Ref: SEC-001  # Reference to previous section
       Warn: [Important warning about concept 2]
+
+# =============================================================================
+# STEP 3B: ALTERNATIVE MODES (KB-LESS AGENTS)
+# =============================================================================
+
+Step_3B_Alternative_Modes:
+  ID: QS-STEP-3B
+  Purp: Quick templates for agents without curated knowledge bases.
+  
+  When_To_Use:
+    - "LLM_NATIVE: General reasoning, creative tasks, no domain-specific data needed"
+    - "WEB_AUGMENTED: Real-time data, news, current events, prices"
+    - "HYBRID_WEB_KB: Domain KB + real-time web data"
+  
+  LLM_Native_Agent:
+    ID: QS-LLM-NATIVE-01
+    Def: Agent relies solely on LLM pre-trained knowledge.
+    Use_Cases:
+      - "General-purpose assistants"
+      - "Creative writing agents"
+      - "Reasoning/analysis without domain data"
+      - "Prototyping before KB construction"
+    Template: |
+      # === KNOWLEDGE (LLM_NATIVE - No KB required) ===
+      knowledge_base_interaction_and_governance_rules:
+        usage_policy_and_source_management:
+          policy: LLM_NATIVE
+          # No source_artifacts needed
+          # No catalog_resolution needed
+        uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
+        citation_formatting:
+          style: INLINE_REASONING_TRACE
+      
+      # === PRIVATE REASONING (LLM_NATIVE) ===
+      private_internal_reasoning_processes:
+        CM-LLM-BOUNDARY:
+          _meta: { expose: false }
+          dimensions:
+            - "1. Evaluar si query está dentro del conocimiento del LLM"
+            - "2. Detectar preguntas sobre eventos post-training cutoff"
+            - "3. Identificar solicitudes de datos específicos actuales"
+            - "4. Aplicar uncertainty_protocol cuando límites excedidos"
+    Key_Difference: "No CM-KB-GUIDANCE, no CM-CATALOG-RESOLVER, no source_artifacts."
+  
+  Web_Augmented_Agent:
+    ID: QS-WEB-AUGMENTED-01
+    Def: Agent uses web search for real-time information.
+    Use_Cases:
+      - "News/current events agents"
+      - "Research assistants"
+      - "Price/availability checkers"
+      - "Trend analysis agents"
+    Template: |
+      # === KNOWLEDGE (WEB_AUGMENTED - Web search only) ===
+      knowledge_base_interaction_and_governance_rules:
+        usage_policy_and_source_management:
+          policy: WEB_AUGMENTED
+          # No source_artifacts needed
+          # No catalog_resolution needed
+        web_search_configuration:
+          enabled: true
+          provider: native  # or tavily, serper, brave, bing
+          search_scope: general  # or academic, news, domain_specific
+          max_results: 5
+          freshness: any  # or day, week, month, year
+          citation_required: true
+        uncertainty_protocol: SEARCH_WEB_FALLBACK
+        citation_formatting:
+          style: WEB_URL
+      
+      # === PRIVATE REASONING (WEB_AUGMENTED) ===
+      private_internal_reasoning_processes:
+        CM-WEB-SEARCH:
+          _meta: { expose: false }
+          dimensions:
+            - "1. Formular query de búsqueda basada en intent"
+            - "2. Aplicar filtros de scope, freshness, domain constraints"
+            - "3. Ejecutar búsqueda vía provider configurado"
+            - "4. Evaluar relevancia y credibilidad de resultados"
+            - "5. Sintetizar información con citación de fuentes"
+    Key_Difference: "Uses CM-WEB-SEARCH instead of CM-KB-GUIDANCE."
+  
+  Hybrid_Web_KB_Agent:
+    ID: QS-HYBRID-01
+    Def: Agent combines curated KB with web search.
+    Use_Cases:
+      - "Domain experts needing current data"
+      - "Compliance agents with regulatory updates"
+      - "Product agents with market data"
+    Template: |
+      # === KNOWLEDGE (HYBRID_WEB_KB - KB + Web) ===
+      knowledge_base_interaction_and_governance_rules:
+        catalog_resolution:
+          catalog_urn: "urn:knowledge:{namespace}:catalog:master:1.0.0"
+          resolution_strategy: CATALOG_FIRST
+          fallback: STATIC_ROUTING
+        usage_policy_and_source_management:
+          policy: HYBRID_WEB_KB
+          source_artifacts:
+            - urn: "urn:knowledge:{namespace}:{domain}:{artifact}:1.0.0"
+        web_search_configuration:
+          enabled: true
+          provider: native
+          search_scope: domain_specific
+          max_results: 3
+          freshness: week
+          domain_whitelist: ["trusted-source.gov", "official-data.org"]
+          citation_required: true
+        uncertainty_protocol: SEARCH_WEB_FALLBACK
+        citation_formatting:
+          style: HYBRID_SOURCE
+      
+      # === PRIVATE REASONING (HYBRID) ===
+      private_internal_reasoning_processes:
+        CM-KNOWLEDGE-ROUTER:
+          _meta: { expose: false }
+          dimensions:
+            - "1. Clasificar query: domain_knowledge vs real_time_data"
+            - "2. IF domain_knowledge -> CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE"
+            - "3. IF real_time_data -> CM-WEB-SEARCH"
+            - "4. IF ambiguous -> KB first, web fallback"
+    Key_Difference: "Routes queries to KB or Web based on nature."
+  
+  Policy_Decision_Matrix:
+    - Condition: "Curated domain knowledge required, no real-time needs"
+      Policy: EXCLUSIVE_USE
+      Catalog: Required
+      
+    - Condition: "Domain KB + LLM general knowledge as supplement"
+      Policy: ALLOW_GENERAL_KNOWLEDGE
+      Catalog: Required
+      
+    - Condition: "General reasoning, no specific data needs"
+      Policy: LLM_NATIVE
+      Catalog: Not required
+      
+    - Condition: "Real-time data only, no curated KB"
+      Policy: WEB_AUGMENTED
+      Catalog: Not required
+      
+    - Condition: "Domain KB + real-time web data"
+      Policy: HYBRID_WEB_KB
+      Catalog: Required
 
 # =============================================================================
 # STEP 4: VALIDATE & DEPLOY (5 min)

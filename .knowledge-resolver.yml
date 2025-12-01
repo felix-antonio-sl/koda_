@@ -36,23 +36,31 @@ namespaces:
   sanixai:
     type: peer
     base_path: "../sanixai/"
-    fallback: "https://raw.githubusercontent.com/sanixai/knowledge-hub/main/"
+    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/sanixai/main/"
     required: false
     description: "SANIXAI - Productos comerciales y proyectos clientes"
 
   # GORENUBLE - Gobierno Regional de Ñuble (peer)
   gorenuble:
     type: peer
-    base_path: "../gorenuble/knowledge-hub/"
-    fallback: "https://raw.githubusercontent.com/gorenuble/knowledge-hub/main/"
+    base_path: "../gorenuble/"
+    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/gorenuble/main/"
     required: false
     description: "Gobierno Regional de Ñuble - Conocimiento institucional"
+
+  # TDE - Transformación Digital del Estado de Chile (peer)
+  tde:
+    type: peer
+    base_path: "../tde/"
+    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/tde/main/"
+    required: false
+    description: "TDE - Transformación Digital del Estado de Chile, Ley 21.180"
 
   # FXSL - Personal/Private (peer)
   fxsl:
     type: peer
-    base_path: "../fxsl/private-kb/"
-    fallback: "https://raw.githubusercontent.com/fxsl/private-kb/main/"
+    base_path: "../fxsl/"
+    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/fxsl/main/"
     required: false
     description: "FXSL - Proyectos personales y experimentación"
 
@@ -77,6 +85,9 @@ resolution_rules:
   "urn:knowledge:koda:agents:transformer:*": "./agents/koda-transformer/agent_koda_transformer.yaml"
   "urn:knowledge:koda:agents:smith:*": "./agents/koda-smith/agent_koda_smith.yaml"
   "urn:knowledge:koda:agents:guardian:*": "./agents/koda-guardian/agent_koda_guardian.yaml"
+  "urn:knowledge:koda:agents:tester:*": "./agents/koda-tester/agent_koda_tester.yaml"
+  "urn:knowledge:koda:agents:sim-orchestrator:*": "./agents/koda-sim-orchestrator/agent_koda_sim_orchestrator.yaml"
+  "urn:knowledge:koda:agents:orquestador-generico:*": "./agents/orquestador-generico/agent_orquestador_generico.yaml"
   
   # Registry
   "urn:knowledge:koda:registry:namespaces:*": "./registry/namespaces.yml"
