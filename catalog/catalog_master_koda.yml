@@ -128,9 +128,9 @@ Catalog:
     #   status: draft
 
 Statistics:
-  total_artifacts: 17
+  total_artifacts: 18
   core_guides: 10
   schemas: 1
-  agents: 6
+  agents: 7
   domains: 0
-  last_updated: "2025-11-25"
+  last_updated: "2025-11-29"
