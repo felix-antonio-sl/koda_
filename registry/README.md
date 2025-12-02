@@ -68,7 +68,7 @@ Once registered, other repositories can:
 Add to your README:
 
 ```markdown
-[![KODA Compliant](https://img.shields.io/badge/KODA-Compliant-blue)](https://github.com/koda-framework/koda)
+[![KODA Compliant](https://img.shields.io/badge/KODA-Compliant-blue)](https://github.com/felix-antonio-sl/koda)
 ```
 
 ## Validation

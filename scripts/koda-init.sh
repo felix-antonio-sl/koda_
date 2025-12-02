@@ -132,7 +132,7 @@ namespaces:
   koda:
     type: upstream
     base_path: "../koda/"
-    fallback: "https://raw.githubusercontent.com/koda-framework/koda/main/"
+    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/"
     required: true
     description: "KODA Framework - upstream dependency"
 
@@ -236,7 +236,7 @@ echo -e "${YELLOW}Creating README.md...${NC}"
 cat > README.md << EOF
 # ${NAMESPACE}
 
-[![KODA Compliant](https://img.shields.io/badge/KODA-Compliant-blue)](https://github.com/koda-framework/koda)
+[![KODA Compliant](https://img.shields.io/badge/KODA-Compliant-blue)](https://github.com/felix-antonio-sl/koda)
 
 > ${DESCRIPTION:-Knowledge base for ${NAMESPACE}}
 
@@ -268,11 +268,11 @@ Example URN: \`urn:knowledge:${NAMESPACE}:core:example:1.0.0\`
 
 ## Federation
 
-This repository is part of the [KODA Federation](https://github.com/koda-framework/koda).
+This repository is part of the [KODA Federation](https://github.com/felix-antonio-sl/koda).
 
 ---
 
-*Built with [KODA Framework](https://github.com/koda-framework/koda) — Knowledge-Oriented Design Architecture*
+*Built with [KODA Framework](https://github.com/felix-antonio-sl/koda) — Knowledge-Oriented Design Architecture*
 EOF
 echo -e "  ${GREEN}✓${NC} README.md"
 
@@ -286,7 +286,7 @@ echo -e "Next steps:"
 echo -e "  1. ${YELLOW}git init${NC} (if not already a git repo)"
 echo -e "  2. Update ${YELLOW}.knowledge-resolver.yml${NC} with your repository URL"
 echo -e "  3. Create your first artifact in ${YELLOW}knowledge/core/${NC}"
-echo -e "  4. Register at ${YELLOW}https://github.com/koda-framework/koda${NC} (optional)"
+echo -e "  4. Register at ${YELLOW}https://github.com/felix-antonio-sl/koda${NC} (optional)"
 echo ""
 echo -e "Validate with:"
 echo -e "  ${BLUE}./scripts/koda-validate.sh${NC}"

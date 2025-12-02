@@ -55,7 +55,7 @@ show_help() {
     echo ""
     echo -e "${BOLD}Documentation:${NC}"
     echo ""
-    echo -e "  https://github.com/koda-framework/koda"
+    echo -e "  https://github.com/felix-antonio-sl/koda"
     echo ""
 }
 
@@ -117,7 +117,7 @@ case "${1:-}" in
             # Check if we can fetch registry (try both remote and local)
             REGISTRY_OK=false
             
-            if curl -sf --connect-timeout 5 "https://raw.githubusercontent.com/koda-framework/koda/main/registry/namespaces.yml" > /dev/null 2>&1; then
+            if curl -sf --connect-timeout 5 "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/registry/namespaces.yml" > /dev/null 2>&1; then
                 echo -e "  ${GREEN}✓${NC} Remote registry reachable"
                 REGISTRY_OK=true
             elif [ -f "registry/namespaces.yml" ]; then

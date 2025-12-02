@@ -16,7 +16,7 @@ _meta:
 # =============================================================================
 self:
   namespace: koda
-  repository: "github.com/koda-framework/koda"
+  repository: "github.com/felix-antonio-sl/koda"
   visibility: public
   maintainer: "fs@sanixai.com"
   role: upstream  # This is the upstream source for all KODA-compliant repos

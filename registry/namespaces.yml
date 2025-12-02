@@ -21,8 +21,8 @@ namespaces:
     status: active
     type: framework
     owner: "KODA Framework"
-    repository: "github.com/koda-framework/koda"
-    fallback_url: "https://raw.githubusercontent.com/koda-framework/koda/main/"
+    repository: "github.com/felix-antonio-sl/koda"
+    fallback_url: "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/"
     visibility: public
     license: "CC-BY-4.0"
     registered: "2025-11-25"

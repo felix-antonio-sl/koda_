@@ -141,7 +141,7 @@ URN_Scheme:
         Owner: "KODA Framework (Open Source)"
         Type: "Framework/Base"
         Scope: "Framework KODA - base para todos los demás namespaces"
-        Repository: "github.com/koda-framework/koda"
+        Repository: "github.com/felix-antonio-sl/koda"
         Path: "~/Developer/koda/"
         License: "CC-BY-4.0"
         Domains:
