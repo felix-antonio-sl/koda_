@@ -22,27 +22,27 @@ Catalog:
       title: "KODA Quickstart Guide"
       file: "knowledge/core/guide_core_000_quickstart_koda.yml"
       status: published
-      
+
     - urn: "urn:knowledge:koda:core:spec:1.0.0"
       title: "KODA/Spec Specification"
       file: "knowledge/core/guide_core_001_koda-spec_koda.yml"
       status: published
-      
+
     - urn: "urn:knowledge:koda:core:transform:1.0.0"
       title: "KODA Transformation Methodology"
       file: "knowledge/core/guide_core_002_koda-transform_koda.yml"
       status: published
-      
+
     - urn: "urn:knowledge:koda:core:hub:1.0.0"
       title: "KODA/Hub Management Guide"
       file: "knowledge/core/guide_core_003_koda-hub-master_koda.yml"
       status: published
-      
+
     - urn: "urn:knowledge:koda:core:life:1.0.0"
       title: "KODA/Life Management Guide"
       file: "knowledge/core/guide_core_004_koda-life-master_koda.yml"
       status: published
-      
+
     - urn: "urn:knowledge:koda:core:agent:1.0.0"
       title: "KODA/Agent Protocol Specification"
       file: "knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
@@ -51,17 +51,17 @@ Catalog:
       title: "KODA/Agent Construction Methodology"
       file: "knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
       status: published
-      
+
     - urn: "urn:knowledge:koda:core:test:1.0.0"
       title: "KODA/Test Framework Specification"
       file: "knowledge/core/guide_core_007_koda-test-spec_koda.yml"
       status: published
-      
+
     - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
       title: "Schema Versioning Policy"
       file: "knowledge/core/guide_core_008_schema-versioning_koda.yml"
       status: published
-      
+
     - urn: "urn:knowledge:koda:core:federation:1.0.0"
       title: "Federation Protocol"
       file: "knowledge/core/guide_core_009_federation-protocol_koda.yml"
@@ -119,6 +119,12 @@ Catalog:
       status: published
       higher_order: true
 
+    - urn: "urn:knowledge:koda:agents:med-internal:1.0.0"
+      title: "KODA Internal Medicine Agent"
+      description: "Specialist in Internal Medicine, Zero-Based Evaluation, and Socratic Teaching"
+      file: "agents/medico-internista/agent_medico_internista.yaml"
+      status: published
+
   Domains: []
     # Future domain-specific knowledge bases will be registered here
     # Example:
@@ -128,9 +134,9 @@ Catalog:
     #   status: draft
 
 Statistics:
-  total_artifacts: 18
+  total_artifacts: 19
   core_guides: 10
   schemas: 1
-  agents: 7
+  agents: 8
   domains: 0
-  last_updated: "2025-11-29"
+  last_updated: "2025-12-01"

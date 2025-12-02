@@ -64,6 +64,14 @@ namespaces:
     required: false
     description: "FXSL - Proyectos personales y experimentación"
 
+  # ORKO - Organizational Knowledge Ontology (peer)
+  orko:
+    type: peer
+    base_path: "../orko/"
+    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/orko/main/"
+    required: false
+    description: "ORKO - Organizational Knowledge Ontology: Complexity, Tamed"
+
 resolution_rules:
   # Core guides
   "urn:knowledge:koda:core:quickstart:*": "./knowledge/core/guide_core_000_quickstart_koda.yml"

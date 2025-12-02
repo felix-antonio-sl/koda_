@@ -27,14 +27,14 @@ _manifest:
     signature: null
 
 ID: KODA-HUB-MASTER-01
-Version: 1.0.1
+Version: 1.1.0
 Status: Published
 Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-07-06
 Modification-Date: 2025-12-01
-Version-Notes: "v1.0.1 - Corrected namespace paths to match actual directory structure; added TDE namespace"
+Version-Notes: "v1.1.0 - Added Cross_Artifact_Resolution section with CM-XREF-RESOLVER, Graph_Constraints (DAG validation), Traceability (Referenced_By), and XRef metrics"
 Source: GUIDE-KODA-HUB-MASTER-01
 Ctx: Master guide for federated knowledge hub management
 
@@ -48,9 +48,9 @@ LLM_Parsing_Instructions:
 
     FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
 
-    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
 
-    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:.
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
 
     LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
     END_LLM_INSTRUCTIONS
@@ -112,7 +112,7 @@ Philosophy:
 URN_Scheme:
   ID: GUIDE-KODA-HUB-URN-01
   Purp: Unique, stable, resolvable artifact identifiers.
-  Format: "urn:knowledge:{namespace}:{domain}:{artifact-id}:{version}"
+  Format: "urn:knowledge:{namespace}:{domain}:{artifact-id}:{version}[#{fragment}]"
 
   Components:
     - Component: namespace
@@ -126,6 +126,11 @@ URN_Scheme:
       Ex: spec, hub, transform, circular-33
     - Component: version
       Def: Semantic version or latest/stable.
+    - Component: fragment
+      Def: Optional ID within artifact for precise cross-artifact references.
+      Format: "Hash symbol (#) followed by UPPERCASE-KEBAB-CASE ID."
+      Ex: "ORKO-AX-A1, KODA-PRINCIPLE-SSOT (prefixed with # in URN)"
+      Use: XRef and XRef_Required keywords for cross-artifact linking.
 
   Official_Namespaces:
     ID: GUIDE-KODA-HUB-NAMESPACES-01
@@ -191,12 +196,27 @@ URN_Scheme:
           - medicina: "Conocimiento médico-legal"
           - agents: "Agentes personales especializados"
 
+      - Namespace: orko
+        Owner: "ORKO Project"
+        Type: "Framework/Metodología"
+        Scope: "Transformación organizacional - Complexity, Tamed"
+        Repository: "github.com/felix-antonio-sl/orko"
+        Path: "~/Developer/orko/"
+        License: "MIT"
+        Domains:
+          - core: "Fundamentos (Layer 0-2): Primitivos, Arquitectura, Tejidos"
+          - metodologia: "Layer 3: Fases, Playbooks, Templates"
+          - implementacion: "Layer 4-5: Toolkit, calculadoras"
+          - agents: "Arquitecto ORKO"
+
   Examples:
     - "urn:knowledge:koda:core:hub:2.0.0"
     - "urn:knowledge:gorenuble:normativa:circular-33:1.0.0"
     - "urn:knowledge:fxsl:experiments:llm-testing:0.1.0"
+    - "urn:knowledge:orko:core:fundamentos:1.0.0#ORKO-AX-A1"
+    - "urn:knowledge:koda:core:spec:1.1.0#KODA-PRINCIPLE-SSOT"
 
-  Validation_Pattern: "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
+  Validation_Pattern: "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)(#[A-Z][A-Z0-9-]+)?$"
 
 # =============================================================================
 # 3. ARTIFACT MANIFEST
@@ -450,6 +470,8 @@ Catalog:
     Tags: Controlled vocabulary [procurement, compliance]
     Complexity: foundational | intermediate | advanced
     Dependencies: Required URNs
+    Exported_IDs: Optional list of IDs intended as stable cross-artifact reference anchors.
+    Referenced_By: List of artifacts that XRef this artifact (auto-generated or manual for impact analysis).
     Consumers: Agent IDs (auto-generated)
 
   Queries_Enabled:
@@ -750,7 +772,80 @@ Git:
     Ex: "kb(gn_001): update with 2024 census data"
 
 # =============================================================================
-# 14. OBSERVABILITY
+# 14. CROSS-ARTIFACT REFERENCE RESOLUTION
+# =============================================================================
+
+Cross_Artifact_Resolution:
+  ID: GUIDE-KODA-HUB-XREF-01
+  Purp: Define how agents resolve XRef and XRef_Required references across artifacts.
+
+  CM-XREF-RESOLVER:
+    _meta: { expose: false }
+    purpose: "Resolver referencias cruzadas a artefactos externos"
+    process:
+      - "1. Parsear URN: separar base URN y fragment (#ID) si existe"
+      - "2. Invocar CM-CATALOG-RESOLVER con base URN para obtener file path"
+      - "3. Acceder al artefacto destino via file path"
+      - "4. Si hay fragment: parsear YAML del artefacto, buscar bloque con ID == fragment"
+      - "5. Retornar contenido (artefacto completo o bloque específico)"
+    error_handling:
+      - condition: "Base URN no resuelve AND es XRef_Required"
+        action: "ERROR blocking - artifact inválido sin esta dependencia"
+      - condition: "Fragment no existe en target AND es XRef_Required"
+        action: "WARNING - continuar pero alertar; target puede haber evolucionado"
+      - condition: "XRef (soft) no resuelve"
+        action: "Log warning, continuar sin contenido; degradación graceful"
+    resolution_flow: |
+      XRef: "urn:knowledge:orko:core:fundamentos:1.0.0#ORKO-AX-A1"
+               │                                       │
+               ▼                                       ▼
+      ┌─────────────────────┐                 ┌──────────────────┐
+      │ CM-CATALOG-RESOLVER │                 │ Fragment Lookup  │
+      │ (base URN → path)   │                 │ (ID search)      │
+      └──────────┬──────────┘                 └────────┬─────────┘
+                 │                                     │
+                 ▼                                     ▼
+      1. Resolver namespace → base_path       4. Parse YAML target
+      2. Query catalog for file               5. Find ID == fragment
+      3. Return file path                     6. Return block content
+
+  Graph_Constraints:
+    ID: GUIDE-KODA-HUB-XREF-CONSTRAINTS-01
+    Purp: Ensure knowledge graph formed by XRef is valid and navigable.
+    
+    Acyclicity:
+      Def: The dependency graph formed by XRef_Required MUST be a DAG (Directed Acyclic Graph).
+      Rationale: Cycles create infinite resolution loops and undefined dependency order.
+      Validation: Topological sort of XRef_Required edges; if fails, report cycle path.
+      Severity: error
+      
+    Fragment_Stability:
+      Def: IDs listed in Exported_IDs are considered stable anchors for cross-artifact references.
+      Rationale: Changing an exported ID breaks downstream consumers.
+      Validation: Exported_IDs should not be removed without MAJOR version bump.
+      Severity: warning on removal
+      
+    Version_Pinning:
+      Def: XRef with fragments SHOULD use explicit versions, not 'latest' or 'stable'.
+      Rationale: Fragment IDs may change between versions; pinning ensures stability.
+      Rec: "Use explicit version (1.0.0) instead of 'latest' when referencing fragments"
+
+  Traceability:
+    ID: GUIDE-KODA-HUB-XREF-TRACEABILITY-01
+    Purp: Enable impact analysis for knowledge graph changes.
+    
+    Forward_Traceability:
+      Def: From artifact A, follow XRef to discover what A depends on.
+      Mechanism: Parse A's content, extract all XRef/XRef_Required values.
+      
+    Inverse_Traceability:
+      Def: From artifact B, discover what artifacts reference B.
+      Mechanism: Catalog field Referenced_By lists consumers of each artifact.
+      Population: Auto-generated by CI validation or manual curation.
+      Use_Case: Before modifying B#ID, check Referenced_By to assess impact.
+
+# =============================================================================
+# 15. OBSERVABILITY
 # =============================================================================
 
 Observability:
@@ -761,6 +856,9 @@ Observability:
     - Coverage_Index: published_domains / total_domains (target >= 0.8)
     - Freshness_Score: Avg artifact age (alert > 180 days)
     - Reference_Density: Avg Ref per artifact (target >= 1.5)
+    - XRef_Density: Avg XRef per artifact (indicator of graph connectivity)
     - Orphan_Rate: Unconsumed artifacts (target 0%)
     - Resolution_Success: URN resolution success (target >= 99.9%)
+    - Fragment_Resolution_Success: XRef with #fragment resolution success (target >= 95%)
     - Cross_Repo_Usage: Artifacts consumed from external namespaces
+    - Cycle_Detection: Number of circular XRef_Required dependencies (target 0)

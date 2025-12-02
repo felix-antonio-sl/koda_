@@ -23,8 +23,13 @@ _manifest:
     created_by: "FS"
     created_at: "2025-11-25"
     last_modified_by: "FS"
-    last_modified_at: "2025-11-25"
-    changelog: "Unified to single version 1.0.0"
+    last_modified_at: "2025-12-01"
+    changelog: |
+      2025-11-25: Unified to single schema version 1.0.0.
+      2025-12-01: Documented KODA/Spec 1.1.0 and KODA/Hub 1.1.0 as backward-compatible
+        MINOR updates adding cross-artifact references (XRef/XRef_Required), CM-XREF-RESOLVER,
+        graph constraints (acyclic XRef_Required DAG), and catalog-based traceability via
+        Exported_IDs and Referenced_By fields.
     signature: null
 
 ID: SCHEMA-VERSIONING-01

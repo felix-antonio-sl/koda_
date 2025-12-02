@@ -23,13 +23,14 @@ _manifest:
     signature: null
 
 ID: KODA-SPEC-01
-Version: 1.0.0
+Version: 1.1.0
 Status: Published
 Human-Creator: FS
 Human-Editor: FS
-Model-Collaborator: IA-GEMINI
+Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-11-21
-Modification-Date: 2025-11-25
+Modification-Date: 2025-12-01
+Version-Notes: "v1.1.0 - Added XRef/XRef_Required keywords for cross-artifact referencing, consolidated Cross_Artifact_Referencing section, anti-cycle validation rule"
 Source: GUIDE-KODA-MASTER-01
 Ctx: Technical specification of KODA as YAML extension
 
@@ -43,9 +44,9 @@ LLM_Parsing_Instructions:
 
     FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
 
-    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
 
-    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:, Ctx_Required:, or Ctx_Optional:.
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
 
     LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
     END_LLM_INSTRUCTIONS
@@ -89,7 +90,11 @@ Keyword_Strategy:
       - Keyword: ID
         Def: Unique Identifier (Immutable).
       - Keyword: Ref
-        Def: Internal cross-reference to another ID.
+        Def: Internal cross-reference to another ID within the same artifact.
+      - Keyword: XRef
+        Def: Cross-artifact reference to another KODA artifact, optionally to a specific ID via fragment.
+      - Keyword: XRef_Required
+        Def: Mandatory cross-artifact reference that MUST resolve for the consumer to proceed.
       - Keyword: Def
         Def: Definition of a term or concept.
       - Keyword: Act
@@ -196,9 +201,9 @@ Spec_LLM_Parsing_Instructions:
 
         FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
 
-        LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+        LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
 
-        REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. External documents use Ctx:, Ctx_Required:, or Ctx_Optional:.
+        REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
 
         LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
         END_LLM_INSTRUCTIONS
@@ -224,21 +229,102 @@ Structure_Principles:
 
     - Element: Cross_References
       Keyword: Ref
-      Def: Eliminate redundancy by pointing to single definition.
+      Def: Eliminate redundancy by pointing to single definition within the same artifact.
       Req: Target must exist within same artifact.
-      Prohib: External document references.
+      Prohib: External document references (use XRef/XRef_Required for other artifacts).
 
-    - Element: Tables
-      Def: Tabular structures preserve multi-dimensional relationships between data points.
-      Req: Maintain complete table structure including all rows, columns, and cell relationships.
-      Prohib: Converting table to another format or flattening relational data.
+    - Element: Cross_Artifact_References
+      Keyword: XRef / XRef_Required
+      Def: Link semantically related content across different artifacts using URN with optional #ID fragment.
+      Req: URN must be valid and resolvable via catalog/resolver chain.
+      Prohib: Using XRef or XRef_Required to reference the current artifact (use Ref instead).
 
-    - Element: Lists
-      Def: List structures preserve sequence semantics.
-      Types:
-        - Ordered: Sequence matters (YAML list with implicit order)
-        - Unordered: Grouping only (sequence arbitrary)
-      Req: Maintain list type and item ordering as they carry semantic meaning.
+# 5.1 Cross-Artifact Referencing (Detailed)
+
+Cross_Artifact_Referencing:
+  ID: KODA-CROSS-REF-01
+  Purp: Enable semantic linking between KODA artifacts to form knowledge graphs.
+
+  Keywords:
+    XRef:
+      Def: Soft reference to another artifact or specific ID within it.
+      Semantics: Informational link; resolution is best-effort.
+      Use_When: Linking related content that can degrade gracefully if unavailable.
+      
+    XRef_Required:
+      Def: Hard reference that MUST resolve for artifact to be valid.
+      Semantics: Blocking dependency; consumer cannot proceed if unresolved.
+      Use_When: Structural dependencies where the referenced content is essential.
+
+  Format:
+    Pattern: "urn:knowledge:{namespace}:{domain}:{artifact}:{version}[#{ID}]"
+    Components:
+      - namespace: Organization publishing the artifact (e.g., koda, orko, fxsl)
+      - domain: Thematic domain (e.g., core, metodologia, agents)
+      - artifact: Artifact identifier in kebab-case
+      - version: Semantic version (1.0.0) or keyword (latest, stable)
+      - fragment: Optional #ID pointing to specific block within artifact
+    Examples:
+      - Full_Artifact: "urn:knowledge:koda:core:spec:1.0.0"
+      - With_Fragment: "urn:knowledge:orko:core:fundamentos:1.0.0#ORKO-AX-A1"
+      - Required_Fragment: "urn:knowledge:orko:core:tejidos:1.0.0#ORKO-TF1-DEF"
+    Validation_Pattern: "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)(#[A-Z][A-Z0-9-]+)?$"
+
+  Resolution_Chain:
+    Steps:
+      - "1. Parse URN and extract optional fragment"
+      - "2. Resolve namespace via .knowledge-resolver.yml"
+      - "3. Query catalog for artifact file path"
+      - "4. If fragment present, parse target YAML and locate ID"
+      - "5. Return content (full artifact or specific block)"
+    Cognitive_Model: "CM-XREF-RESOLVER (defined in KODA/Hub)"
+
+  Graph_Properties:
+    Acyclicity:
+      Def: XRef_Required edges must form a DAG (no cycles).
+      Rationale: Prevents infinite resolution loops.
+    Compositionality:
+      Def: Artifacts can be composed by following XRef chains.
+      Rationale: Enables modular knowledge construction.
+    Traceability:
+      Forward: From A, follow XRef to discover dependencies.
+      Inverse: From B, check catalog Referenced_By to find consumers.
+
+  Best_Practices:
+    - "Use XRef for informational links that can degrade gracefully"
+    - "Use XRef_Required for structural dependencies"
+    - "Prefer fragment references (#ID) for precision"
+    - "Register stable IDs in catalog Exported_IDs"
+    - "Pin explicit versions; avoid 'latest' with fragments"
+    - "Check Referenced_By before modifying exported IDs"
+
+  Comparison_With_Other_Keywords:
+    Table: |
+      | Keyword        | Scope    | Resolution | Blocking | Use Case                          |
+      |----------------|----------|------------|----------|-----------------------------------|
+      | Ref            | Internal | ID lookup  | N/A      | Deduplication within artifact     |
+      | Ctx            | External | None       | No       | Informational mention             |
+      | Ctx_Required   | External | None       | Semantic | Conceptual dependency (no URN)    |
+      | XRef           | External | URN+frag   | No       | Cross-artifact navigation         |
+      | XRef_Required  | External | URN+frag   | Yes      | Cross-artifact hard dependency    |
+
+# 5.2 Tables and Lists (Structural Elements)
+
+Tables_And_Lists:
+  ID: KODA-TABLES-LISTS-01
+  Purp: Preserve structural semantics of tabular and sequential data.
+
+  Tables:
+    Def: Tabular structures preserve multi-dimensional relationships between data points.
+    Req: Maintain complete table structure including all rows, columns, and cell relationships.
+    Prohib: Converting table to another format or flattening relational data.
+
+  Lists:
+    Def: List structures preserve sequence semantics.
+    Types:
+      - Ordered: Sequence matters (YAML list with implicit order)
+      - Unordered: Grouping only (sequence arbitrary)
+    Req: Maintain list type and item ordering as they carry semantic meaning.
 
 # 6. Core Principles
 
@@ -289,6 +375,12 @@ Validation:
     - Rule: Valid references
       Test: All Ref values point to existing ID within artifact.
 
+    - Rule: Valid XRef format
+      Test: All XRef and XRef_Required values match URN pattern with optional #fragment.
+
+    - Rule: XRef not self-referential
+      Test: XRef and XRef_Required URNs do not reference the artifact's own URN.
+
   Semantic_Validation:
     - Rule: Metadata block present
       Test: First element contains required fields.
@@ -301,3 +393,14 @@ Validation:
 
     - Rule: Token efficiency
       Test: "Artifact uses fewer tokens than source (target: 30-50% reduction)."
+
+    - Rule: XRef resolvable
+      Test: All XRef and XRef_Required URNs resolve via catalog/resolver chain.
+
+    - Rule: Fragment exists in target (best-effort)
+      Test: If XRef or XRef_Required contains #fragment, ID exists in target artifact; failing this SHOULD raise a warning.
+
+    - Rule: No circular XRef_Required dependencies
+      Test: Dependency graph formed by XRef_Required edges is acyclic (DAG).
+      Algorithm: Topological sort; if fails, report cycle path.
+      Severity: error
