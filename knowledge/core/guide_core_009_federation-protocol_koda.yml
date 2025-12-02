@@ -180,6 +180,16 @@ Resolver_Contract:
       maintainer:
         Rec: Contact for federation issues.
 
+    Local_Override:
+      File: ".knowledge-resolver.local.yml"
+      Purp: Allow machine-specific resolver overrides without affecting the versioned resolver.
+      Behavior:
+        - If present, KODA CLI tools (koda, koda-health, koda-validate) treat this file as the active resolver.
+        - If absent, tools fall back to the canonical ".knowledge-resolver.yml".
+      Git_Policy:
+        - MUST be ignored via .gitignore.
+        - Intended for local experimentation or environment-specific paths.
+
   Validation:
     Req: Resolver MUST be validated on every commit.
     Checks:

@@ -17,6 +17,17 @@ ERRORS=0
 WARNINGS=0
 PASSED=0
 
+# Resolver file detection (local override takes precedence)
+get_resolver_file() {
+    if [ -f ".knowledge-resolver.local.yml" ]; then
+        echo ".knowledge-resolver.local.yml"
+    elif [ -f ".knowledge-resolver.yml" ]; then
+        echo ".knowledge-resolver.yml"
+    else
+        echo ""
+    fi
+}
+
 # Options
 FIX=false
 VERBOSE=false
@@ -98,18 +109,19 @@ done
 echo ""
 echo -e "${YELLOW}2. Resolver Checks${NC}"
 
-if [ -f ".knowledge-resolver.yml" ]; then
-    pass "Resolver exists: .knowledge-resolver.yml"
+RESOLVER_FILE=$(get_resolver_file)
+if [ -n "$RESOLVER_FILE" ]; then
+    pass "Resolver exists: $RESOLVER_FILE"
     
     # Validate YAML syntax
     if command -v ruby &> /dev/null; then
-        if ruby -ryaml -e "YAML.load_file('.knowledge-resolver.yml')" 2>/dev/null; then
+        if ruby -ryaml -e "YAML.load_file('$RESOLVER_FILE')" 2>/dev/null; then
             pass "Resolver YAML syntax valid"
         else
             fail "Resolver YAML syntax invalid"
         fi
     elif command -v python3 &> /dev/null; then
-        if python3 -c "import yaml; yaml.safe_load(open('.knowledge-resolver.yml'))" 2>/dev/null; then
+        if python3 -c "import yaml; yaml.safe_load(open('$RESOLVER_FILE'))" 2>/dev/null; then
             pass "Resolver YAML syntax valid"
         else
             fail "Resolver YAML syntax invalid"
@@ -119,32 +131,32 @@ if [ -f ".knowledge-resolver.yml" ]; then
     fi
     
     # Check required sections
-    if grep -q "_meta:" .knowledge-resolver.yml; then
+    if grep -q "_meta:" "$RESOLVER_FILE"; then
         pass "Resolver has _meta section"
     else
         fail "Resolver missing _meta section"
     fi
     
-    if grep -q "self:" .knowledge-resolver.yml; then
+    if grep -q "self:" "$RESOLVER_FILE"; then
         pass "Resolver has self section"
     else
         fail "Resolver missing self section"
     fi
     
-    if grep -q "namespaces:" .knowledge-resolver.yml; then
+    if grep -q "namespaces:" "$RESOLVER_FILE"; then
         pass "Resolver has namespaces section"
     else
         fail "Resolver missing namespaces section"
     fi
     
     # Check koda upstream
-    if grep -q "koda:" .knowledge-resolver.yml; then
+    if grep -q "koda:" "$RESOLVER_FILE"; then
         pass "Resolver has koda namespace configured"
     else
         warn "Resolver missing koda upstream (recommended)"
     fi
 else
-    fail "Missing .knowledge-resolver.yml"
+    fail "Missing .knowledge-resolver.yml (or .knowledge-resolver.local.yml)"
 fi
 
 # ============================================================================

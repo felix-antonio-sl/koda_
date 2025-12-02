@@ -4,6 +4,17 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Resolver file detection (local override takes precedence)
+get_resolver_file() {
+    if [ -f ".knowledge-resolver.local.yml" ]; then
+        echo ".knowledge-resolver.local.yml"
+    elif [ -f ".knowledge-resolver.yml" ]; then
+        echo ".knowledge-resolver.yml"
+    else
+        echo ""
+    fi
+}
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -111,7 +122,9 @@ case "${1:-}" in
         echo ""
         
         # Update last_sync timestamp
-        if [ -f ".knowledge-resolver.yml" ]; then
+        RESOLVER_FILE=$(get_resolver_file)
+        if [ -n "$RESOLVER_FILE" ]; then
+            echo -e "  Using resolver: ${CYAN}${RESOLVER_FILE}${NC}"
             NEW_SYNC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
             
             # Check if we can fetch registry (try both remote and local)
@@ -131,15 +144,15 @@ case "${1:-}" in
             if [ "$REGISTRY_OK" = true ]; then
                 # Update timestamp
                 if [[ "$OSTYPE" == "darwin"* ]]; then
-                    sed -i '' "s/last_sync:.*/last_sync: \"${NEW_SYNC}\"/" .knowledge-resolver.yml
+                    sed -i '' "s/last_sync:.*/last_sync: \"${NEW_SYNC}\"/" "$RESOLVER_FILE"
                 else
-                    sed -i "s/last_sync:.*/last_sync: \"${NEW_SYNC}\"/" .knowledge-resolver.yml
+                    sed -i "s/last_sync:.*/last_sync: \"${NEW_SYNC}\"/" "$RESOLVER_FILE"
                 fi
                 
                 echo -e "  ${GREEN}✓${NC} Updated last_sync to ${NEW_SYNC}"
             fi
         else
-            echo -e "${RED}Error: Not in a KODA repository${NC}"
+            echo -e "${RED}Error: Not in a KODA repository (no .knowledge-resolver.yml or .knowledge-resolver.local.yml)${NC}"
             exit 1
         fi
         

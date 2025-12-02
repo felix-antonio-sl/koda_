@@ -42,6 +42,17 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Resolver file detection (local override takes precedence)
+get_resolver_file() {
+    if [ -f ".knowledge-resolver.local.yml" ]; then
+        echo ".knowledge-resolver.local.yml"
+    elif [ -f ".knowledge-resolver.yml" ]; then
+        echo ".knowledge-resolver.yml"
+    else
+        echo ""
+    fi
+}
+
 # Counters
 HEALTHY=0
 WARNINGS=0
@@ -54,14 +65,17 @@ echo "╚═══════════════════════�
 echo -e "${NC}"
 
 # Check if in KODA repo
-if [ ! -f ".knowledge-resolver.yml" ]; then
+RESOLVER_FILE=$(get_resolver_file)
+if [ -z "$RESOLVER_FILE" ]; then
     echo -e "${RED}Error: Not in a KODA-compliant repository${NC}"
+    echo -e "${RED}(no .knowledge-resolver.yml or .knowledge-resolver.local.yml found)${NC}"
     exit 1
 fi
 
 # Get namespace
-NAMESPACE=$(grep -A1 "^self:" .knowledge-resolver.yml | grep "namespace:" | sed 's/.*namespace: *"\?\([^"]*\)"\?/\1/' | tr -d ' ')
+NAMESPACE=$(grep -A1 "^self:" "$RESOLVER_FILE" | grep "namespace:" | sed 's/.*namespace: *"\?\([^"]*\)"\?/\1/' | tr -d ' ')
 echo -e "Namespace: ${GREEN}${NAMESPACE}${NC}"
+echo -e "Resolver:  ${CYAN}${RESOLVER_FILE}${NC}"
 echo -e "Date: $(date '+%Y-%m-%d %H:%M:%S')"
 echo ""
 
@@ -95,7 +109,7 @@ echo -e "${YELLOW}━━━ 2. Resolver Status ━━━${NC}"
 echo ""
 
 # Check last sync
-LAST_SYNC=$(grep "last_sync:" .knowledge-resolver.yml | head -1 | sed 's/.*last_sync: *"\?\([^"]*\)"\?/\1/' | tr -d ' ')
+LAST_SYNC=$(grep "last_sync:" "$RESOLVER_FILE" | head -1 | sed 's/.*last_sync: *"\?\([^"]*\)"\?/\1/' | tr -d ' ')
 
 if [ -n "$LAST_SYNC" ]; then
     echo -e "  Last sync: ${CYAN}${LAST_SYNC}${NC}"
@@ -120,7 +134,7 @@ except:
                 if [ "$FIX_MODE" = true ]; then
                     echo -e "  ${YELLOW}→ Updating last_sync timestamp...${NC}"
                     NEW_SYNC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-                    sed -i.bak "s/last_sync:.*/last_sync: \"${NEW_SYNC}\"/" .knowledge-resolver.yml
+                    sed -i.bak "s/last_sync:.*/last_sync: \"${NEW_SYNC}\"/" "$RESOLVER_FILE"
                     echo -e "  ${GREEN}✓ Updated to ${NEW_SYNC}${NC}"
                 fi
             elif [ "$DAYS_AGO" -gt 7 ]; then
@@ -142,7 +156,7 @@ fi
 echo ""
 
 # Count configured namespaces
-NS_COUNT=$(grep -E "^  [a-z].*:$" .knowledge-resolver.yml | grep -v "_meta\|self\|resolution\|directories\|cache" | wc -l | tr -d ' ')
+NS_COUNT=$(grep -E "^  [a-z].*:$" "$RESOLVER_FILE" | grep -v "_meta\|self\|resolution\|directories\|cache" | wc -l | tr -d ' ')
 echo -e "  Configured namespaces: ${CYAN}${NS_COUNT}${NC}"
 echo ""
 
@@ -155,7 +169,7 @@ echo ""
 # Extract namespaces and check connectivity
 if command -v ruby &> /dev/null; then
     ruby -ryaml -e '
-resolver = YAML.load_file(".knowledge-resolver.yml")
+resolver = YAML.load_file("'"$RESOLVER_FILE"'")
 namespaces = resolver["namespaces"] || {}
 
 namespaces.each do |name, config|
@@ -226,7 +240,7 @@ if [ "$FULL_CHECK" = true ]; then
 require "net/http"
 require "uri"
 
-resolver = YAML.load_file(".knowledge-resolver.yml")
+resolver = YAML.load_file("'"$RESOLVER_FILE"'")
 namespaces = resolver["namespaces"] || {}
 
 namespaces.each do |name, config|

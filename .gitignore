@@ -45,6 +45,9 @@ staging/*
 *.local.yml
 *.local.yaml
 
+# Machine-specific resolver override
+.knowledge-resolver.local.yml
+
 # Secrets (never commit)
 .env
 .env.*
