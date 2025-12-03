@@ -118,6 +118,23 @@ Catalog:
       file: "agents/orquestador-generico/agent_orquestador_generico.yaml"
       status: published
       higher_order: true
+    - urn: "urn:knowledge:koda:agents:core-keeper:1.0.0"
+      title: "KODA Core Keeper Agent"
+      description: "Specialist for core framework consistency auditing and drift diagnosis"
+      file: "agents/koda-core-keeper/agent_koda_core_keeper.yaml"
+      status: published
+
+    - urn: "urn:knowledge:koda:agents:ci-assistant:1.0.0"
+      title: "KODA CI Assistant Agent"
+      description: "Specialist for CI/CD workflows explanation, debugging and optimization"
+      file: "agents/koda-ci-assistant/agent_koda_ci_assistant.yaml"
+      status: published
+
+    - urn: "urn:knowledge:koda:agents:taskmaster:1.0.0"
+      title: "KODA Taskmaster Agent"
+      description: "Specialist for project and task management using GitHub Issues and Projects"
+      file: "agents/koda-taskmaster/agent_koda_taskmaster.yaml"
+      status: published
 
   Domains: []
     # Future domain-specific knowledge bases will be registered here
@@ -128,9 +145,9 @@ Catalog:
     #   status: draft
 
 Statistics:
-  total_artifacts: 18
+  total_artifacts: 21
   core_guides: 10
   schemas: 1
-  agents: 7
+  agents: 10
   domains: 0
   last_updated: "2025-12-03"

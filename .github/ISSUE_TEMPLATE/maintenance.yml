@@ -1,0 +1,60 @@
+name: "🔧 Maintenance Task"
+description: Track maintenance work (sync, audit, updates)
+title: "[MAINT] "
+labels: ["type:maintenance"]
+body:
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      description: What area does this affect?
+      options:
+        - guides (knowledge/core)
+        - agents (agents/)
+        - schemas (schemas/)
+        - scripts (scripts/)
+        - federation (registry, resolver)
+        - multiple
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - Critical
+        - P1 - High
+        - P2 - Medium
+        - P3 - Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What needs to be done?
+      placeholder: |
+        Example: Update LLM_Parsing_Instructions in all agents to include XRef/XRef_Required
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-files
+    attributes:
+      label: Affected Files
+      description: List files that need changes
+      placeholder: |
+        - agents/koda-smith/agent_koda_smith.yaml
+        - agents/koda-transformer/agent_koda_transformer.yaml
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How do we know this is done?
+      placeholder: |
+        - [ ] All agents have updated LLM_Parsing_Instructions
+        - [ ] `koda validate` passes
+        - [ ] `koda audit` shows no drift

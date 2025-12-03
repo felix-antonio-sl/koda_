@@ -1,0 +1,71 @@
+# KODA GitHub Labels Definition
+# Apply with: gh label create --force -R owner/repo -n "name" -c "color" -d "description"
+# Or use https://github.com/marketplace/actions/label-sync
+
+labels:
+  # Type labels
+  - name: "type:maintenance"
+    color: "0E8A16"
+    description: "Maintenance tasks (sync, audit, updates)"
+  - name: "type:enhancement"
+    color: "84B6EB"
+    description: "New feature or improvement"
+  - name: "type:bug"
+    color: "D73A4A"
+    description: "Bug or inconsistency"
+  - name: "type:docs"
+    color: "0075CA"
+    description: "Documentation only"
+  - name: "type:ci"
+    color: "FBCA04"
+    description: "CI/CD related"
+
+  # Scope labels
+  - name: "scope:guides"
+    color: "FEF2C0"
+    description: "Affects knowledge/core guides"
+  - name: "scope:agents"
+    color: "F9D0C4"
+    description: "Affects agent definitions"
+  - name: "scope:schemas"
+    color: "D4C5F9"
+    description: "Affects JSON schemas"
+  - name: "scope:scripts"
+    color: "C2E0C6"
+    description: "Affects CLI scripts"
+  - name: "scope:federation"
+    color: "BFD4F2"
+    description: "Affects federation (registry, resolver)"
+
+  # Priority labels
+  - name: "priority:P0"
+    color: "B60205"
+    description: "Critical - blocks releases"
+  - name: "priority:P1"
+    color: "D93F0B"
+    description: "High - should fix this sprint"
+  - name: "priority:P2"
+    color: "FBCA04"
+    description: "Medium - fix when possible"
+  - name: "priority:P3"
+    color: "C5DEF5"
+    description: "Low - nice to have"
+
+  # Status labels
+  - name: "status:blocked"
+    color: "D93F0B"
+    description: "Blocked by dependency"
+  - name: "status:needs-info"
+    color: "FBCA04"
+    description: "Needs more information"
+  - name: "status:ready"
+    color: "0E8A16"
+    description: "Ready to work on"
+
+  # Automation labels
+  - name: "auto:audit"
+    color: "EDEDED"
+    description: "Created by automated audit"
+  - name: "auto:stale"
+    color: "EDEDED"
+    description: "No activity for 30 days"
