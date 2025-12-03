@@ -119,12 +119,6 @@ Catalog:
       status: published
       higher_order: true
 
-    - urn: "urn:knowledge:koda:agents:med-internal:1.0.0"
-      title: "KODA Internal Medicine Agent"
-      description: "Specialist in Internal Medicine, Zero-Based Evaluation, and Socratic Teaching"
-      file: "agents/medico-internista/agent_medico_internista.yaml"
-      status: published
-
   Domains: []
     # Future domain-specific knowledge bases will be registered here
     # Example:
@@ -134,9 +128,9 @@ Catalog:
     #   status: draft
 
 Statistics:
-  total_artifacts: 19
+  total_artifacts: 18
   core_guides: 10
   schemas: 1
-  agents: 8
+  agents: 7
   domains: 0
-  last_updated: "2025-12-01"
+  last_updated: "2025-12-03"
