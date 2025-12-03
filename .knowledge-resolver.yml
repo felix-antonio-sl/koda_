@@ -16,7 +16,7 @@ _meta:
 # =============================================================================
 self:
   namespace: koda
-  repository: "github.com/felix-antonio-sl/koda"
+  repository: "github.com/felix-antonio-sl/koda_"
   visibility: public
   maintainer: "fs@sanixai.com"
   role: upstream  # This is the upstream source for all KODA-compliant repos
@@ -68,7 +68,7 @@ namespaces:
   orko:
     type: peer
     base_path: "../orko/"
-    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/orko/main/"
+    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/orko_/main/"
     required: false
     description: "ORKO - Organizational Knowledge Ontology: Complexity, Tamed"
 

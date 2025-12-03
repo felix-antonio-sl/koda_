@@ -213,7 +213,7 @@ if [ "$FULL_CHECK" = true ]; then
     
     # Check registry
     echo -n "  Registry: "
-    if curl -sf "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/registry/namespaces.yml" > /dev/null 2>&1; then
+    if curl -sf "https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/registry/namespaces.yml" > /dev/null 2>&1; then
         echo -e "${GREEN}● reachable${NC}"
         HEALTHY=$((HEALTHY + 1))
     else
@@ -223,7 +223,7 @@ if [ "$FULL_CHECK" = true ]; then
     
     # Check koda upstream
     echo -n "  KODA upstream: "
-    if curl -sf "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/catalog/catalog_master_koda.yml" > /dev/null 2>&1; then
+    if curl -sf "https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/catalog/catalog_master_koda.yml" > /dev/null 2>&1; then
         echo -e "${GREEN}● reachable${NC}"
         HEALTHY=$((HEALTHY + 1))
     else

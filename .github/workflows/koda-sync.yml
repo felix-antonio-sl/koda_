@@ -43,7 +43,7 @@ jobs:
           import requests
           import os
 
-          registry_url = "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/registry/namespaces.yml"
+          registry_url = "https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/registry/namespaces.yml"
           
           try:
               response = requests.get(registry_url, timeout=30)
@@ -78,7 +78,7 @@ jobs:
           import os
 
           # Try to fetch upstream catalog
-          upstream_url = "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/catalog/catalog_master_koda.yml"
+          upstream_url = "https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/catalog/catalog_master_koda.yml"
           
           try:
               response = requests.get(upstream_url, timeout=30)

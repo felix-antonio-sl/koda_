@@ -131,7 +131,7 @@ Resolver_Contract:
           type: upstream
           pin_version: "1.0.0"
           base_path: "../koda/"
-          fallback: "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/"
+          fallback: "https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/"
           required: true
           
         {peer-namespace}:
@@ -314,7 +314,7 @@ Sync_Protocol:
 
   Registry_Manifest:
     Location: "https://registry.koda.dev/v1/manifest.yml"
-    Fallback: "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/registry/manifest.yml"
+    Fallback: "https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/registry/manifest.yml"
     Schema: |
       registry:
         version: "1.0.0"
@@ -325,7 +325,7 @@ Sync_Protocol:
           current_version: "1.0.0"
           available_versions: ["1.0.0"]
           status: "active"
-          repository: "github.com/felix-antonio-sl/koda"
+          repository: "github.com/felix-antonio-sl/koda_"
           
       compatibility:
         "koda:1.0.0":
@@ -512,7 +512,7 @@ Bootstrapping:
           koda:
             type: upstream
             base_path: "../koda/"
-            fallback: "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/"
+            fallback: "https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/"
             required: true
             description: "KODA Framework - upstream dependency"
         
@@ -618,7 +618,7 @@ Bootstrapping:
     
     Federation_Checks:
       - Check: Can resolve koda upstream (if online)
-        Command: curl -sf "https://raw.githubusercontent.com/felix-antonio-sl/koda/main/catalog/catalog_master_koda.yml" | head -5
+        Command: curl -sf "https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/catalog/catalog_master_koda.yml" | head -5
         Expected: Returns YAML content
         
       - Check: Catalog has valid _manifest
@@ -708,7 +708,7 @@ CI_CD:
             
             - name: Fetch registry
               run: |
-                curl -sf https://raw.githubusercontent.com/felix-antonio-sl/koda/main/registry/manifest.yml \
+                curl -sf https://raw.githubusercontent.com/felix-antonio-sl/koda_/main/registry/manifest.yml \
                   -o /tmp/registry.yml || echo "::warning::Registry fetch failed"
                   
             - name: Check for updates
