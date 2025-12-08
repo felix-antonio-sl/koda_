@@ -14,7 +14,7 @@ _manifest:
     canonical_url: "file://knowledge/core/guide_core_001_koda-spec_koda.yml"
     mirrors: []
   dependencies:
-    requires: []  # Root artifact - no dependencies
+    requires: [] # Root artifact - no dependencies
   provenance:
     created_by: "FS"
     created_at: "2025-11-21"
@@ -36,20 +36,8 @@ Ctx: Technical specification of KODA as YAML extension
 
 LLM_Parsing_Instructions:
   ID: KODA-LLM-PARSER-01
-  Req: Mandatory block following Metadata.
-  Prohib: Using for artifact creation or translation.
-  Content: |
-    BEGIN_LLM_INSTRUCTIONS
-    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
-
-    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
-
-    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
-
-    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
-
-    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
-    END_LLM_INSTRUCTIONS
+  Req: First block post-Metadata. Prohib artifact creation.
+  Content: "FIDELITY:meat+skeleton=preserve,fat=ignore. LEXICON:Act→Action,Cond→Condition,Ctx→Context,Ctx_Required→Required External,Def→Definition,Ex→Example,Mssn→Mission,Obj→Objective,Proc→Process,Purp→Purpose,Ref→Reference(internal),XRef→Cross-Artifact(external URN),XRef_Required→Mandatory XRef,Req→Requirement,Res→Result,Src→Source,Prohib→Prohibition,Warn→Warning,Just→Justification,Rec→Recommendation. REF_POLICY:Ref=internal ID,XRef/XRef_Required=external URN#fragment. LANG:keys EN,content original."
 
 Purp: Define KODA/Spec ( Specification) as formal extension of YAML for RAG-optimized knowledge artifacts.
 
@@ -250,7 +238,7 @@ Cross_Artifact_Referencing:
       Def: Soft reference to another artifact or specific ID within it.
       Semantics: Informational link; resolution is best-effort.
       Use_When: Linking related content that can degrade gracefully if unavailable.
-      
+
     XRef_Required:
       Def: Hard reference that MUST resolve for artifact to be valid.
       Semantics: Blocking dependency; consumer cannot proceed if unresolved.
@@ -346,6 +334,17 @@ Principles:
     Def: Maximum informational meat per token.
     Mech: Telegraphic brevity, keyword-based markup, reference-based deduplication.
     Target: 30-50% token reduction vs original human document.
+
+  - Principle: Token Economy (LLM-First Design)
+    ID: KODA-PRINCIPLE-TOKEN-ECONOMY
+    Def: KODA artifacts are for LLM consumption, NOT human readability.
+    Req:
+      - Eliminate explanatory verbosity
+      - Use lexicon abbreviations aggressively
+      - No duplication (use Ref/XRef)
+      - Prefer telegraphic structures over prose
+    Target: Minimum 40% token reduction vs source.
+    Prohib: Human-oriented explanations, redundancy, narrative prose.
 
   - Principle: Structural Semantics
     Ref: KODA-PRINCIPLE-STRUCTURE

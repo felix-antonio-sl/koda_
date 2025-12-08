@@ -61,10 +61,6 @@ Purp: Guide for constructing KODA-compliant agent definitions with maximum behav
 
 Obj: Provide systematic process for building agents from requirements to validated artifact.
 
-# =============================================================================
-# 1. CONSTRUCTION OVERVIEW
-# =============================================================================
-
 Construction:
   ID: CONSTRUCT-OVERVIEW-01
   Def: Process of converting agent requirements into validated KODA artifact.
@@ -83,12 +79,6 @@ Construction:
     - YAML syntax valid
     - All state transitions reachable
     - No logic exposure in public blocks
-
-# =============================================================================
-# 2. FIVE-PHASE CONSTRUCTION PROCESS
-# =============================================================================
-
-## Phase 1: Requirements Analysis
 
 Phase1_Requirements:
   ID: PHASE-REQUIREMENTS
@@ -124,8 +114,6 @@ Phase1_Requirements:
         - "What states does the agent need?"
         - "What triggers transitions between states?"
       Output: Workflow specification (states, transitions, entry points)
-
-## Phase 2: Architecture Design
 
 Phase2_Architecture:
   ID: PHASE-ARCHITECTURE
@@ -228,26 +216,9 @@ Phase3_Construction:
         ---
 
     - Step: Add KODA Runtime Instructions
-      Act: Insert the runtime instructions block that transforms LLM into agent interpreter.
-      Purp: Unlike KODA parsing (reading), KODA runtime is about EXECUTING agent behavior.
-      Ref: KODA-RUNTIME-INSTRUCTIONS-01
-      Template: |
-        KODA_Runtime_Instructions:
-          ID: KODA-RUNTIME-<AGENT-ID>
-          Activation: "You are now instantiating as the agent defined in this document."
-          Content: |
-            BEGIN_KODA_RUNTIME
-            You are not merely reading this document—you ARE the agent it defines.
-            This YAML is your source code; you are its interpreter.
-            
-            1. IDENTITY: Adopt role/objective/audience completely. You ARE this role.
-            2. STATE_MACHINE: Enter initial_state, execute process, evaluate transitions. No improvisation.
-            3. COGNITIVE_MODELS: Execute private reasoning internally. Never expose names or contents.
-            4. KNOWLEDGE: Route ALL queries through CM-KB-GUIDANCE. No implicit retrieval.
-            5. SECURITY: block_instructions + forbid_internal_jargon are HARD constraints.
-            6. EVALUATION: Run checklist before EVERY response. Apply corrections. Deliver only after all pass.
-            END_KODA_RUNTIME
-      Note: Use Standard_Template from KODA-AGENT-SPEC for full version, Compact_Template for token-constrained contexts.
+      Act: Insert runtime instructions block from KODA/Agent spec.
+      XRef_Required: "urn:knowledge:koda:core:agent:1.0.0#Standard_Template"
+      Note: "Use Standard_Template from guide_core_005. PROHIB: using deprecated Compact_Template or creating custom versions."
 
     - Step: Build Identity Block
       Path: agent_identity_and_global_configuration
@@ -263,7 +234,7 @@ Phase3_Construction:
         - web_search_configuration (for WEB policies)
         - uncertainty_protocol
         - citation_formatting
-      
+
       Templates_By_Policy:
         KB_BASED_Template: |
           catalog_resolution:
@@ -341,7 +312,7 @@ Phase3_Construction:
         - Domain-specific analysis models
         - All cognitive models with _meta expose false
       Req: Every CM must have _meta and dimensions
-      
+
       Templates_By_Policy:
         KB_BASED_CMs: |
           CM-CATALOG-RESOLVER:
@@ -352,7 +323,7 @@ Phase3_Construction:
               - "2. Buscar en catalog.Core_Guides[], catalog.Schemas[], catalog.Agents[], catalog.Domains[]"
               - "3. Extraer 'file' del registro encontrado"
               - "4. Retornar path para acceso al contenido"
-          
+
           CM-KB-GUIDANCE:
             _meta: { expose: false }
             resolution_protocol: |
@@ -424,8 +395,6 @@ Phase3_Construction:
       Contains:
         - evaluation_process (pre_response_hook, checklist)
         - correction_protocol
-
-## Phase 4: Validation
 
 Phase4_Validation:
   ID: PHASE-VALIDATION
@@ -515,8 +484,6 @@ Phase4_Validation:
         Act: Complete Minimum Guard Set
         Return_To: Phase 3
 
-## Phase 5: Deployment Preparation
-
 Phase5_Deployment:
   ID: PHASE-DEPLOYMENT
   Obj: Prepare validated artifact for deployment.
@@ -537,10 +504,6 @@ Phase5_Deployment:
     - Step: Versioning
       Act: Commit with conventional commit message
       Format: "feat(agent_<name>): initial agent definition"
-
-# =============================================================================
-# 3. DESIGN PATTERNS
-# =============================================================================
 
 Patterns:
   ID: KODA-PATTERNS-01
@@ -563,7 +526,7 @@ Patterns:
             catalog:
               urn: "urn:knowledge:namespace:catalog:master:1.0.0"
               role: SOURCE_OF_TRUTH
-        
+
         CM-CATALOG-RESOLVER:
           _meta: { expose: false }
           process:
@@ -591,7 +554,7 @@ Patterns:
         usage_policy_and_source_management:
           policy: LLM_NATIVE
         uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
-        
+
         CM-LLM-BOUNDARY:
           _meta: { expose: false }
           uncertainty_triggers:
@@ -624,7 +587,7 @@ Patterns:
           search_scope: news
           freshness: week
           citation_required: true
-        
+
         CM-WEB-SEARCH:
           _meta: { expose: false }
           process:
@@ -657,7 +620,7 @@ Patterns:
           enabled: true
           search_scope: domain_specific
           domain_whitelist: ["official-source.gov"]
-        
+
         CM-KNOWLEDGE-ROUTER:
           _meta: { expose: false }
           process:
@@ -750,10 +713,6 @@ Patterns:
         - Configure platform-specific adaptations
       Ctx: "urn:knowledge:koda:core:life:1.0.0"
 
-# =============================================================================
-# 4. ANTI-PATTERNS (AVOID)
-# =============================================================================
-
 Anti_Patterns:
   ID: KODA-ANTI-PATTERNS-01
   Purp: Common mistakes to avoid in agent construction.
@@ -793,12 +752,12 @@ Anti_Patterns:
         catalog_resolution:
           catalog_urn: "urn:knowledge:ns:catalog:master:1.0.0"
           resolution_strategy: CATALOG_FIRST
-        
+
         CM-CATALOG-RESOLVER:
           process:
             - "1. Query catalog for URN"
             - "2. Return file path"
-        
+
         CM-KB-GUIDANCE:
           resolution_protocol: "Invoke CM-CATALOG-RESOLVER first"
       Mitigation: Implement Catalog as Source of Truth pattern.
@@ -862,10 +821,6 @@ Anti_Patterns:
           communication_restrictions:
             forbid_internal_jargon: true
       Mitigation: Complete Minimum Guard Set.
-
-# =============================================================================
-# 5. VALIDATION CHECKLIST (DETAILED)
-# =============================================================================
 
 Validation_Checklist:
   ID: KODA-VALIDATION-CHECKLIST-01
@@ -949,10 +904,6 @@ Validation_Checklist:
       - ID: CHK-DEPS-RESOLVABLE
         Check: Dependencies resolvable
         Test: Referenced artifacts accessible
-
-# =============================================================================
-# 6. COMPLETE EXAMPLE
-# =============================================================================
 
 Example:
   ID: KODA-EXAMPLE-01
@@ -1123,10 +1074,6 @@ Example:
         - "IF check 'CONTEXT_SHIFT' fails -> TRANSITION_TO_STATE: S-DISPATCHER"
         - "IF any other check fails -> REFINE_DRAFT_INTERNALLY"
 
-# =============================================================================
-# 7. MIGRATION MAPPING
-# =============================================================================
-
 Migration:
   ID: KODA-MIGRATION-01
   Purp: Backward compatibility from legacy terminology.
@@ -1177,10 +1124,6 @@ Migration:
       Current: policy with enum [EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE]
       Reason: Explicit enumeration.
 
-# =============================================================================
-# 8. WORKFLOW SUMMARY
-# =============================================================================
-
 Workflow:
   ID: KODA-WORKFLOW-01
   Steps:
@@ -1197,10 +1140,6 @@ Workflow:
     - Security completeness (Minimum Guard Set)
     - Knowledge traceability (CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE chain)
     - Categorical coherence (valid state machine)
-
-# =============================================================================
-# 9. HIGHER-ORDER AGENT (HOA) CONSTRUCTION
-# =============================================================================
 
 HOA_Construction:
   ID: KODA-HOA-CONSTRUCT-01
@@ -1324,7 +1263,7 @@ HOA_Construction:
           shared_context: "object (optional)"
       Runtime_Instructions_Extension: |
         HOAs MUST add point 8 to KODA_Runtime_Instructions:
-        
+
         8. ORCHESTRATION: You coordinate a fleet of sub-agents. Delegate tasks
            according to orchestration_protocol. Never execute sub-agent roles
            yourself—delegate and synthesize. Mark all evidence as REAL or SIMULATED.
@@ -1442,3 +1381,26 @@ HOA_Construction:
     - Anti_Pattern: "Fleet without purpose"
       Problem: "Creating HOA when single agent suffices"
       Solution: "Use Phase 0 assessment to validate HOA need"
+
+Token_Economy_Checklist:
+  ID: KODA-TOKEN-ECONOMY-CHECKLIST-01
+  Purp: Verify token optimization before agent deployment.
+  XRef_Required: "urn:knowledge:koda:core:spec:1.0.0#KODA-PRINCIPLE-TOKEN-ECONOMY"
+  Checks:
+    - Check: RUNTIME_COMPACT
+      Desc: "KODA_Runtime_Instructions uses Standard_Template from guide_core_005 (≤12 lines)"
+    - Check: NO_CUSTOM_RUNTIME
+      Desc: "No custom verbose Runtime Instructions. Prohib: Compact_Template (deprecated)"
+    - Check: LLM_PARSING_COMPACT
+      Desc: "LLM_Parsing_Instructions uses compact format (≤4 lines)"
+    - Check: NO_HUMAN_PROSE
+      Desc: "No explanatory prose for humans. All content optimized for LLM parsing"
+    - Check: REF_DEDUPLICATION
+      Desc: "Ref/XRef used for all repeated concepts. No duplication"
+    - Check: TEMPLATES_NOT_DUPLICATED
+      Desc: "Templates use XRef to source. Prohib: copying templates inline"
+    - Check: TOKEN_TARGET
+      Desc: "Agent artifact ≤40% tokens vs equivalent verbose version"
+  Failure_Response:
+    - "IF any check fails → refactor artifact before deployment"
+    - "IF TOKEN_TARGET fails → apply CM-TELEGRAFIZER from KODA-TRANSFORMER"
