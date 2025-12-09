@@ -1,6 +1,11 @@
 # KODA Knowledge Resolver Configuration
 # Defines how URNs are resolved to physical file paths
 # Spec: urn:knowledge:koda:core:federation:1.0.0
+#
+# IMPORTANT: This resolver is SPECULATIVE, not OPERATIVE
+# It DOCUMENTS how URNs should resolve, but does not execute resolution.
+# LLMs need physical file access - use symlinks or git submodules.
+# See FED-RESOLVER-REALITY-01 in guide_core_009_federation-protocol.yml
 
 # =============================================================================
 # METADATA - Required for federation health tracking
@@ -19,7 +24,7 @@ self:
   repository: "github.com/felix-antonio-sl/koda_"
   visibility: public
   maintainer: "fs@sanixai.com"
-  role: upstream  # This is the upstream source for all KODA-compliant repos
+  role: upstream # This is the upstream source for all KODA-compliant repos
 
 # =============================================================================
 # NAMESPACES - Federated namespace resolution
@@ -84,10 +89,10 @@ resolution_rules:
   "urn:knowledge:koda:core:test:*": "./knowledge/core/guide_core_007_koda-test-spec_koda.yml"
   "urn:knowledge:koda:core:schema-versioning:*": "./knowledge/core/guide_core_008_schema-versioning_koda.yml"
   "urn:knowledge:koda:core:federation:*": "./knowledge/core/guide_core_009_federation-protocol_koda.yml"
-  
+
   # Schema
   "urn:knowledge:koda:core:agent-schema:*": "./schemas/koda-agent-schema-1.0.0.json"
-  
+
   # Agents
   "urn:knowledge:koda:agents:architect:*": "./agents/knowledge-architect/agent_koda_architect.yaml"
   "urn:knowledge:koda:agents:transformer:*": "./agents/koda-transformer/agent_koda_transformer.yaml"
@@ -96,7 +101,7 @@ resolution_rules:
   "urn:knowledge:koda:agents:tester:*": "./agents/koda-tester/agent_koda_tester.yaml"
   "urn:knowledge:koda:agents:sim-orchestrator:*": "./agents/koda-sim-orchestrator/agent_koda_sim_orchestrator.yaml"
   "urn:knowledge:koda:agents:orquestador-generico:*": "./agents/orquestador-generico/agent_orquestador_generico.yaml"
-  
+
   # Registry
   "urn:knowledge:koda:registry:namespaces:*": "./registry/namespaces.yml"
 
@@ -113,4 +118,4 @@ directories:
 
 cache:
   enabled: true
-  ttl_seconds: 86400  # 24 hours
+  ttl_seconds: 86400 # 24 hours

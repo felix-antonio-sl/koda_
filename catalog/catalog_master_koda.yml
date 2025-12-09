@@ -12,9 +12,9 @@ _manifest:
     last_modified_at: "2025-12-08"
 
 ID: KODA-CATALOG-MASTER-01
-Version: 1.0.0
+Version: 1.1.0
 Status: Published
-Version-Notes: "v1.0.0 - Initial release with complete KODA ecosystem"
+Version-Notes: "v1.1.0 - Token-optimized all 10 agents for LLM consumption (-33% reduction)"
 
 Catalog:
   Core_Guides:
@@ -151,3 +151,4 @@ Statistics:
   agents: 10
   domains: 0
   last_updated: "2025-12-08"
+  notes: "All 10 agents token-optimized for LLM consumption (-33% reduction, 4631→3107 lines)"
