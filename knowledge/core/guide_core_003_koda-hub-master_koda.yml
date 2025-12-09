@@ -223,6 +223,7 @@ URN_Scheme:
           - aprendizaje: "Conocimiento y skills"
           - relaciones: "Red de contactos"
           - problemas: "Espacio de retos y soluciones"
+          - korvo: "Meta-conocimiento del sistema"
           - agents: "Korvo Assistant"
 
   Examples:
