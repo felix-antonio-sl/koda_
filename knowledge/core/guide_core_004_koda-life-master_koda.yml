@@ -119,7 +119,7 @@ Philosophy_Architecture:
       Def: Execution model for loading `agent.yaml` into the LLM MUST be an explicit design choice.
       Models:
         - Ctx: Direct_Execution
-          Def: '`agent.yaml` content is used directly as the system prompt.'
+          Def: "`agent.yaml` content is used directly as the system prompt."
         - Ctx: Indirect_Execution
           Def: A Bootloader prompt instructs the model to load and execute an attached `agent.yaml` file.
       Just: Critical for platforms with instruction length limits; formalizes the Agent Bootloader Pattern.
@@ -345,6 +345,9 @@ Git_Management:
         Purp: Temporary work-in-progress area for artifacts undergoing transformation.
       - Cpt: /tests/
         Purp: Automated tests for agent logic and knowledge integrity.
+      - Cpt: /_workspaces/
+        Purp: Thematic projects consuming KODA artifacts (NOT namespaces).
+        XRef: "urn:knowledge:koda:core:hub:1.0.0#GUIDE-KODA-HUB-WORKSPACES-01"
 
   Branching_Strategy:
     ID: GUIDE-KODA-LIFE-GIT-BRANCHING-01
@@ -403,9 +406,9 @@ Git_Management:
         - "kb_011_selector_ipr.yml"
 
     Examples:
-      - Ex: 'feat(public_behavior_workflows_and_states.defined_states): add new state for user validation.'
-      - Ex: 'kb(kb_029_guia_circ33): update circular 33 with new 2025 clause.'
-      - Ex: 'fix(private_internal_reasoning_processes): correct typo in role definition.'
+      - Ex: "feat(public_behavior_workflows_and_states.defined_states): add new state for user validation."
+      - Ex: "kb(kb_029_guia_circ33): update circular 33 with new 2025 clause."
+      - Ex: "fix(private_internal_reasoning_processes): correct typo in role definition."
 
   Tagging_Release_Strategy:
     Req: Each merge into main constitutes a new release and MUST be tagged.
@@ -579,4 +582,3 @@ Annexes:
         Purp: "Implement Higher-Order Agents that orchestrate a fleet of First-Order Agents."
         Mech: "Use orchestration_fleet_and_protocol top-level key in KODA to define fleets and delegation protocol."
         Ctx: "urn:knowledge:koda:core:agent:1.0.0"
-
