@@ -209,6 +209,22 @@ URN_Scheme:
           - implementacion: "Layer 4-5: Toolkit, calculadoras"
           - agents: "Arquitecto ORKO"
 
+      - Namespace: korvo
+        Owner: "Félix Sanhueza (Personal)"
+        Type: "Privado/Personal"
+        Scope: "Gestión integral de vida personal - productividad, bienestar, metas"
+        Repository: "github.com/felix-antonio-sl/korvo"
+        Path: "~/Developer/korvo/"
+        License: "Proprietary"
+        Domains:
+          - salud: "Bienestar físico y mental"
+          - finanzas: "Economía personal"
+          - metas: "Objetivos y proyectos personales"
+          - aprendizaje: "Conocimiento y skills"
+          - relaciones: "Red de contactos"
+          - problemas: "Espacio de retos y soluciones"
+          - agents: "Korvo Assistant"
+
   Examples:
     - "urn:knowledge:koda:core:hub:2.0.0"
     - "urn:knowledge:gorenuble:normativa:circular-33:1.0.0"

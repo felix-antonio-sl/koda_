@@ -136,19 +136,24 @@ Catalog:
       file: "agents/koda-taskmaster/agent_koda_taskmaster.yaml"
       status: published
 
-  Domains: []
-    # Future domain-specific knowledge bases will be registered here
-    # Example:
-    # - urn: "urn:knowledge:sanixai:legal:contracts:1.0.0"
-    #   title: "Contracts Knowledge Base"
-    #   file: "domains/legal/kb_legal_001_contracts_koda.yml"
-    #   status: draft
+  Domains:
+    # Federated namespaces - external knowledge bases registered in KODA ecosystem
+    - namespace: gorenuble
+      urn: "urn:knowledge:gorenuble:catalog:master:1.0.0"
+      title: "Gobierno Regional de Ñuble"
+      description: "KB institucional GORE Ñuble - escalable a otros GOREs de Chile"
+      type: institutional
+      resolver: "../gorenuble/.knowledge-resolver.yml"
+      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/gorenuble/main/"
+      artifacts_count: 31
+      status: active
+      registered: "2025-12-09"
 
 Statistics:
-  total_artifacts: 21
+  total_artifacts: 22
   core_guides: 10
   schemas: 1
   agents: 10
-  domains: 0
-  last_updated: "2025-12-08"
-  notes: "All 10 agents token-optimized for LLM consumption (-33% reduction, 4631→3107 lines)"
+  domains: 1
+  last_updated: "2025-12-09"
+  notes: "First federated domain (gorenuble) registered. All 10 agents token-optimized (-33% reduction)"
