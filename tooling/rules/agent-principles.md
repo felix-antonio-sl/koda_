@@ -13,8 +13,6 @@ metadata:
   scope: global
   activation_mode: ALWAYS_ON
   
-  platforms: [antigravity, windsurf, cursor]
-  
   tags:
     - koda-principles
     - agent-design

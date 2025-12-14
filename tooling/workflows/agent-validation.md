@@ -12,7 +12,6 @@ metadata:
     - "urn:knowledge:koda:agents:smith:*"
     - "urn:knowledge:koda:agents:tester:*"
   trigger_states: [S-VALIDATOR, S-FULL-AUDIT]
-  platforms: [antigravity, windsurf, cursor]
   turbo: false
 ---
 

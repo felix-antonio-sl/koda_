@@ -227,8 +227,7 @@ Artifact_Types:
 
       settings:
         preferred_language: es
-        auto_approve_safe_commands: true
-        artifact_directory: ".gemini/antigravity/brain"
+        # IDE-specific settings delegated to adapters
 
 # =============================================================================
 # INTEGRACIÓN CON AGENTES KODA
@@ -369,45 +368,42 @@ Directory_Structure:
           file: "profiles/windsurf.yml"
 
 # =============================================================================
-# COMPATIBILIDAD CON PLATAFORMAS
+# POLÍTICA DE DESACOPLAMIENTO IDE
 # =============================================================================
 
-Platform_Compatibility:
-  ID: KODA-TOOLING-PLATFORMS-01
+IDE_Decoupling_Policy:
+  ID: KODA-TOOLING-DECOUPLING-01
+  Purp: Mantener KODA/Tooling independiente de implementaciones IDE específicas.
 
-  Platforms:
-    - Platform: windsurf
-      ID: PLATFORM-WINDSURF
-      Def: Windsurf IDE con Cascade AI.
-      Workflow_Format: Markdown con anotaciones // turbo.
-      Rules_Location: .windsurfrules (proyecto) o global.
-      Profile_Integration: Via settings.json.
+  Principle:
+    Def: Los artefactos KODA/Tooling son la fuente de verdad. IDEs consumen via adapters.
+    Mech: Adapters generados bajo demanda transforman formato KODA a formato IDE nativo.
+    Prohib: Hardcodear paths o configuraciones IDE-specific en artefactos core.
 
+  Adapter_Generation:
+    Def: Script dedicado genera symlinks/configs para IDE específico.
+    Command: "./scripts/koda-generate-adapters.sh [--antigravity|--windsurf|--cursor|--all]"
+    Output: Estructura en directorio .{ide}/ con symlinks a tooling/
+    Note: Directorios de adapters son .gitignore'd (no versionados).
+
+  Supported_Platforms:
     - Platform: antigravity
-      ID: PLATFORM-ANTIGRAVITY
-      Def: Gemini-based coding assistant.
-      Workflow_Format: Markdown en .agent/workflows/.
-      Rules_Location: .agent/rules.md o inline.
-      Profile_Integration: Via artifact metadata.
-
-    - Platform: vscode
-      ID: PLATFORM-VSCODE
-      Def: Visual Studio Code con extensiones AI.
-      Workflow_Format: Tasks en .vscode/tasks.json.
-      Rules_Location: .vscode/settings.json.
-      Profile_Integration: Workspace settings.
-
+      Adapter_Dir: ".agent/"
+      Consumes: "tooling/workflows/, tooling/rules/"
+    - Platform: windsurf
+      Adapter_Dir: ".windsurf/"
+      Consumes: "tooling/workflows/, tooling/rules/"
     - Platform: cursor
-      ID: PLATFORM-CURSOR
-      Def: Cursor IDE con AI native.
-      Workflow_Format: .cursor/workflows/.
-      Rules_Location: .cursorrules.
-      Profile_Integration: Via project settings.
+      Adapter_Dir: ".cursor/"
+      Consumes: "tooling/workflows/"
+    - Platform: vscode
+      Adapter_Dir: ".vscode/"
+      Consumes: "tasks.json generated from tooling/workflows/"
 
-  Cross_Platform_Strategy:
-    Def: Artefactos KODA/Tooling son fuente de verdad, plataformas consumen.
-    Mech: Adaptadores por plataforma transforman formato KODA a formato nativo.
-    Rec: Mantener artefactos en formato KODA, generar configs nativas si necesario.
+  Benefits:
+    - IDE performance (fewer files to index)
+    - Core portability (consumers without specific IDE)
+    - Clean separation of concerns
 
 # =============================================================================
 # PATRONES Y ANTI-PATRONES
@@ -429,21 +425,21 @@ Patterns:
       Use: Convenciones base + especialización por dominio.
       Ex: "yaml-strict (global) + categorical-rigor (S-CATEGORICAL-MODELING)"
 
-    - Pattern: Profile por Plataforma
-      ID: PATTERN-PLATFORM-PROFILE
-      Def: Un profile por cada plataforma de desarrollo utilizada.
-      Use: Optimización de experiencia por herramienta.
-      Ex: "antigravity.yml, windsurf.yml, cursor.yml"
+    - Pattern: Adapter por Plataforma
+      ID: PATTERN-PLATFORM-ADAPTER
+      Def: Adapters generados bajo demanda para cada IDE.
+      Use: Integración IDE sin contaminar core.
+      Ex: "./scripts/koda-generate-adapters.sh --antigravity"
 
 Anti_Patterns:
   ID: KODA-TOOLING-ANTI-PATTERNS-01
 
   Anti_Patterns:
-    - Anti_Pattern: Workflows Hardcoded
-      ID: ANTI-HARDCODED-WORKFLOWS
-      Def: Workflows definidos directamente en .agent/ sin URN ni versionado.
-      Symptom: No hay trazabilidad ni reutilización entre proyectos.
-      Mitigation: Migrar a tooling/ con estructura KODA/Tooling.
+    - Anti_Pattern: IDE Paths in Core
+      ID: ANTI-IDE-PATHS-CORE
+      Def: Paths IDE-specific (.agent/, .windsurf/) hardcodeados en specs core.
+      Symptom: Core contaminado, difícil portabilidad.
+      Mitigation: Usar adapters generados, referencias abstractas.
 
     - Anti_Pattern: Rules Dispersas
       ID: ANTI-SCATTERED-RULES

@@ -40,4 +40,4 @@ LLM_Parsing_Instructions:
 
 - Spec: `urn:knowledge:koda:core:spec:1.0.0`
 - Transform: `urn:knowledge:koda:core:transform:1.0.0`
-- Rules: @.windsurf/rules/yaml-strict.yml
+- Rules: `tooling/rules/yaml-strict.yml`

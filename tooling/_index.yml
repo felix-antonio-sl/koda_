@@ -58,5 +58,4 @@ artifacts:
     - urn: "urn:tooling:koda:profiles:koda-workspace:1.0.0"
       file: "profiles/koda-workspace.yml"
       description: "Configuración workspace KODA con agente preferido"
-      platforms: [antigravity, windsurf]
       default_agent: "knowledge-architect"

@@ -11,8 +11,7 @@ metadata:
   compatible_agents:
     - "urn:knowledge:koda:agents:transformer:*"
     - "urn:knowledge:koda:agents:architect:*"
-  trigger_states: [S-TRANSFORMER, S-ANALYZER]
-  platforms: [antigravity, windsurf, cursor]
+  trigger_states: [S-TRANSFORM, S-ANALYZE]
   turbo: false
 ---
 

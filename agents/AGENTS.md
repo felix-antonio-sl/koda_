@@ -21,7 +21,7 @@ Este directorio contiene agentes KODA. Al trabajar aquí, el IDE carga automáti
 
 ## 📐 Principios KODA (Rules Activas)
 
-Ver reglas detalladas: `@.windsurf/rules/agent-principles.yml`
+Ver reglas detalladas: `tooling/rules/agent-principles.md`
 
 ### Quick Reference
 
@@ -45,7 +45,7 @@ security_protocols:
 
 ## 📦 Convenciones KODA
 
-Ver: `@.windsurf/rules/koda-conventions.yml`
+Ver: `tooling/rules/koda-conventions.yml`
 
 ### Nomenclatura
 

@@ -35,16 +35,8 @@ active_rules:
   - "yaml-strict.yml" # Formato YAML
   - "agent-principles.yml" # Principios P1-P7
 
-# Configuración IDE-specific
-ide_settings:
-  antigravity:
-    auto_approve_safe_commands: false # KODA requiere review
-    preferred_language: "es"
-    terminal_command_policy: "REQUEST_REVIEW"
-
-  windsurf:
-    cascade_mode: "planning" # Frameworks complejos requieren planificación
-    auto_import_agents_md: true
+# Note: IDE-specific settings delegated to adapters
+# Generate adapters: ./scripts/koda-generate-adapters.sh --all
 
 # Directorios clave
 key_directories:

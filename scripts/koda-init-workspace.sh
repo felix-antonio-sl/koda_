@@ -15,9 +15,9 @@ echo "📁 Creando estructura..."
 mkdir -p tooling/{workflows,rules,profiles}
 mkdir -p agents
 mkdir -p knowledge/{catalog,sources}
-mkdir -p .agent/{workflows,rules,profiles}
-mkdir -p .windsurf/{workflows,rules}
 mkdir -p .git/hooks
+# Note: IDE adapters (.agent/, .windsurf/) are now generated on-demand
+# Use: ./scripts/koda-generate-adapters.sh --all
 
 # 2. Crear catálogo tooling
 echo "📋 Creando catálogo tooling..."
@@ -82,33 +82,15 @@ key_directories:
   tooling: "tooling/"
 EOF
 
-# 4. Crear symlinks IDE
-echo "🔗 Creando symlinks IDE..."
-cd .agent
-ln -sf ../tooling/workflows workflows
-ln -sf ../tooling/rules rules
-ln -sf ../tooling/profiles profiles
+# 4. IDE Adapters (optional - generated on demand)
+echo "ℹ️  IDE adapters are now generated on-demand"
+echo "   Run: ./scripts/koda-generate-adapters.sh --all"
 
-# Symlinks globales
-if [ -d ~/.koda/tooling ]; then
-  ln -sf ~/.koda/tooling/workflows workflows-global
-  ln -sf ~/.koda/tooling/rules rules-global
-  echo "  ✓ Symlinks globales creados"
+# Copy the adapter generator if in KODA repo context
+if [ -f "$SCRIPT_DIR/koda-generate-adapters.sh" ]; then
+  cp "$SCRIPT_DIR/koda-generate-adapters.sh" "scripts/koda-generate-adapters.sh" 2>/dev/null || true
+  chmod +x "scripts/koda-generate-adapters.sh" 2>/dev/null || true
 fi
-
-cd ..
-
-cd .windsurf
-ln -sf ../tooling/workflows workflows
-ln -sf ../tooling/rules rules
-
-# Symlinks globales Windsurf
-if [ -d ~/.koda/tooling ]; then
-  ln -sf ~/.koda/tooling/workflows workflows-global
-  ln -sf ~/.koda/tooling/rules rules-global
-fi
-
-cd ..
 
 # 5. Crear AGENTS.md root
 echo "📝 Creando AGENTS.md..."
@@ -129,7 +111,7 @@ Workspace configurado con KODA framework.
 
 ## 📐 Convenciones
 
-Ver: \`@.windsurf/rules/koda-conventions.yml\`
+Ver: \`tooling/rules/koda-conventions.yml\`
 
 - Keywords en **inglés**
 - Contenido en **español**
@@ -161,7 +143,7 @@ cat > agents/AGENTS.md << EOF
 
 ## 📐 Principios KODA (P1-P7)
 
-Ver: \`@.windsurf/rules/agent-principles.yml\`
+Ver: \`tooling/rules/agent-principles.md\`
 
 Quick reference:
 - **P1**: Declarativo (estados, no scripts)
@@ -473,11 +455,12 @@ Workspace KODA para namespace \`${NAMESPACE}\`.
 ${WORKSPACE_NAME}/
 ├── agents/          # Agentes KODA
 ├── knowledge/       # Knowledge base
-├── tooling/         # Workflows, Rules, Profiles
-├── .agent/          # Symlinks Antigravity
-├── .windsurf/       # Symlinks Windsurf
+├── tooling/         # Workflows, Rules, Profiles (source of truth)
 └── scripts/         # Scripts de automatización
 \`\`\`
+
+> **Note**: IDE adapters (.agent/, .windsurf/) are generated on-demand.
+> Run: \`./scripts/koda-generate-adapters.sh --all\`
 
 ## 🔄 Workflows Disponibles
 
@@ -503,7 +486,9 @@ echo "📂 Directorios creados:"
 echo "   - tooling/ (workflows, rules, profiles)"
 echo "   - agents/ (con AGENTS.md)"
 echo "   - knowledge/"
-echo "   - .agent/, .windsurf/ (symlinks)"
+echo ""
+echo "ℹ️  IDE Adapters (optional):"
+echo "   Run: ./scripts/koda-generate-adapters.sh --all"
 echo ""
 echo "🔧 Automatización instalada:"
 echo "   - scripts/new-agent.sh (crear agente automático)"

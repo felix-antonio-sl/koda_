@@ -17,10 +17,10 @@ Este repositorio define el framework KODA (Knowledge-Optimized Document Architec
 ## Convenciones
 
 ### YAML Formatting
-Seguir estrictamente: @.windsurf/rules/yaml-strict.yml
+Seguir estrictamente: `tooling/rules/yaml-strict.yml`
 
 ### KODA Conventions
-Nomenclatura y estructura: @.windsurf/rules/koda-conventions.yml
+Nomenclatura y estructura: `tooling/rules/koda-conventions.yml`
 
 - Keywords en **inglés** (ID, Def, Ref, Purp, etc.)
 - Contenido en **español** (es-CL)
