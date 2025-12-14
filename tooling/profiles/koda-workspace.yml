@@ -1,0 +1,60 @@
+---
+_manifest:
+  urn: "urn:tooling:koda:profiles:koda-workspace:1.0.0"
+  type: profile
+  version_koda_spec: "1.0.0"
+  namespace: "koda"
+
+metadata:
+  platform: [antigravity, windsurf]
+  description: "Configuración para workspace KODA Framework"
+  author: "KODA Core"
+  created_at: "2025-12-14"
+
+# Configuración de agente preferido
+agent_preference:
+  default_agent: "knowledge-architect"
+  agent_urn: "urn:knowledge:koda:agents:architect:1.0.0"
+  activation_context: |
+    Al trabajar en el workspace KODA, activar por defecto el agente
+    KNOWLEDGE-ARCHITECT que conoce la estructura completa del framework.
+
+# Workflows recomendados para este workspace
+recommended_workflows:
+  - id: "agent-validation"
+    when: "Creando o modificando agentes"
+    urn: "urn:tooling:koda:workflows:agent-validation:1.0.0"
+
+  - id: "kb-transformation"
+    when: "Transformando documentación a KODA/Spec"
+    urn: "urn:tooling:koda:workflows:kb-transformation:1.0.0"
+
+# Rules siempre activas
+active_rules:
+  - "koda-conventions.yml" # Nomenclatura KODA
+  - "yaml-strict.yml" # Formato YAML
+  - "agent-principles.yml" # Principios P1-P7
+
+# Configuración IDE-specific
+ide_settings:
+  antigravity:
+    auto_approve_safe_commands: false # KODA requiere review
+    preferred_language: "es"
+    terminal_command_policy: "REQUEST_REVIEW"
+
+  windsurf:
+    cascade_mode: "planning" # Frameworks complejos requieren planificación
+    auto_import_agents_md: true
+
+# Directorios clave
+key_directories:
+  agents: "agents/"
+  knowledge: "knowledge/core/"
+  tooling: "tooling/"
+  schemas: "schemas/"
+
+# Comandos útiles específicos
+useful_commands:
+  validate: "./scripts/koda-validate.sh --strict"
+  catalog: "cat catalog/catalog_master_koda.yml"
+  check_agent: "./scripts/koda-validate.sh --agent"

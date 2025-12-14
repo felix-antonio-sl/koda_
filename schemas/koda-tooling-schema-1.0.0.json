@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://koda.dev/schemas/koda-tooling-schema-1.0.0.json",
+  "title": "KODA Tooling Artifact Schema",
+  "description": "Schema for KODA/Tooling artifacts (workflows, rules, profiles)",
+  "type": "object",
+  "required": ["_manifest"],
+  "properties": {
+    "_manifest": {
+      "type": "object",
+      "required": ["urn", "type"],
+      "properties": {
+        "urn": {
+          "type": "string",
+          "pattern": "^urn:tooling:[a-z][a-z0-9-]*:(workflows|rules|profiles):[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$",
+          "description": "URN identifier for the tooling artifact"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["workflow", "rule", "profile"],
+          "description": "Type of tooling artifact"
+        },
+        "federation": {
+          "type": "object",
+          "properties": {
+            "visibility": {
+              "type": "string",
+              "enum": ["public", "internal", "private"]
+            },
+            "license": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the artifact"
+        },
+        "compatible_agents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of agent URNs this artifact is compatible with"
+        },
+        "trigger_states": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^S-[A-Z0-9-]+$"
+          },
+          "description": "Agent states that trigger this artifact"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["windsurf", "antigravity", "vscode", "cursor"]
+          },
+          "description": "Compatible development platforms"
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["global", "agent", "state"],
+          "description": "Scope of application (for rules)"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "description": "Priority level (for rules)"
+        },
+        "platform": {
+          "type": "string",
+          "enum": ["windsurf", "antigravity", "vscode", "cursor"],
+          "description": "Target platform (for profiles)"
+        },
+        "turbo": {
+          "type": "boolean",
+          "description": "Enable auto-execution for workflow steps"
+        }
+      },
+      "additionalProperties": true
+    },
+    "content": {
+      "description": "Artifact content (string for workflows, object for rules)"
+    },
+    "settings": {
+      "type": "object",
+      "description": "Configuration settings (for profiles)",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

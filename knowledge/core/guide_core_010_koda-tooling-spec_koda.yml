@@ -1,0 +1,503 @@
+# KODA/Tooling Specification v1.0
+# KODA/Spec YAML Format
+# Extensión de KODA para gestión de herramientas de desarrollo
+
+_manifest:
+  urn: "urn:knowledge:koda:core:tooling:1.0.0"
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/core/guide_core_010_koda-tooling-spec_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:agent:1.0.0"
+        reason: "Integración con agentes KODA"
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "Formato estructural base"
+  provenance:
+    created_by: "FS"
+    created_at: "2025-12-13"
+    last_modified_by: "FS"
+    last_modified_at: "2025-12-13"
+    signature: null
+
+ID: KODA-TOOLING-SPEC-01
+Version: 1.0.0
+Status: Published
+Human-Creator: FS
+Human-Editor: FS
+Model-Collaborator: IA-CLAUDE
+Creation-Date: 2025-12-13
+Modification-Date: 2025-12-13
+Version-Notes: "v1.0.0 - Especificación inicial de KODA/Tooling"
+Ctx: Extensión de KODA para gestión de workflows, rules y profiles de herramientas de desarrollo
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Purp: Definir KODA/Tooling como extensión para gestión de configuraciones de herramientas de desarrollo complementarias a agentes KODA.
+
+Obj: Proveer un modelo de artefactos de tooling (workflows, rules, profiles) que se activan contextualmente según el estado del agente o la tarea actual.
+
+# =============================================================================
+# DEFINICIÓN DE KODA/TOOLING
+# =============================================================================
+
+Tooling:
+  ID: KODA-TOOLING-DEFINITION-01
+  Def: Extensión de KODA para artefactos que configuran herramientas de desarrollo.
+
+  Key_Characteristics:
+    - Complementario a agentes KODA (no reemplaza)
+    - Activación contextual (por estado, tarea o global)
+    - Portable entre plataformas (Windsurf, Antigravity, VSCode)
+    - Versionado y federado como artefactos de conocimiento
+
+  Relationship_To_Agent:
+    Def: Los artefactos de tooling complementan al agente activo.
+    Mech: El agente declara qué artefactos de tooling necesita en su definición.
+    Res: Workflows y rules disponibles según contexto del agente.
+
+# =============================================================================
+# NAMESPACE Y URN
+# =============================================================================
+
+URN_Specification:
+  ID: KODA-TOOLING-URN-01
+
+  Format: "urn:tooling:{namespace}:{type}:{artifact-id}:{version}"
+
+  Components:
+    - Component: namespace
+      Def: Organización o repositorio propietario.
+      Ex: fxsl, koda, gore
+
+    - Component: type
+      Def: Tipo de artefacto de tooling.
+      Values: [workflows, rules, profiles]
+
+    - Component: artifact-id
+      Def: Identificador único del artefacto.
+      Format: lowercase-kebab-case
+
+    - Component: version
+      Def: Versión semántica o alias.
+      Values: ["\\d+\\.\\d+\\.\\d+", latest, stable]
+
+  Examples:
+    - "urn:tooling:fxsl:workflows:modelamiento-mbt:1.0.0"
+    - "urn:tooling:fxsl:rules:yaml-strict:1.0.0"
+    - "urn:tooling:fxsl:profiles:antigravity:1.0.0"
+    - "urn:tooling:koda:workflows:agent-audit:latest"
+
+# =============================================================================
+# TIPOS DE ARTEFACTOS
+# =============================================================================
+
+Artifact_Types:
+  ID: KODA-TOOLING-TYPES-01
+
+  Workflow:
+    ID: TOOLING-TYPE-WORKFLOW
+    Def: Secuencia de pasos ejecutables por herramientas de desarrollo.
+    Purp: Automatizar tareas recurrentes o guiar procesos complejos.
+
+    Schema:
+      Required_Fields:
+        - _manifest (con URN de tipo workflow)
+        - metadata.description
+        - content (pasos en formato markdown)
+
+      Optional_Fields:
+        - metadata.compatible_agents (lista de URNs de agentes)
+        - metadata.trigger_states (lista de estados que activan el workflow)
+        - metadata.platforms (lista de plataformas compatibles)
+        - metadata.turbo (boolean para auto-ejecución)
+
+    Template: |
+      _manifest:
+        urn: "urn:tooling:{namespace}:workflows:{id}:1.0.0"
+        type: workflow
+        federation:
+          visibility: public
+          license: "CC-BY-4.0"
+
+      metadata:
+        description: "Descripción del workflow"
+        compatible_agents:
+          - "urn:knowledge:{namespace}:agents:{agent}:*"
+        trigger_states: [S-STATE-1, S-STATE-2]
+        platforms: [windsurf, antigravity, vscode]
+        turbo: false
+
+      content: |
+        # Título del Workflow
+        
+        1. Primer paso
+        2. Segundo paso
+        3. Tercer paso
+
+  Rule:
+    ID: TOOLING-TYPE-RULE
+    Def: Directiva de comportamiento para herramientas de desarrollo.
+    Purp: Establecer convenciones, restricciones o preferencias.
+
+    Schema:
+      Required_Fields:
+        - _manifest (con URN de tipo rule)
+        - metadata.description
+        - content.rules (lista de reglas)
+
+      Optional_Fields:
+        - metadata.scope (global, agent, state)
+        - metadata.priority (high, medium, low)
+        - content.examples
+
+      validation_script: |
+        cd repo && ./scripts/koda-validate.sh --strict
+
+    Template: |
+      _manifest:
+        urn: "urn:tooling:{namespace}:rules:{id}:1.0.0"
+        type: rule
+        federation:
+          visibility: public
+          license: "CC-BY-4.0"
+
+      metadata:
+        description: "Descripción de las reglas"
+        scope: global
+        priority: high
+
+      content:
+        rules:
+          - rule: "Descripción de la regla 1"
+            rationale: "Justificación"
+          - rule: "Descripción de la regla 2"
+            rationale: "Justificación"
+        examples:
+          - good: "Ejemplo correcto"
+            bad: "Ejemplo incorrecto"
+
+  Profile:
+    ID: TOOLING-TYPE-PROFILE
+    Def: Configuración específica para una plataforma de desarrollo.
+    Purp: Optimizar el comportamiento de herramientas para un contexto dado.
+
+    Schema:
+      Required_Fields:
+        - _manifest (con URN de tipo profile)
+        - metadata.platform
+        - settings
+
+      Optional_Fields:
+        - metadata.description
+        - metadata.extends (hereda de otro profile)
+
+    Template: |
+      _manifest:
+        urn: "urn:tooling:{namespace}:profiles:{id}:1.0.0"
+        type: profile
+        federation:
+          visibility: internal
+          license: "CC-BY-4.0"
+
+      metadata:
+        platform: antigravity  # windsurf, vscode, cursor
+        description: "Configuración optimizada para Antigravity"
+
+      settings:
+        preferred_language: es
+        auto_approve_safe_commands: true
+        artifact_directory: ".gemini/antigravity/brain"
+
+# =============================================================================
+# INTEGRACIÓN CON AGENTES KODA
+# =============================================================================
+
+Agent_Integration:
+  ID: KODA-TOOLING-INTEGRATION-01
+  Purp: Mecanismo para que agentes KODA declaren artefactos de tooling complementarios.
+
+  Schema_Extension:
+    Path: knowledge_base_interaction_and_governance_rules.tooling_artifacts
+    Type: object
+    Req: Optional
+
+    Schema:
+      workflows:
+        Type: list[ToolingReference]
+        Def: Workflows disponibles para este agente.
+      rules:
+        Type: list[ToolingReference]
+        Def: Rules aplicables a este agente.
+      profiles:
+        Type: list[ToolingReference]
+        Def: Profiles de configuración.
+
+    ToolingReference_Schema:
+      - Field: urn
+        Type: string
+        Def: URN del artefacto de tooling.
+        Req: Required
+
+      - Field: context
+        Type: "string | list[string]"
+        Def: Estados o condiciones que activan el artefacto.
+        Values:
+          - S-STATE-ID
+          - global
+          - on_demand
+        Req: "Optional (default: global)"
+
+      - Field: priority
+        Type: integer
+        Def: Prioridad de aplicación (menor = más prioritario).
+        Req: "Optional (default: 100)"
+
+  Example: |
+    knowledge_base_interaction_and_governance_rules:
+      source_artifacts:
+        - urn: "urn:knowledge:fxsl:cat:cognitive-toolkit:1.0.0"
+      
+      tooling_artifacts:
+        workflows:
+          - urn: "urn:tooling:fxsl:workflows:modelamiento-mbt:1.0.0"
+            context: S-CONTEXTUALIZACION
+          - urn: "urn:tooling:fxsl:workflows:audit-ontology:1.0.0"
+            context: S-AUDIT
+        rules:
+          - urn: "urn:tooling:fxsl:rules:yaml-strict:1.0.0"
+            context: global
+          - urn: "urn:tooling:fxsl:rules:spanish-docs:1.0.0"
+            context: global
+        profiles:
+          - urn: "urn:tooling:fxsl:profiles:antigravity:1.0.0"
+
+# =============================================================================
+# ACTIVACIÓN CONTEXTUAL
+# =============================================================================
+
+Contextual_Activation:
+  ID: KODA-TOOLING-ACTIVATION-01
+  Purp: Define cuándo y cómo se activan los artefactos de tooling.
+
+  Activation_Modes:
+    - Mode: global
+      ID: ACTIVATION-GLOBAL
+      Def: Artefacto siempre disponible cuando el agente está activo.
+      Use: Rules generales, profiles de plataforma.
+
+    - Mode: state_triggered
+      ID: ACTIVATION-STATE
+      Def: Artefacto disponible solo en estados específicos del agente.
+      Use: Workflows especializados por fase.
+      Mech: context contiene S-STATE-ID.
+
+    - Mode: on_demand
+      ID: ACTIVATION-DEMAND
+      Def: Artefacto disponible pero requiere invocación explícita.
+      Use: Workflows opcionales, herramientas avanzadas.
+      Mech: Usuario invoca con /nombre-workflow.
+
+  Resolution_Order:
+    - "1. Filtrar artefactos por contexto actual (estado del agente)"
+    - "2. Ordenar por prioridad (menor primero)"
+    - "3. Aplicar rules en orden"
+    - "4. Hacer workflows disponibles para invocación"
+    - "5. Cargar settings de profile activo"
+
+# =============================================================================
+# ESTRUCTURA DE DIRECTORIO
+# =============================================================================
+
+Directory_Structure:
+  ID: KODA-TOOLING-STRUCTURE-01
+
+  Standard_Layout: |
+    {repository}/
+    ├── tooling/
+    │   ├── _index.yml              # Catálogo de artefactos
+    │   ├── workflows/
+    │   │   ├── _index.yml          # Índice de workflows
+    │   │   ├── workflow-a.md
+    │   │   └── workflow-b.md
+    │   ├── rules/
+    │   │   ├── _index.yml          # Índice de rules
+    │   │   ├── rule-a.yml
+    │   │   └── rule-b.yml
+    │   └── profiles/
+    │       ├── _index.yml          # Índice de profiles
+    │       ├── windsurf.yml
+    │       └── antigravity.yml
+
+  Index_Schema: |
+    _manifest:
+      urn: "urn:tooling:{namespace}:catalog:master:1.0.0"
+      type: catalog
+
+    artifacts:
+      workflows:
+        - urn: "urn:tooling:ns:workflows:a:1.0.0"
+          file: "workflows/workflow-a.md"
+        - urn: "urn:tooling:ns:workflows:b:1.0.0"
+          file: "workflows/workflow-b.md"
+      rules:
+        - urn: "urn:tooling:ns:rules:a:1.0.0"
+          file: "rules/rule-a.yml"
+      profiles:
+        - urn: "urn:tooling:ns:profiles:windsurf:1.0.0"
+          file: "profiles/windsurf.yml"
+
+# =============================================================================
+# COMPATIBILIDAD CON PLATAFORMAS
+# =============================================================================
+
+Platform_Compatibility:
+  ID: KODA-TOOLING-PLATFORMS-01
+
+  Platforms:
+    - Platform: windsurf
+      ID: PLATFORM-WINDSURF
+      Def: Windsurf IDE con Cascade AI.
+      Workflow_Format: Markdown con anotaciones // turbo.
+      Rules_Location: .windsurfrules (proyecto) o global.
+      Profile_Integration: Via settings.json.
+
+    - Platform: antigravity
+      ID: PLATFORM-ANTIGRAVITY
+      Def: Gemini-based coding assistant.
+      Workflow_Format: Markdown en .agent/workflows/.
+      Rules_Location: .agent/rules.md o inline.
+      Profile_Integration: Via artifact metadata.
+
+    - Platform: vscode
+      ID: PLATFORM-VSCODE
+      Def: Visual Studio Code con extensiones AI.
+      Workflow_Format: Tasks en .vscode/tasks.json.
+      Rules_Location: .vscode/settings.json.
+      Profile_Integration: Workspace settings.
+
+    - Platform: cursor
+      ID: PLATFORM-CURSOR
+      Def: Cursor IDE con AI native.
+      Workflow_Format: .cursor/workflows/.
+      Rules_Location: .cursorrules.
+      Profile_Integration: Via project settings.
+
+  Cross_Platform_Strategy:
+    Def: Artefactos KODA/Tooling son fuente de verdad, plataformas consumen.
+    Mech: Adaptadores por plataforma transforman formato KODA a formato nativo.
+    Rec: Mantener artefactos en formato KODA, generar configs nativas si necesario.
+
+# =============================================================================
+# PATRONES Y ANTI-PATRONES
+# =============================================================================
+
+Patterns:
+  ID: KODA-TOOLING-PATTERNS-01
+
+  Patterns:
+    - Pattern: Workflow por Estado
+      ID: PATTERN-STATE-WORKFLOW
+      Def: Un workflow específico para cada estado del agente.
+      Use: Guías contextuales durante fases específicas.
+      Ex: "S-AUDIT → workflow:audit-ontology, S-DESIGN → workflow:design-schema"
+
+    - Pattern: Rules Globales + Específicas
+      ID: PATTERN-LAYERED-RULES
+      Def: Rules globales aplicadas siempre, rules específicas por contexto.
+      Use: Convenciones base + especialización por dominio.
+      Ex: "yaml-strict (global) + categorical-rigor (S-CATEGORICAL-MODELING)"
+
+    - Pattern: Profile por Plataforma
+      ID: PATTERN-PLATFORM-PROFILE
+      Def: Un profile por cada plataforma de desarrollo utilizada.
+      Use: Optimización de experiencia por herramienta.
+      Ex: "antigravity.yml, windsurf.yml, cursor.yml"
+
+Anti_Patterns:
+  ID: KODA-TOOLING-ANTI-PATTERNS-01
+
+  Anti_Patterns:
+    - Anti_Pattern: Workflows Hardcoded
+      ID: ANTI-HARDCODED-WORKFLOWS
+      Def: Workflows definidos directamente en .agent/ sin URN ni versionado.
+      Symptom: No hay trazabilidad ni reutilización entre proyectos.
+      Mitigation: Migrar a tooling/ con estructura KODA/Tooling.
+
+    - Anti_Pattern: Rules Dispersas
+      ID: ANTI-SCATTERED-RULES
+      Def: Reglas distribuidas en múltiples archivos sin catálogo.
+      Symptom: Inconsistencia, reglas conflictivas.
+      Mitigation: Centralizar en tooling/rules/ con _index.yml.
+
+    - Anti_Pattern: Sin Contexto de Activación
+      ID: ANTI-NO-CONTEXT
+      Def: Todos los artefactos activos siempre sin filtrado.
+      Symptom: Sobrecarga de información, workflows irrelevantes.
+      Mitigation: Usar trigger_states y context para activación granular.
+
+# =============================================================================
+# VALIDACIÓN
+# =============================================================================
+
+Validation:
+  ID: KODA-TOOLING-VALIDATION-01
+
+  Checklist:
+    Structure:
+      - Check: Directorio tooling/ existe
+      - Check: _index.yml presente en cada subdirectorio
+      - Check: Todos los artefactos tienen _manifest con URN
+
+    Schema:
+      - Check: URNs siguen formato urn:tooling:*
+      - Check: Campos requeridos presentes según tipo
+      - Check: Referencias a agentes usan URNs válidos
+
+    Integration:
+      - Check: Artefactos referenciados desde agentes existen
+      - Check: trigger_states referencian estados existentes
+      - Check: Profiles corresponden a plataformas soportadas
+
+# =============================================================================
+# REFERENCIA RÁPIDA
+# =============================================================================
+
+Quick_Reference:
+  ID: KODA-TOOLING-QUICKREF-01
+
+  URN_Format: "urn:tooling:{namespace}:{type}:{id}:{version}"
+
+  Types: [workflows, rules, profiles]
+
+  Activation_Contexts: [global, S-STATE-ID, on_demand]
+
+  Required_Manifest_Fields:
+    - urn
+    - type (workflow|rule|profile)
+    - federation.visibility
+
+  Agent_Integration_Path: "knowledge_base_interaction_and_governance_rules.tooling_artifacts"
+
+  Directory_Convention: "{repo}/tooling/{type}/{artifact}.{ext}"

@@ -1,0 +1,62 @@
+# KODA Tooling Directory - Core Namespace
+# Artefactos de tooling core del framework KODA
+# Ver guide_core_010_koda-tooling-spec_koda.yml para especificación
+
+_manifest:
+  urn: "urn:tooling:koda:catalog:master:1.0.0"
+  type: catalog
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+  provenance:
+    created_by: "FS"
+    created_at: "2025-12-13"
+    last_modified_at: "2025-12-13"
+
+artifacts:
+  workflows:
+    - urn: "urn:tooling:koda:workflows:agent-validation:1.0.0"
+      file: "workflows/agent-validation.md"
+      description: "Workflow de validación completa de agentes KODA"
+      compatible_agents:
+        - "urn:knowledge:koda:agents:smith:*"
+        - "urn:knowledge:koda:agents:tester:*"
+      trigger_states: [S-VALIDATOR, S-FULL-AUDIT]
+
+    - urn: "urn:tooling:koda:workflows:kb-transformation:1.0.0"
+      file: "workflows/kb-transformation.md"
+      description: "Workflow de transformación de documentos a KODA/Spec"
+      compatible_agents:
+        - "urn:knowledge:koda:agents:transformer:*"
+        - "urn:knowledge:koda:agents:architect:*"
+      trigger_states: [S-TRANSFORM, S-ANALYZE]
+
+  rules:
+    - urn: "urn:tooling:koda:rules:yaml-strict:1.0.0"
+      file: "rules/yaml-strict.yml"
+      description: "Reglas de formateo YAML estricto para artefactos KODA"
+      scope: global
+      activation_mode: MODEL_DECISION
+
+    - urn: "urn:tooling:koda:rules:koda-conventions:1.0.0"
+      file: "rules/koda-conventions.yml"
+      description: "Convenciones de nomenclatura y estructura KODA"
+      scope: global
+      activation_mode: MODEL_DECISION
+
+    - urn: "urn:tooling:koda:rules:agent-principles:1.0.0"
+      file: "rules/agent-principles.yml"
+      description: "Principios P1-P7 de KODA/Agent como rules IDE"
+      scope: global
+      activation_mode: ALWAYS_ON
+      compatible_agents:
+        - "urn:knowledge:koda:agents:*" # Aplica a todos los agentes KODA
+
+  profiles:
+    - urn: "urn:tooling:koda:profiles:koda-workspace:1.0.0"
+      file: "profiles/koda-workspace.yml"
+      description: "Configuración workspace KODA con agente preferido"
+      platforms: [antigravity, windsurf]
+      default_agent: "knowledge-architect"

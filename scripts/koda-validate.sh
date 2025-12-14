@@ -95,7 +95,7 @@ info() {
 echo -e "${YELLOW}1. Structure Checks${NC}"
 
 # Check directories
-for dir in knowledge knowledge/core agents catalog sources staging; do
+for dir in knowledge knowledge/core agents catalog sources staging tooling; do
     if [ -d "$dir" ]; then
         pass "Directory exists: $dir/"
     else

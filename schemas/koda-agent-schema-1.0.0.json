@@ -195,6 +195,7 @@
             "properties": { "policy": { "const": "EXCLUSIVE_USE" } }
           },
           "then": {
+            "properties": { "source_artifacts": true },
             "required": ["source_artifacts"]
           }
         },
@@ -209,6 +210,24 @@
             "style": {
               "type": "string",
               "enum": ["OFFICIAL_SOURCE_NAME", "FILENAME", "INLINE_REASONING_TRACE", "WEB_URL", "HYBRID_SOURCE"]
+            }
+          }
+        },
+        "tooling_artifacts": {
+          "type": "object",
+          "description": "Optional: Development tool configurations (workflows, rules, profiles)",
+          "properties": {
+            "workflows": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/tooling_reference" }
+            },
+            "rules": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/tooling_reference" }
+            },
+            "profiles": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/tooling_reference" }
             }
           }
         },
@@ -566,6 +585,23 @@
     "cognitive_model_id_pattern": {
       "type": "string",
       "pattern": "^CM-[A-Z0-9-]+$"
+    },
+    "tooling_reference": {
+      "type": "object",
+      "required": ["urn"],
+      "properties": {
+        "urn": {
+          "type": "string",
+          "pattern": "^urn:tooling:[a-z][a-z0-9-]*:[a-z]+:[a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)$"
+        },
+        "context": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "priority": { "type": "integer" }
+      }
     }
   }
 }

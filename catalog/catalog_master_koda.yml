@@ -67,6 +67,11 @@ Catalog:
       file: "knowledge/core/guide_core_009_federation-protocol_koda.yml"
       status: published
 
+    - urn: "urn:knowledge:koda:core:tooling:1.0.0"
+      title: "KODA/Tooling Specification"
+      file: "knowledge/core/guide_core_010_koda-tooling-spec_koda.yml"
+      status: published
+
   Schemas:
     - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       title: "KODA/Agent JSON Schema"

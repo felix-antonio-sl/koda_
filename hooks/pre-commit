@@ -1,0 +1,88 @@
+#!/bin/bash
+# KODA Pre-commit Hook - Validación automática
+# 
+# INSTALACIÓN:
+#   cp hooks/pre-commit .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+
+echo "🔍 KODA: Validando cambios..."
+
+# Detectar agentes modificados
+MODIFIED_AGENTS=$(git diff --cached --name-only --diff-filter=ACM | grep "agents/agent_.*\.yaml$" || true)
+
+if [ -z "$MODIFIED_AGENTS" ]; then
+  echo "✓ No hay agentes modificados"
+  exit 0
+fi
+
+echo "📋 Agentes para validar:"
+echo "$MODIFIED_AGENTS" | sed 's/^/  - /'
+echo ""
+
+VALIDATION_FAILED=false
+
+for agent in $MODIFIED_AGENTS; do
+  echo "Validando $agent..."
+  
+  # 1. Validación sintáctica YAML
+  if command -v yq &> /dev/null; then
+    if ! yq eval '.' "$agent" > /dev/null 2>&1; then
+      echo "  ❌ Error sintáctico YAML"
+      VALIDATION_FAILED=true
+      continue
+    fi
+  fi
+  
+  # 2. Validar _manifest
+  if ! grep -q "^_manifest:" "$agent"; then
+    echo "  ❌ Falta _manifest"
+    VALIDATION_FAILED=true
+  fi
+  
+  # 3. Validar KODA_Runtime_Instructions
+  if ! grep -q "^KODA_Runtime_Instructions:" "$agent"; then
+    echo "  ❌ Falta KODA_Runtime_Instructions"
+    VALIDATION_FAILED=true
+  fi
+  
+  # 4. Validar Guard Set
+  if ! grep -q "block_instructions: true" "$agent"; then
+    echo "  ⚠️  Falta block_instructions: true"
+    VALIDATION_FAILED=true
+  fi
+  
+  if ! grep -q "forbid_internal_jargon: true" "$agent"; then
+    echo "  ⚠️  Falta forbid_internal_jargon: true"
+    VALIDATION_FAILED=true
+  fi
+  
+  # 5. Validar P2: CMs con _meta
+  if grep -q "^  - ID: \"CM-" "$agent"; then
+    if ! grep -q "_meta: {expose: false}" "$agent"; then
+      echo "  ⚠️  CMs deberían tener _meta: {expose: false} (P2)"
+    fi
+  fi
+  
+  if [ "$VALIDATION_FAILED" = false ]; then
+    echo "  ✅ PASS"
+  fi
+  
+  echo ""
+done
+
+if [ "$VALIDATION_FAILED" = true ]; then
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "❌ Validación falló"
+  echo ""
+  echo "Para más detalles:"
+  echo "  - IDE: /agent-validation"
+  echo "  - Terminal: ./scripts/koda-validate.sh"
+  echo ""
+  echo "Para forzar commit (no recomendado):"
+  echo "  git commit --no-verify"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  exit 1
+fi
+
+echo "✅ Validación PASS - Commit permitido"
+exit 0
