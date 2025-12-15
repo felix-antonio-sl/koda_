@@ -1,0 +1,122 @@
+# =============================================================================
+# KODA CORE: IDE ADAPTERS REFERENCE
+# =============================================================================
+# URN: urn:knowledge:koda:core:guides:011:adapters:1.0.0
+# ID: GUIDE-CORE-011
+# Version: 1.0.0
+# Status: ACTIVE
+# Author: KODA Architect
+# Date: 2025-12-14
+# =============================================================================
+
+_manifest:
+  urn: "urn:knowledge:koda:core:guides:011:adapters:1.0.0"
+  type: guide
+  tier: 2
+  system: koda
+  layer: core
+  federation:
+    visibility: public
+    propagation: global
+
+metadata:
+  title: "KODA IDE Adapters Reference"
+  description: "Especificación técnica de referencia para la integración de IDEs mediante adaptadores efímeros."
+  keywords: [ide, adapters, integrations, tooling, antigravity, windsurf, cursor]
+  related:
+    - "urn:knowledge:koda:core:tooling:1.0.0" # Parents: Policy
+
+# =============================================================================
+# 1. ARQUITECTURA DE ADAPTADORES
+# =============================================================================
+
+Architecture:
+  ID: ADAPTER-ARCH-01
+  
+  Concept:
+    Def: Los adaptadores son estructuras de directorio efímeras y no versionadas que mapean la estructura canónica de KODA (`tooling/`) a la estructura esperada por un IDE específico.
+    Principle: "Source of Truth in Tooling, Consumption via Links".
+    
+  Properties:
+    - Ephemeral: Pueden ser borrados y regenerados en cualquier momento.
+    - Local: No se comitean al repositorio (están en `.gitignore`).
+    - Read-Only (Logical): Los IDEs deben tratar los symlinks como acceso a la fuente única.
+
+  Component_Map:
+    Source: "tooling/{workflows, rules, profiles}"
+    Gen_Script: "scripts/koda-generate-adapters.sh"
+    Target: ".{ide_name}/{ide_specific_folders}"
+
+# =============================================================================
+# 2. IMPLEMENTACIONES DE REFERENCIA
+# =============================================================================
+
+Implementations:
+  ID: ADAPTER-IMPL-01
+  
+  Antigravity:
+    Platform_ID: "PLATFORM-ANTIGRAVITY"
+    Adapter_Dir: ".agent/"
+    Structure:
+      - workflows/ -> symlink to `tooling/workflows/`
+      - rules/ -> symlink to `tooling/rules/`
+      - profiles/ -> symlink to `tooling/profiles/`
+    Note: "Antigravity busca workflows nativamente en .agent/workflows"
+
+  Windsurf:
+    Platform_ID: "PLATFORM-WINDSURF"
+    Adapter_Dir: ".windsurf/"
+    Structure:
+      - workflows/ -> symlink to `tooling/workflows/`
+      - rules/ -> symlink to `tooling/rules/`
+    ConfigFile: ".windsurfrules" (puede ser generado o symlink)
+
+  Cursor:
+    Platform_ID: "PLATFORM-CURSOR"
+    Adapter_Dir: ".cursor/"
+    Structure:
+      - workflows/ -> symlink to `tooling/workflows/`
+    ConfigFile: ".cursorrules" (Generado con contenido de `tooling/rules/`)
+
+# =============================================================================
+# 3. GENERADOR DE ADAPTADORES
+# =============================================================================
+
+Generator:
+  ID: ADAPTER-GEN-01
+  Path: "scripts/koda-generate-adapters.sh"
+  
+  Usage:
+    - Command: `./scripts/koda-generate-adapters.sh [options]`
+    - Options:
+      - `--antigravity`: Genera solo .agent/
+      - `--windsurf`: Genera solo .windsurf/
+      - `--cursor`: Genera solo .cursor/
+      - `--all`: Genera todos los soportados
+      - `--clean`: Elimina todos los adaptadores generados
+
+  Behavior:
+    1. Verifica existencia de `tooling/`
+    2. Crea directorios destino (ej. `.agent`)
+    3. Crea symlinks relativos (`ln -sf ../tooling/...`)
+    4. Genera archivos de configuración específicos si es necesario (`.cursorrules`)
+
+# =============================================================================
+# 4. POLÍTICA DE GIT
+# =============================================================================
+
+Git_Policy:
+  ID: ADAPTER-GIT-01
+  
+  Rule: "Los directorios de adaptadores NUNCA deben ser versionados."
+  
+  Gitignore_Entries:
+    - ".agent/"
+    - ".windsurf/"
+    - ".cursor/"
+    - ".vscode/" (opcional, dependiendo de si contiene solo user settings)
+
+  Rationale:
+    - Evita duplicación de código en el repo.
+    - Permite a cada desarrollador usar su IDE preferido sin imponer archivos de configuración a otros.
+    - Mantiene el historial de git limpio de ruido de herramientas.

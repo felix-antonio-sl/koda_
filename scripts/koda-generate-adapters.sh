@@ -162,9 +162,24 @@ if $GENERATE_WINDSURF; then
         echo -e "  ${GREEN}✓${NC} workflows -> tooling/workflows"
     fi
     
+    # Create .windsurfrules explicit file (Windsurf specific requirement)
+    if [ -f "tooling/rules/koda-conventions.yml" ]; then
+        echo "# Auto-generated from tooling/rules/" > .windsurf/.windsurfrules
+        echo "# See tooling/rules/ for source of truth" >> .windsurf/.windsurfrules
+        echo "" >> .windsurf/.windsurfrules
+        echo "# KODA Core Rules" >> .windsurf/.windsurfrules
+        echo "import: ../tooling/rules/koda-conventions.yml" >> .windsurf/.windsurfrules
+        echo "import: ../tooling/rules/agent-principles.md" >> .windsurf/.windsurfrules
+        echo "import: ../tooling/rules/yaml-strict.yml" >> .windsurf/.windsurfrules
+        echo -e "  ${GREEN}✓${NC} .windsurfrules generated"
+    fi
+    
+    # Symlink to root .windsurfrules if needed by legacy versions, 
+    # but preferred location is now handled via project context.
+    # We keep the rules directory as a fallback/browsable location
     if [ -d "tooling/rules" ]; then
         ln -sf ../tooling/rules .windsurf/rules
-        echo -e "  ${GREEN}✓${NC} rules -> tooling/rules"
+        echo -e "  ${GREEN}✓${NC} rules directory linked"
     fi
     
     # Link to global KODA tooling if available
