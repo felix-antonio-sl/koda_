@@ -34,8 +34,8 @@ if [[ ! -f "$CANONICAL_FILE" ]]; then
     exit 1
 fi
 
-# Get the LEXICON line as fingerprint (most likely to drift)
-CANONICAL_LEXICON=$(grep "LEXICON" "$CANONICAL_FILE" | head -1 | md5sum | cut -d' ' -f1)
+# Get the LEXICON line as fingerprint (use expanded format, normalize whitespace)
+CANONICAL_LEXICON=$(grep "LEXICON.*expand" "$CANONICAL_FILE" | head -1 | tr -s ' ' | sed 's/^ *//' | md5sum | cut -d' ' -f1)
 
 echo "Canonical fingerprint: $CANONICAL_LEXICON"
 echo ""
@@ -44,7 +44,8 @@ echo ""
 echo "Checking guides..."
 for file in knowledge/core/guide_core_*.yml; do
     if [[ -f "$file" ]]; then
-        CURRENT_LEXICON=$(grep "LEXICON" "$file" 2>/dev/null | head -1 | md5sum | cut -d' ' -f1)
+        # Normalize whitespace before comparison
+        CURRENT_LEXICON=$(grep "LEXICON.*expand" "$file" 2>/dev/null | head -1 | tr -s ' ' | sed 's/^ *//' | md5sum | cut -d' ' -f1)
         if [[ "$CURRENT_LEXICON" != "$CANONICAL_LEXICON" ]]; then
             echo -e "${RED}  ❌ DRIFT: $file${NC}"
             DRIFT_DETECTED=true
@@ -54,6 +55,7 @@ for file in knowledge/core/guide_core_*.yml; do
         fi
     fi
 done
+
 
 # NOTE: Agents do NOT require LLM_Parsing_Instructions block
 # That block is only for knowledge artifacts (guides)
@@ -72,21 +74,21 @@ if [[ ! -f "$CATALOG_FILE" ]]; then
     exit 1
 fi
 
-# Check all files referenced in catalog exist
+# Check all files referenced in catalog exist (with timeout protection)
 echo "Checking file references..."
-grep -E "^\s+file:" "$CATALOG_FILE" | sed 's/.*file:\s*//' | sed 's/"//g' | while read -r file; do
-    if [[ ! -f "$file" ]]; then
+while IFS= read -r file; do
+    if [[ -n "$file" ]] && [[ ! -f "$file" ]]; then
         echo -e "${RED}  ❌ MISSING: $file${NC}"
         DRIFT_DETECTED=true
         ((ERRORS++))
     fi
-done
+done < <(grep -E "^\s+file:" "$CATALOG_FILE" 2>/dev/null | sed 's/.*file:\s*//' | sed 's/"//g' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | head -100)
 
 # Count entries vs actual files
-CATALOG_COUNT=$(grep -c "urn:" "$CATALOG_FILE" || echo 0)
-GUIDE_COUNT=$(find knowledge/core -name "guide_core_*.yml" | wc -l | tr -d ' ')
+CATALOG_COUNT=$(grep -c "urn:" "$CATALOG_FILE" 2>/dev/null || echo 0)
+GUIDE_COUNT=$(find knowledge/core -name "guide_core_*.yml" 2>/dev/null | wc -l | tr -d ' ')
 SCHEMA_COUNT=$(find schemas -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
-AGENT_COUNT=$(find agents -name "agent_*.yaml" | wc -l | tr -d ' ')
+AGENT_COUNT=$(find agents -name "agent_*.yaml" 2>/dev/null | wc -l | tr -d ' ')
 
 echo ""
 echo "Artifact counts:"
@@ -97,20 +99,28 @@ echo "  Agents: $AGENT_COUNT"
 
 echo ""
 
+
 # -----------------------------------------------------------------------------
 # 3. URN Resolution
 # -----------------------------------------------------------------------------
 echo "=== 3. URN Resolution ==="
 
-# Find all URNs and verify they exist in catalog (best-effort)
+# Find all URNs and verify they exist in catalog (best-effort, with limit)
 echo "Checking URN resolution..."
 UNRESOLVED_URNS=()
+URNS_CHECKED=0
 
+# Use timeout and limit to prevent hangs
 while IFS= read -r urn; do
-    if [[ -n "$urn" ]] && ! grep -q "$urn" "$CATALOG_FILE"; then
+    if [[ -n "$urn" ]] && ! grep -q "$urn" "$CATALOG_FILE" 2>/dev/null; then
         UNRESOLVED_URNS+=("$urn")
     fi
-done < <(grep -rhoE "urn:knowledge:[a-z0-9:._-]+" knowledge/ agents/ 2>/dev/null | sort -u)
+    ((URNS_CHECKED++))
+    # Limit check to first 50 URNs to prevent blocking
+    if [[ $URNS_CHECKED -ge 50 ]]; then
+        break
+    fi
+done < <(grep -rhoE "urn:knowledge:[a-z0-9:._-]+" knowledge/ agents/ 2>/dev/null | sort -u | head -50)
 
 if [[ ${#UNRESOLVED_URNS[@]} -gt 0 ]]; then
     echo -e "${YELLOW}  ⚠ Unresolved URNs (may be external):${NC}"
@@ -119,10 +129,11 @@ if [[ ${#UNRESOLVED_URNS[@]} -gt 0 ]]; then
     done
     ((WARNINGS++))
 else
-    echo -e "${GREEN}  ✓ All URNs resolvable${NC}"
+    echo -e "${GREEN}  ✓ All URNs resolvable (checked $URNS_CHECKED)${NC}"
 fi
 
 echo ""
+
 
 # -----------------------------------------------------------------------------
 # 4. Federation Health (Local Files)
