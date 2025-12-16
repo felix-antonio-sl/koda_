@@ -72,6 +72,11 @@ Catalog:
       file: "knowledge/core/guide_core_010_koda-tooling-spec_koda.yml"
       status: published
 
+    - urn: "urn:knowledge:koda:core:ide-adapters:1.0.0"
+      title: "IDE Adapters Reference"
+      file: "knowledge/core/guide_core_011_ide-adapters-reference_koda.yml"
+      status: published
+
   Schemas:
     - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       title: "KODA/Agent JSON Schema"
@@ -166,10 +171,10 @@ Catalog:
       registered: "2025-12-09"
 
 Statistics:
-  total_artifacts: 22
-  core_guides: 10
+  total_artifacts: 23
+  core_guides: 11
   schemas: 1
   agents: 10
   domains: 2
-  last_updated: "2025-12-09"
-  notes: "Added korvo personal namespace. First federated domain (gorenuble) registered. All 10 agents token-optimized"
+  last_updated: "2025-12-16"
+  notes: "Added guide_011 IDE adapters. All catalogs synchronized."
