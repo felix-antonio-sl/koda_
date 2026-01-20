@@ -23,7 +23,6 @@ _manifest:
       - urn: "urn:knowledge:koda:core:test:1.0.0"
       - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
       - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
-      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       - urn: "urn:knowledge:koda:core:tooling:1.0.0"
   provenance:
@@ -88,7 +87,6 @@ knowledge_base_interaction_and_governance_rules:
       - urn: "urn:knowledge:koda:core:test:1.0.0"
       - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
       - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
-      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       - urn: "urn:knowledge:koda:core:tooling:1.0.0"
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING

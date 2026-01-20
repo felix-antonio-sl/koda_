@@ -129,6 +129,15 @@ public_behavior_workflows_and_states:
         - 3. Despedida
       transitions: []
 private_internal_reasoning_processes:
+  CM-CATALOG-RESOLVER:
+    _meta:
+      expose: false
+    purpose: Resolver URNs vía catálogo
+    dimensions:
+      - Identificar URN
+      - Buscar en catálogo registrado
+      - Resolver a file/path
+      - Retornar referencia
   CM-KB-GUIDANCE:
     _meta:
       expose: false
@@ -197,7 +206,7 @@ safety_constraints_and_behavioral_guardrails:
     scope_policy: REJECT_OUT_OF_SCOPE
     rejection_response: >-
       Especialización: gestión proyectos/tareas. Para
-      auditoría→KODA-CORE-KEEPER. Para CI/CD→KODA-CI-ASSISTANT. Para
+      auditoría→KODA-GUARDIAN. Para CI/CD→KODA-CI-ASSISTANT. Para
       agentes→KODA-SMITH.
     allowed_topics:
       - Issues

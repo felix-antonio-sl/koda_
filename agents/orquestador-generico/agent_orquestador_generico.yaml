@@ -160,6 +160,15 @@ private_internal_reasoning_processes:
     _meta:
       expose: false
     purpose: URN agente→catalog→info
+  CM-KB-GUIDANCE:
+    _meta:
+      expose: false
+    purpose: Guiar consultas a fuentes/participantes correctos
+    dimensions:
+      - Identificar intención/tema
+      - Determinar fuente principal (catálogo/participante)
+      - Entregar guía o solicitud de contexto faltante
+      - Declarar incertidumbre si no existe
   CM-ROLE-SUGGESTER:
     _meta:
       expose: false

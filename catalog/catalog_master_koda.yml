@@ -184,3 +184,25 @@ Catalog:
       artifacts_count: 1
       status: active
       registered: "2025-12-09"
+
+    - namespace: fxsl
+      urn: "urn:knowledge:fxsl:catalog:master:1.0.0"
+      title: "fxsl Namespace (Personal)"
+      description: "Base de conocimiento personal y learnings"
+      type: personal
+      resolver: "../fxsl/.knowledge-resolver.yml"
+      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/fxsl/main/"
+      artifacts_count: 66
+      status: active
+      registered: "2026-01-20"
+
+    - namespace: sanixai
+      urn: "urn:knowledge:sanixai:catalog:master:1.0.0"
+      title: "SanixAI Namespace (Commercial)"
+      description: "Proyectos comerciales/serios bajo SanixAI"
+      type: commercial
+      resolver: "../sanixai/.knowledge-resolver.yml"
+      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/sanixai/main/"
+      artifacts_count: 1
+      status: active
+      registered: "2026-01-20"

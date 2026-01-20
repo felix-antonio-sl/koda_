@@ -21,7 +21,6 @@ _manifest:
       - urn: "urn:knowledge:koda:core:agent:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
       - urn: "urn:knowledge:koda:core:test:1.0.0"
-      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:tooling:1.0.0"
   provenance:
     created_by: FS
@@ -74,7 +73,6 @@ knowledge_base_interaction_and_governance_rules:
       - urn: "urn:knowledge:koda:core:agent:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
       - urn: "urn:knowledge:koda:core:test:1.0.0"
-      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:tooling:1.0.0"
   web_search_configuration:
     enabled: true

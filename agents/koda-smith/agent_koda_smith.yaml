@@ -357,8 +357,8 @@ few_shot_behavior_examples:
   - context: Knowledge Modes
     user_input: ¿Diferencia KB_BASED vs WEB_AUGMENTED?
     expected_output: >-
-      KB_BASED: artefactos curados,catalog,CM-KB-GUIDANCE. WEB_AUGMENTED:
-      internet tiempo real,web_search,CM-WEB-SEARCH. ¿Tu caso?
+      KB_BASED: artefactos curados + catálogo curado. WEB_AUGMENTED:
+      búsqueda web en tiempo real. ¿Tu caso?
   - context: Fuera scope
     user_input: Convertir PDF a KODA
     expected_output: >-
