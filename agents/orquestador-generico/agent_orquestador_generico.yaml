@@ -78,7 +78,7 @@ knowledge_base_interaction_and_governance_rules:
       - urn: "urn:knowledge:gorenuble:catalog:master:1.0.0"
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
   citation_formatting:
-    style: ATTRIBUTE_TO_PARTICIPANT
+    style: HYBRID_SOURCE
 public_behavior_workflows_and_states:
   defined_workflows:
     WF-ORQUESTACION:
@@ -91,10 +91,10 @@ public_behavior_workflows_and_states:
         - "2. Clasificar: nueva|continuar|consultar|terminar"
         - 3. Dirigir
       transitions:
-        - IF nueva→S-CONFIGURACION
-        - IF continuar→S-ORQUESTACION
-        - IF consulta→S-CONSULTANT
-        - IF terminar→S-END
+        - IF nueva -> S-CONFIGURACION
+        - IF continuar -> S-ORQUESTACION
+        - IF consulta -> S-CONSULTANT
+        - IF terminar -> S-END
     S-CONFIGURACION:
       role: Configurador
       process:
@@ -103,9 +103,9 @@ public_behavior_workflows_and_states:
         - 3. Resolver URNs participantes
         - 4. Protocolo
       transitions:
-        - IF completa→S-ASIGNACION-ROLES
-        - IF faltan datos→S-CONFIGURACION
-        - IF URN no existe→S-CONFIGURACION
+        - IF completa -> S-ASIGNACION-ROLES
+        - IF faltan datos -> S-CONFIGURACION
+        - IF URN no existe -> S-CONFIGURACION
     S-ASIGNACION-ROLES:
       role: Asignador Roles
       process:
@@ -114,9 +114,9 @@ public_behavior_workflows_and_states:
         - 3. Sugerir roles
         - 4. Confirmar usuario
       transitions:
-        - IF confirmados→S-ORQUESTACION
-        - IF ajustar roles→S-ASIGNACION-ROLES
-        - IF cambiar participantes→S-CONFIGURACION
+        - IF confirmados -> S-ORQUESTACION
+        - IF ajustar roles -> S-ASIGNACION-ROLES
+        - IF cambiar participantes -> S-CONFIGURACION
     S-ORQUESTACION:
       role: Motor Orquestación
       process:
@@ -125,9 +125,9 @@ public_behavior_workflows_and_states:
         - "3. Recolectar,evaluar"
         - "4. Decidir: continuar|ajustar|sintetizar"
       transitions:
-        - IF suficientes→S-SINTESIS
-        - IF DINAMICO más→S-ORQUESTACION
-        - IF error participante→S-SINTESIS
+        - IF suficientes -> S-SINTESIS
+        - IF DINAMICO más -> S-ORQUESTACION
+        - IF error participante -> S-SINTESIS
     S-SINTESIS:
       role: Sintetizador
       process:
@@ -137,9 +137,9 @@ public_behavior_workflows_and_states:
         - 4. Verificar objetivo
         - 5. Entregar
       transitions:
-        - IF satisfecho→S-DISPATCHER
-        - IF refinamiento→S-ORQUESTACION
-        - IF nueva→S-CONFIGURACION
+        - IF satisfecho -> S-DISPATCHER
+        - IF refinamiento -> S-ORQUESTACION
+        - IF nueva -> S-CONFIGURACION
     S-CONSULTANT:
       role: Consultor
       process:
@@ -147,7 +147,7 @@ public_behavior_workflows_and_states:
         - 2. Explicar
         - 3. Ofrecer continuar
       transitions:
-        - IF resuelto→S-DISPATCHER
+        - IF resuelto -> S-DISPATCHER
     S-END:
       role: Cierre
       process:
@@ -256,9 +256,9 @@ self_evaluation_and_correction_mechanisms:
       - ATRIBUCION_JUSTA
       - ACCIONABLE
   correction_protocol:
-    - "IF OBJETIVO_ALINEADO fails→revisar,re-sintetizar"
-    - IF SINTESIS_COHERENTE fails→reestructurar
-    - IF MEDIACION_CORRECTA fails→filtrar internos
+    - "IF OBJETIVO_ALINEADO fails -> revisar,re-sintetizar"
+    - IF SINTESIS_COHERENTE fails -> reestructurar
+    - IF MEDIACION_CORRECTA fails -> filtrar internos
 few_shot_behavior_examples:
   - context: Nueva orquestación
     user_input: Arquitecto y ingeniero diseñen sistema

@@ -1,6 +1,6 @@
 # KODA Federation Registry
 # Official list of registered namespaces in the KODA ecosystem
-# 
+#
 # To register a new namespace:
 # 1. Fork this repository
 # 2. Add your namespace entry below
@@ -30,6 +30,7 @@ namespaces:
     domains:
       - core
       - agents
+      - codex
 
   # ============================================================================
   # COMMERCIAL
@@ -63,9 +64,12 @@ namespaces:
     registered: "2025-11-25"
     description: "GORE Ñuble - Knowledge base escalable a otros GOREs de Chile"
     domains:
-      - normativa
-      - procesos
-      - servicios
+      - gn
+      - ipr
+      - gestion
+      - legal
+      - presupuesto
+      - arquitectura
 
   tde:
     status: active
@@ -78,9 +82,12 @@ namespaces:
     registered: "2025-11-25"
     description: "TDE - Transformación Digital del Estado de Chile"
     domains:
-      - normativa
-      - procesos
-      - interoperabilidad
+      - estrategias
+      - leyes
+      - normas
+      - guias
+      - plataformas
+      - arquitectura
 
   # ============================================================================
   # PERSONAL/PRIVATE
@@ -90,15 +97,53 @@ namespaces:
     type: personal
     owner: "Félix Sanhueza"
     repository: "github.com/felix-antonio-sl/fxsl"
-    fallback_url: null  # Private repo, no public fallback
+    fallback_url: null # Private repo, no public fallback
     visibility: private
     license: "Proprietary"
     registered: "2025-11-25"
     description: "FXSL - Personal knowledge base and learnings"
     domains:
-      - experiments
-      - learning
-      - notes
+      - medicina
+      - cat
+      - gist
+      - omega
+
+  korvo:
+    status: active
+    type: personal
+    owner: "Félix Sanhueza"
+    repository: "github.com/felix-antonio-sl/korvo"
+    fallback_url: "https://raw.githubusercontent.com/felix-antonio-sl/korvo/main/"
+    visibility: private
+    license: "Proprietary"
+    registered: "2025-12-09"
+    description: "Korvo Namespace (Personal) - Espacio personal de gestión de vida"
+    domains:
+      - salud
+      - finanzas
+      - metas
+      - aprendizaje
+      - relaciones
+      - problemas
+      - korvo
+
+  goreos:
+    status: active
+    type: institutional
+    owner: "Gobierno Regional de Ñuble"
+    repository: "github.com/felix-antonio-sl/gore_os"
+    fallback_url: null
+    visibility: private
+    license: "Proprietary"
+    registered: "2025-12-23"
+    description: "GORE OS - Sistema Operativo de Gobernanza Regional (Turbo Monorepo)"
+    domains:
+      - architecture
+      - design
+      - schemas
+      - supermodel
+      - engineering
+      - system
 
   # ==========================================================================
   # FRAMEWORK / METHODOLOGY
@@ -117,6 +162,7 @@ namespaces:
       - core
       - metodologia
       - implementacion
+      - toolkit
       - agents
 
 # ============================================================================
@@ -129,7 +175,7 @@ registration_requirements:
     - "self.namespace must match requested namespace"
     - "koda namespace configured as upstream with fallback"
     - "catalog/catalog_master_{namespace}.yml exists"
-    
+
   recommended:
     - "At least one published artifact"
     - "CI/CD workflows (koda-validate.yml)"

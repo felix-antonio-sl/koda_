@@ -31,7 +31,7 @@ Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-GEMINI
 Creation-Date: 2025-11-21
-Modification-Date: 2025-11-21
+Modification-Date: 2025-11-25
 Source: GUIDE-KODA-MASTER-01
 Ctx: Prescriptive methodology for KODA transformation
 
@@ -240,6 +240,9 @@ Phase3_Deduplication:
     - Technique: Partial references
       Desc: Reference main concept, add specific context.
       Example:
+        Definitions:
+          - ID: DEF-VALIDATION
+            Def: Validation is the process of ensuring data meets requirements.
         Validation_Rule:
           Ref: DEF-VALIDATION # Main concept
           Context: Applied to user input only # Specific detail

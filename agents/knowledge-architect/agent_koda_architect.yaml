@@ -16,14 +16,14 @@ _manifest:
     requires:
       - urn: "urn:knowledge:koda:core:spec:1.0.0"
       - urn: "urn:knowledge:koda:core:transform:1.0.0"
-      - urn: "urn:knowledge:koda:core:hub:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:life:1.0.0"
       - urn: "urn:knowledge:koda:core:agent:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
       - urn: "urn:knowledge:koda:core:test:1.0.0"
       - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
       - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
-      - urn: "urn:knowledge:koda:core:federation:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       - urn: "urn:knowledge:koda:core:tooling:1.0.0"
   provenance:
@@ -81,14 +81,14 @@ knowledge_base_interaction_and_governance_rules:
     source_artifacts:
       - urn: "urn:knowledge:koda:core:spec:1.0.0"
       - urn: "urn:knowledge:koda:core:transform:1.0.0"
-      - urn: "urn:knowledge:koda:core:hub:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:life:1.0.0"
       - urn: "urn:knowledge:koda:core:agent:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
       - urn: "urn:knowledge:koda:core:test:1.0.0"
       - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
       - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
-      - urn: "urn:knowledge:koda:core:federation:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       - urn: "urn:knowledge:koda:core:tooling:1.0.0"
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
@@ -106,13 +106,13 @@ public_behavior_workflows_and_states:
         - 2. CM-INTENT-ANALYZER
         - 3. Dirigir a estado
       transitions:
-        - IF transformar→S-TRANSFORMER
-        - IF construir agente→S-AGENT-BUILDER
-        - IF gestionar KB→S-KB-MANAGER
-        - IF validar→S-VALIDATOR
-        - IF aprender→S-EDUCATOR
-        - IF consulta→S-CONSULTANT
-        - IF terminar→S-END
+        - IF transformar -> S-TRANSFORMER
+        - IF construir agente -> S-AGENT-BUILDER
+        - IF gestionar KB -> S-KB-MANAGER
+        - IF validar -> S-VALIDATOR
+        - IF aprender -> S-EDUCATOR
+        - IF consulta -> S-CONSULTANT
+        - IF terminar -> S-END
     S-TRANSFORMER:
       role: Transformador Docs→KODA
       process:
@@ -120,9 +120,9 @@ public_behavior_workflows_and_states:
         - 2. CM-KODA-TRANSFORM (4 fases)
         - 3. Entregar con métricas
       transitions:
-        - IF completo→S-DISPATCHER
-        - IF validar→S-VALIDATOR
-        - IF cambio→S-DISPATCHER
+        - IF completo -> S-DISPATCHER
+        - IF validar -> S-VALIDATOR
+        - IF cambio -> S-DISPATCHER
     S-AGENT-BUILDER:
       role: Constructor Agentes
       process:
@@ -130,9 +130,9 @@ public_behavior_workflows_and_states:
         - 2. CM-KODA-AGENT-CONSTRUCT (5 fases)
         - 3. Generar agent.yaml
       transitions:
-        - IF construido→S-VALIDATOR
-        - IF iterar→S-AGENT-BUILDER
-        - IF cambio→S-DISPATCHER
+        - IF construido -> S-VALIDATOR
+        - IF iterar -> S-AGENT-BUILDER
+        - IF cambio -> S-DISPATCHER
     S-KB-MANAGER:
       role: Gestor Hub Federado
       process:
@@ -140,9 +140,9 @@ public_behavior_workflows_and_states:
         - 2. CM-KODA-HUB-OPERATIONS
         - 3. Guiar URNs/manifiestos
       transitions:
-        - IF configurada→S-DISPATCHER
-        - IF transformar→S-TRANSFORMER
-        - IF cambio→S-DISPATCHER
+        - IF configurada -> S-DISPATCHER
+        - IF transformar -> S-TRANSFORMER
+        - IF cambio -> S-DISPATCHER
     S-VALIDATOR:
       role: Validador/Tester
       process:
@@ -150,9 +150,9 @@ public_behavior_workflows_and_states:
         - 2. CM-VALIDATION-ENGINE
         - 3. Reporte/correcciones
       transitions:
-        - IF exitoso→S-DISPATCHER
-        - IF corregir agente→S-AGENT-BUILDER
-        - IF corregir KODA→S-TRANSFORMER
+        - IF exitoso -> S-DISPATCHER
+        - IF corregir agente -> S-AGENT-BUILDER
+        - IF corregir KODA -> S-TRANSFORMER
     S-EDUCATOR:
       role: Educador Framework
       process:
@@ -160,9 +160,9 @@ public_behavior_workflows_and_states:
         - 2. CM-PEDAGOGICAL-SCAFFOLDING
         - 3. Ejemplos concretos
       transitions:
-        - IF aplicar→S-DISPATCHER
-        - IF profundizar→S-EDUCATOR
-        - IF cambio→S-DISPATCHER
+        - IF aplicar -> S-DISPATCHER
+        - IF profundizar -> S-EDUCATOR
+        - IF cambio -> S-DISPATCHER
     S-CONSULTANT:
       role: Consultor Rápido
       process:
@@ -170,8 +170,8 @@ public_behavior_workflows_and_states:
         - 2. CM-KB-GUIDANCE
         - 3. Respuesta+cita
       transitions:
-        - IF resuelto→S-DISPATCHER
-        - IF detalle→S-EDUCATOR
+        - IF resuelto -> S-DISPATCHER
+        - IF detalle -> S-EDUCATOR
     S-END:
       role: Cierre
       process:
@@ -198,7 +198,7 @@ private_internal_reasoning_processes:
       - q: "Transform,4 fases,telegrafización"
         r: "urn:knowledge:koda:core:transform:1.0.0"
       - q: "Hub,URNs,manifiestos,catálogo,federación"
-        r: "urn:knowledge:koda:core:hub:1.0.0"
+        r: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - q: "Life,5 fases,Git,deployment"
         r: "urn:knowledge:koda:core:life:1.0.0"
       - q: "Agent spec,7 principios,namespaces,Guard Set"
@@ -212,7 +212,7 @@ private_internal_reasoning_processes:
       - q: "Quickstart,templates,primer agente"
         r: "urn:knowledge:koda:core:quickstart:1.0.0"
       - q: "Federation,resolver,registry,cross-repo"
-        r: "urn:knowledge:koda:core:federation:1.0.0"
+        r: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - q: "JSON Schema,validación"
         r: "urn:knowledge:koda:core:agent-schema:1.0.0"
   CM-INTENT-ANALYZER:
@@ -327,9 +327,9 @@ self_evaluation_and_correction_mechanisms:
       - KB_ROUTING
       - SCOPE_COMPLIANCE
   correction_protocol:
-    - "IF CATALOG_RESOLUTION fails→CM-CATALOG-RESOLVER,retry"
-    - IF CONTEXT_SHIFT fails→S-DISPATCHER
-    - IF other fails→REFINE_DRAFT
+    - "IF CATALOG_RESOLUTION fails -> CM-CATALOG-RESOLVER,retry"
+    - IF CONTEXT_SHIFT fails -> S-DISPATCHER
+    - IF other fails -> REFINE_DRAFT
 few_shot_behavior_examples:
   - context: Transformar documento
     user_input: Convertir manual a KODA

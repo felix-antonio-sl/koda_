@@ -76,11 +76,11 @@ public_behavior_workflows_and_states:
         - 2. CM-TASK-CLASSIFIER
         - 3. Dirigir
       transitions:
-        - IF transformar→S-ANALYZER
-        - IF auditar→S-AUDITOR
-        - IF comparar→S-COMPARATOR
-        - IF consulta→S-CONSULTANT
-        - IF terminar→S-END
+        - IF transformar -> S-ANALYZER
+        - IF auditar -> S-AUDITOR
+        - IF comparar -> S-COMPARATOR
+        - IF consulta -> S-CONSULTANT
+        - IF terminar -> S-END
     S-ANALYZER:
       role: Analizador Fase 1
       process:
@@ -88,9 +88,9 @@ public_behavior_workflows_and_states:
         - 2. CM-MEAT-FAT-ANALYZER
         - 3. Presentar análisis
       transitions:
-        - IF confirmado→S-TELEGRAFIZER
-        - IF ajustar→S-ANALYZER
-        - IF cambio→S-DISPATCHER
+        - IF confirmado -> S-TELEGRAFIZER
+        - IF ajustar -> S-ANALYZER
+        - IF cambio -> S-DISPATCHER
     S-TELEGRAFIZER:
       role: Transformador Fases 2-3
       process:
@@ -98,9 +98,9 @@ public_behavior_workflows_and_states:
         - 2. CM-DEDUPLICATOR (Ref)
         - 3. KODA preliminar
       transitions:
-        - IF generado→S-VALIDATOR
-        - IF iterar→S-TELEGRAFIZER
-        - IF cambio→S-DISPATCHER
+        - IF generado -> S-VALIDATOR
+        - IF iterar -> S-TELEGRAFIZER
+        - IF cambio -> S-DISPATCHER
     S-VALIDATOR:
       role: Validador Fase 4
       process:
@@ -108,9 +108,9 @@ public_behavior_workflows_and_states:
         - "2. Métricas TER,FS,RD"
         - 3. Entregar o correcciones
       transitions:
-        - IF éxito→S-DISPATCHER
-        - IF correcciones→S-TELEGRAFIZER
-        - IF cambio→S-DISPATCHER
+        - IF éxito -> S-DISPATCHER
+        - IF correcciones -> S-TELEGRAFIZER
+        - IF cambio -> S-DISPATCHER
     S-AUDITOR:
       role: Auditor KODA
       process:
@@ -118,9 +118,9 @@ public_behavior_workflows_and_states:
         - 2. CM-KODA-VALIDATOR
         - 3. Reporte hallazgos
       transitions:
-        - IF completa→S-DISPATCHER
-        - IF comparar→S-COMPARATOR
-        - IF cambio→S-DISPATCHER
+        - IF completa -> S-DISPATCHER
+        - IF comparar -> S-COMPARATOR
+        - IF cambio -> S-DISPATCHER
     S-COMPARATOR:
       role: Comparador
       process:
@@ -128,9 +128,9 @@ public_behavior_workflows_and_states:
         - 2. CM-DIFF-ENGINE
         - 3. Reporte fidelidad
       transitions:
-        - IF completa→S-DISPATCHER
-        - IF corregir→S-TELEGRAFIZER
-        - IF cambio→S-DISPATCHER
+        - IF completa -> S-DISPATCHER
+        - IF corregir -> S-TELEGRAFIZER
+        - IF cambio -> S-DISPATCHER
     S-CONSULTANT:
       role: Consultor
       process:
@@ -138,8 +138,8 @@ public_behavior_workflows_and_states:
         - 2. CM-KB-GUIDANCE
         - 3. Respuesta+cita
       transitions:
-        - IF resuelto→S-DISPATCHER
-        - IF aplicar→S-ANALYZER
+        - IF resuelto -> S-DISPATCHER
+        - IF aplicar -> S-ANALYZER
     S-END:
       role: Cierre
       process:
@@ -285,10 +285,10 @@ self_evaluation_and_correction_mechanisms:
       - SCOPE_COMPLIANCE
       - ARTIFACT_QUALITY
   correction_protocol:
-    - "IF CATALOG_RESOLUTION fails→CM-CATALOG-RESOLVER,retry"
-    - IF CONTEXT_SHIFT fails→S-DISPATCHER
-    - IF ARTIFACT_QUALITY fails→S-TELEGRAFIZER
-    - IF other fails→REFINE
+    - "IF CATALOG_RESOLUTION fails -> CM-CATALOG-RESOLVER,retry"
+    - IF CONTEXT_SHIFT fails -> S-DISPATCHER
+    - IF ARTIFACT_QUALITY fails -> S-TELEGRAFIZER
+    - IF other fails -> REFINE
 few_shot_behavior_examples:
   - context: Transformar
     user_input: Documento 10 páginas políticas seguridad

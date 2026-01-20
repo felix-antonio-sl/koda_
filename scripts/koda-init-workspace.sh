@@ -16,8 +16,8 @@ mkdir -p tooling/{workflows,rules,profiles}
 mkdir -p agents
 mkdir -p knowledge/{catalog,sources}
 mkdir -p .git/hooks
-# Note: IDE adapters (.agent/, .windsurf/) are now generated on-demand
-# Use: ./scripts/koda-generate-adapters.sh --all
+# Note: IDE adapters (.agent/, .windsurf/, .cursor/) are optional and developer-local (gitignored)
+# Create them only if your IDE needs a dedicated adapter directory.
 
 # 2. Crear catálogo tooling
 echo "📋 Creando catálogo tooling..."
@@ -82,15 +82,10 @@ key_directories:
   tooling: "tooling/"
 EOF
 
-# 4. IDE Adapters (optional - generated on demand)
-echo "ℹ️  IDE adapters are now generated on-demand"
-echo "   Run: ./scripts/koda-generate-adapters.sh --all"
-
-# Copy the adapter generator if in KODA repo context
-if [ -f "$SCRIPT_DIR/koda-generate-adapters.sh" ]; then
-  cp "$SCRIPT_DIR/koda-generate-adapters.sh" "scripts/koda-generate-adapters.sh" 2>/dev/null || true
-  chmod +x "scripts/koda-generate-adapters.sh" 2>/dev/null || true
-fi
+# 4. IDE Adapters (optional)
+echo "ℹ️  IDE adapters (.agent/, .windsurf/, .cursor/) son opcionales y no se versionan"
+echo "   Si tu IDE lo soporta, apunta directo a tooling/ (rules/workflows/profiles)"
+echo "   Si no, crea un adapter local (ej: mkdir -p .agent/rules) y copia lo que necesites"
 
 # 5. Crear AGENTS.md root
 echo "📝 Creando AGENTS.md..."
@@ -459,8 +454,8 @@ ${WORKSPACE_NAME}/
 └── scripts/         # Scripts de automatización
 \`\`\`
 
-> **Note**: IDE adapters (.agent/, .windsurf/) are generated on-demand.
-> Run: \`./scripts/koda-generate-adapters.sh --all\`
+> **Note**: IDE adapters (.agent/, .windsurf/, .cursor/) son opcionales y se ignoran por git.
+> Si tu IDE lo requiere, crea el adapter local y apunta/copialo desde \`tooling/\`.
 
 ## 🔄 Workflows Disponibles
 
@@ -488,7 +483,8 @@ echo "   - agents/ (con AGENTS.md)"
 echo "   - knowledge/"
 echo ""
 echo "ℹ️  IDE Adapters (optional):"
-echo "   Run: ./scripts/koda-generate-adapters.sh --all"
+echo "   - Crea .agent/ (gitignored) si lo necesitas"
+echo "   - Usa tooling/ como source of truth"
 echo ""
 echo "🔧 Automatización instalada:"
 echo "   - scripts/new-agent.sh (crear agente automático)"

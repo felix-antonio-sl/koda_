@@ -1,6 +1,6 @@
 # KODA Tooling Directory - Core Namespace
 # Artefactos de tooling core del framework KODA
-# Ver guide_core_010_koda-tooling-spec_koda.yml para especificación
+# Ver guide_core_009_koda-tooling-spec_koda.yml para especificación
 
 _manifest:
   urn: "urn:tooling:koda:catalog:master:1.0.0"
@@ -33,6 +33,42 @@ artifacts:
         - "urn:knowledge:koda:agents:architect:*"
       trigger_states: [S-TRANSFORM, S-ANALYZE]
 
+    - urn: "urn:tooling:koda:workflows:sesion:1.0.0"
+      file: "workflows/sesion.md"
+      description: "Gestión unificada del ciclo de vida de sesiones Antigravity"
+
+    - urn: "urn:tooling:koda:workflows:catalogo-sesiones:1.0.0"
+      file: "workflows/catalogo-sesiones.md"
+      description: "Catálogo centralizado de sesiones con encadenamiento"
+
+    - urn: "urn:tooling:koda:workflows:memoria-gestion:1.0.0"
+      file: "workflows/memoria-gestion.md"
+      description: "Gestión de memoria en 3 niveles (global/workspace/sesión)"
+
+    - urn: "urn:tooling:koda:workflows:higiene-antigravity:1.0.0"
+      file: "workflows/higiene-antigravity.md"
+      description: "Mantenimiento preventivo del entorno Antigravity"
+
+    - urn: "urn:tooling:koda:workflows:diagnostico-ag:1.0.0"
+      file: "workflows/diagnostico-ag.md"
+      description: "Análisis de diagnóstico Antigravity con recomendaciones"
+
+    - urn: "urn:tooling:koda:workflows:quota-status:1.0.0"
+      file: "workflows/quota-status.md"
+      description: "Estado de quota y próxima renovación"
+
+    - urn: "urn:tooling:koda:workflows:extraccion-corpus:1.0.0"
+      file: "workflows/extraccion-corpus.md"
+      description: "Extracción recursiva de corpus extensos"
+
+    - urn: "urn:tooling:koda:workflows:reglas-builder:1.0.0"
+      file: "workflows/reglas-builder.md"
+      description: "Constructor de reglas Antigravity por diálogo guiado"
+
+    - urn: "urn:tooling:koda:workflows:encarnacion:1.0.0"
+      file: "workflows/encarnacion.md"
+      description: "Inicializa un agente según definición YAML"
+
   rules:
     - urn: "urn:tooling:koda:rules:yaml-strict:1.0.0"
       file: "rules/yaml-strict.yml"
@@ -47,12 +83,18 @@ artifacts:
       activation_mode: MODEL_DECISION
 
     - urn: "urn:tooling:koda:rules:agent-principles:1.0.0"
-      file: "rules/agent-principles.yml"
+      file: "rules/agent-principles.md"
       description: "Principios P1-P7 de KODA/Agent como rules IDE"
       scope: global
       activation_mode: ALWAYS_ON
       compatible_agents:
-        - "urn:knowledge:koda:agents:*" # Aplica a todos los agentes KODA
+        - "urn:knowledge:koda:agents:*"
+
+    - urn: "urn:tooling:koda:rules:spanish-docs:1.0.0"
+      file: "rules/spanish-docs.yml"
+      description: "Reglas para documentación en español"
+      scope: global
+      activation_mode: MODEL_DECISION
 
   profiles:
     - urn: "urn:tooling:koda:profiles:koda-workspace:1.0.0"

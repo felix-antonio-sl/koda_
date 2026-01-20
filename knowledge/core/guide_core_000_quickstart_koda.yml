@@ -563,7 +563,7 @@ Next_Steps:
     - Pattern: "Federated KB across repositories"
     - Pattern: "External tool integration"
     - Pattern: "Workspace setup for multi-repo federation"
-      XRef: "urn:knowledge:koda:core:federation:1.0.0#FED-THEMATIC-WORKSPACES-01"
+      XRef: "urn:knowledge:koda:core:hub-federation:1.0.0#FED-THEMATIC-WORKSPACES-01"
 
 # =============================================================================
 # REFERENCE CARD

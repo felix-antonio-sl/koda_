@@ -1,0 +1,741 @@
+_manifest:
+  urn: "urn:knowledge:koda:antigravity:manual-ag-fx-v2:2.0.0"
+  federation:
+    visibility: private
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/domains/google_antigravity/manual_ag_fx_v2_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "KODA/Spec base"
+      - urn: "urn:knowledge:koda:core:transform:1.0.0"
+        reason: "KODA transformation methodology"
+      - urn: "urn:knowledge:koda:antigravity:doc-antigravity-official:1.0.0"
+        reason: "Antigravity official documentation (KODA)"
+  provenance:
+    created_by: "FS"
+    created_at: "2026-01-19"
+    last_modified_by: "GPT-5.2 (KODA-TRANSFORMER)"
+    last_modified_at: "2026-01-19"
+    signature: null
+
+ID: MANUAL-AG-FX-02
+Version: 2.0.0
+Status: Draft
+Human-Creator: "FS (Manual FX + Antigravity docs)"
+Human-Editor: "GPT-5.2 (KODA-TRANSFORMER)"
+Model-Collaborator: "GPT-5.2"
+Creation-Date: 2026-01-19
+Modification-Date: 2026-01-19
+Source:
+  - "staging/manual_ag_fx_v2.md"
+Ctx: "Manual de orquestación avanzada en Google Antigravity (Artifact-First + Framework R.A.P.S. 2.0)."
+XRef_Required:
+  - "urn:knowledge:koda:antigravity:doc-antigravity-official:1.0.0#DOC-ANTIGRAVITY-OFFICIAL-01"
+Version-Notes: "Transformado desde Markdown a KODA/Spec (telegraphic + dedup)."
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Purp: "Pasar de 'vibe coding' a ingeniería de agentes: orquestación avanzada en Google Antigravity con Artifact-First + R.A.P.S. 2.0."
+Obj:
+  - "Definir conceptos, componentes y rutas (global/workspace) para operar Antigravity de forma controlada."
+  - "Estandarizar interacción profesional con agentes vía artifacts (plan/diff/evidence)."
+  - "Describir R.A.P.S. 2.0: Reasoning Protocols, Armoury (MCP), Parallel Orchestration, Serverless & Surface."
+  - "Incluir prácticas de seguridad (rules maliciosas, forced descent, secure mode) y operación (cache, reset)."
+
+SSOT:
+  ID: SSOT-01
+  Def: "Este documento fusiona Manual FX original + documentación oficial de Antigravity."
+  Src:
+    - "staging/manual_ag_fx_v2.md"
+    - "urn:knowledge:koda:antigravity:doc-antigravity-official:1.0.0#DOC-ANTIGRAVITY-OFFICIAL-01"
+  Last_Updated: 2026-01-19
+
+Registries:
+  Concepts:
+    ID: REG-CONCEPTS-01
+    Definitions:
+      - ID: DEF-ANTIGRAVITY
+        Def: "Antigravity: editor habilitado con IA + sistema de agentes con herramientas integradas (terminal, browser), artifacts y conocimiento persistente."
+      - ID: DEF-AGENT
+        Def: "Agent: asistente principal que ejecuta un modelo de razonamiento seleccionable y puede invocar subagentes/herramientas."
+      - ID: DEF-BROWSER-SUBAGENT
+        Def: "Browser Subagent: agente/modelo especializado para operar páginas del navegador gestionado por Antigravity (click, scroll, type, read, record)."
+      - ID: DEF-RULE
+        Def: "Rule: restricción definida manualmente (archivo Markdown) que guía comportamiento del agente; puede ser global o de workspace."
+      - ID: DEF-WORKFLOW
+        Def: "Workflow: procedimiento multi-paso definido en Markdown, invocado vía comando slash `/workflow-name`."
+      - ID: DEF-SKILL
+        Def: "Skill: paquete (carpeta) con archivo `SKILL.md` + recursos/scripts opcionales para extender capacidades del agente."
+      - ID: DEF-ARTIFACT
+        Def: "Artifact: salida creada por el agente para realizar trabajo o comunicar progreso (markdown, diffs, diagramas, imágenes, recordings, etc.)."
+      - ID: DEF-KNOWLEDGE-ITEM
+        Def: "Knowledge Item (KI): memoria persistente con título+resumen y colección de artifacts; auto-creada/actualizada desde conversaciones."
+      - ID: DEF-ARTIFACT-FIRST
+        Def: "Artifact-First: metodología de control basada en tratar artifacts como entregables y superficies de control (interceptar/corregir/validar)."
+      - ID: DEF-IMPLEMENTATION-PLAN
+        Def: "Implementation Plan: contrato lógico generado en Planning Mode; define stack, arquitectura, pasos y estrategia de verificación."
+      - ID: DEF-DIFF-REVIEW
+        Def: "Diff Review: auditoría sintáctica/contextual de cambios propuestos (review de diffs con comentarios en línea)."
+      - ID: DEF-VISUAL-EVIDENCE
+        Def: "Visual Evidence: evidencia visual funcional (screenshots/recordings) producida por Browser Surface/Subagent."
+      - ID: DEF-WALKTHROUGH
+        Def: "Walkthrough: resumen post-implementación; para tareas de browser suele incluir screenshots y grabaciones."
+      - ID: DEF-TASK-GROUP
+        Def: "Task Group: unidad UI en Planning Mode para dividir tareas grandes en subtareas con progreso y pasos pendientes."
+      - ID: DEF-ARTIFACT-ROT
+        Def: "Artifact Rot: degradación del entorno por acumulación de datos de agentes; requiere limpieza de cache/almacenamiento y resets de contexto."
+      - ID: DEF-RAPS
+        Def: "R.A.P.S. 2.0: framework de orquestación para autonomía (R=Rules/Workflows/Skills, A=MCP, P=multi-agente, S=ejecución+verificación)."
+  Paths:
+    ID: REG-PATHS-01
+    Items:
+      - ID: PATH-GLOBAL-RULES
+        Path: "~/.gemini/GEMINI.md"
+        Def: "Global Rules."
+      - ID: PATH-WORKSPACE-RULES
+        Path: "<project-root>/.agent/rules/"
+        Def: "Workspace Rules (precedencia sobre global)."
+      - ID: PATH-GLOBAL-WORKFLOWS
+        Path: "~/.gemini/antigravity/global_workflows/"
+        Def: "Global Workflows."
+      - ID: PATH-WORKSPACE-WORKFLOWS
+        Path: "<project-root>/.agent/workflows/"
+        Def: "Workspace Workflows."
+      - ID: PATH-GLOBAL-SKILLS
+        Path: "~/.gemini/antigravity/skills/<skill-folder>/"
+        Def: "Global Skills."
+      - ID: PATH-WORKSPACE-SKILLS
+        Path: "<project-root>/.agent/skills/<skill-folder>/"
+        Def: "Workspace Skills."
+      - ID: PATH-MCP-CONFIG
+        Path: "~/.gemini/antigravity/mcp_config.json"
+        Def: "Configuración MCP."
+      - ID: PATH-AG-ROOT
+        Path: "~/.gemini/antigravity/"
+        Def: "Raíz operativa principal de Antigravity (brain del agente)."
+  Limits:
+    ID: REG-LIMITS-01
+    Items:
+      - ID: LIM-RULES-CHARS-12000
+        Def: "Rules: límite 12,000 caracteres por archivo."
+      - ID: LIM-WORKFLOWS-CHARS-12000
+        Def: "Workflows: límite 12,000 caracteres por archivo."
+
+I_Introduction:
+  ID: SEC-INTRO-01
+  Paradigm_Shift:
+    ID: INTRO-SHIFT-01
+    Def: "Antigravity: transición desde 'AI Assist' a 'delegación agéntica'."
+    Res: "Rol humano: de escritor síncrono de código -> arquitecto que define especificaciones, negocia contratos de implementación y audita entregables."
+  Fundamental_Definitions:
+    ID: INTRO-DEFS-01
+    Items:
+      - Ref: DEF-ANTIGRAVITY
+      - Ref: DEF-AGENT
+      - Ref: DEF-BROWSER-SUBAGENT
+      - Ref: DEF-RULE
+      - Ref: DEF-WORKFLOW
+      - Ref: DEF-SKILL
+      - Ref: DEF-ARTIFACT
+      - Ref: DEF-KNOWLEDGE-ITEM
+  Copilot_vs_Agent_Model:
+    ID: INTRO-COMPARE-01
+    Def: "Cambio de modelo: Copilot (legacy) -> Antigravity Agent (nuevo estándar)."
+    Dimensions:
+      - Dimension: "Rol de la IA"
+        Legacy: "Consultor pasivo; espera el cursor."
+        New: "Contratista activo; recibe objetivo y navega el filesystem para cumplirlo."
+      - Dimension: "Flujo de trabajo"
+        Legacy: "Síncrono; bloquea atención."
+        New: "Asíncrono/paralelo; disparas la tarea y continúas en otro hilo."
+      - Dimension: "Alcance"
+        Legacy: "Snippet; completa funciones."
+        New: "End-to-End; planifica, edita múltiples archivos, ejecuta terminal y verifica en navegador."
+  Artifact_First_Method:
+    ID: INTRO-AF-01
+    Ref: DEF-ARTIFACT-FIRST
+    Def: "Artifacts como superficies de control (entregables intermedios/finales) para interceptar/corregir/validar antes y después de ejecución."
+    Verification_Triad:
+      ID: INTRO-TRIAD-01
+      Items:
+        - ID: TRIAD-PLAN
+          Ref: DEF-IMPLEMENTATION-PLAN
+          User_Role: "Intervención: no aprobar ciegamente; tratar como contrato; editar texto del plan directamente."
+          Just: "Más barato corregir plan (texto) que depurar implementación (código)."
+        - ID: TRIAD-DIFF
+          Ref: DEF-DIFF-REVIEW
+          User_Role: "Corrección: comentar en diff (comentarios contextuales por línea/bloque)."
+          Res: "Reduce ambigüedad espacial del modelo."
+        - ID: TRIAD-EVIDENCE
+          Ref: DEF-VISUAL-EVIDENCE
+          User_Role: "Validación: exigir evidencia (screenshots/recordings); un test unitario verde puede ser falso positivo."
+          Res: "Video/captura del flujo funcional = prueba funcional directa."
+  Mission_Control_Architecture:
+    ID: INTRO-MISSION-CONTROL-01
+    Components:
+      - Component: Agent_Manager
+        Def: "Sala de situación: orquesta paralelización; múltiples agentes simultáneos; cada uno con su propio contexto + artifacts."
+      - Component: Editor_View
+        Def: "Entorno táctico: intervenciones quirúrgicas + revisión de diffs."
+      - Component: Inbox
+        Def: "Panel para trackear conversaciones, especialmente las que esperan aprobación (terminal, browser, planes)."
+      - Component: Playground
+        Def: "Workspace efímero para exploración rápida; puede persistirse después."
+
+II_Artifacts:
+  ID: SEC-ARTIFACTS-01
+  Truth_Cycle:
+    ID: ART-TRUTH-CYCLE-01
+    Def: "Ciclo profesional (no conversación lineal): Veto (Plan) -> Auditoría (Diff) -> Verificación (Evidence)."
+    Flow: ["Veto (Plan)", "Auditoría (Diff)", "Verificación (Evidence)"]
+  Implementation_Plan:
+    ID: ART-PLAN-01
+    Ref: DEF-IMPLEMENTATION-PLAN
+    Trigger: "Se genera en Planning Mode."
+    Anatomy: ["Goal", "Tech Stack", "Proposed Changes", "Verification Strategy"]
+    Feedback:
+      Channels:
+        - "Comentarios sobre el plan (reducir alcance, cambiar stack, corregir discrepancias)."
+      Options_After_Comments:
+        - Act: "Proceed: continuar con el plan."
+        - Act: "Review: revisar comentarios y dejar mensaje de feedback."
+    Tactic_Pre_Emptive_Strike:
+      ID: ART-PLAN-TACTIC-01
+      Def: "Editar el plan directamente (no solo aprobar) para forzar re-grounding del contexto del agente."
+      Res: "Re-alinea estrategia completa antes de ejecutar."
+    Golden_Rule:
+      Def: "Corregir el plan cuesta centavos/segundos; corregir software implementado cuesta dólares/horas."
+  Task_Groups:
+    ID: ART-TASK-GROUPS-01
+    Ref: DEF-TASK-GROUP
+    Use_Case: "En Planning Mode: tareas grandes/complejas se dividen en unidades más pequeñas."
+    Behavior: "El agente puede trabajar en múltiples partes de la tarea mayor simultáneamente."
+    UI_Components:
+      - Component: Task_Group
+        Def: "Componente superior: especifica objetivo general y resume cambios."
+      - Component: Subtasks
+        Def: "Secciones de progreso con trabajo realizado."
+      - Component: Pending_Steps_Section
+        Def: "Sección especial final si hay pasos pendientes (browser setup, comandos de terminal)."
+  Code_Diffs:
+    ID: ART-DIFFS-01
+    Ref: DEF-DIFF-REVIEW
+    Def: "Diffs como interfaces interactivas de feedback semántico."
+    Common_Error:
+      Def: "Feedback ambiguo en chat (ej: 'en el archivo X está mal') fuerza búsqueda semántica y aumenta alucinación."
+    Correct_Tactic_Contextual_Feedback:
+      Act:
+        - "En Review Changes, seleccionar bloque/línea exacta."
+        - "Usar comentarios en línea (estilo PR)."
+      Res: "Instrucciones ancladas a contexto de archivo + línea; reduce ambigüedad."
+  Visual_Evidence:
+    ID: ART-EVIDENCE-01
+    Ref: DEF-VISUAL-EVIDENCE
+    Screenshots:
+      Def: "Browser Subagent toma capturas; se guardan como artifacts de imagen; se pueden comentar."
+    Browser_Recordings:
+      Def: "Browser Subagent puede generar grabaciones; se ven en parte inferior de la UI del paso Browser."
+  Walkthrough:
+    ID: ART-WALKTHROUGH-01
+    Ref: DEF-WALKTHROUGH
+    Cond: "Para tareas de browser"
+    Res: "Walkthroughs suelen incluir screenshots y grabaciones."
+  Artifact_Rot_Management:
+    ID: ART-ROT-01
+    Ref: DEF-ARTIFACT-ROT
+    Cache_Storage_Cleanup:
+      ID: ART-ROT-CACHE-01
+      Symptom: "IDE lento; Agent Manager tarda en cargar."
+      Act: "Settings > Storage > Clear Cache."
+      Ref: PATH-AG-ROOT
+    Context_Reset:
+      ID: ART-ROT-RESET-01
+      Problem: "Cambios manuales/ediciones directas vuelven obsoleto el Implementation Plan."
+      Rec: "No intentar 'convencer' a un agente confundido: reiniciar."
+      Act:
+        - "Iniciar nueva conversación (New Agent Instance)."
+        - Ex: "Prompt: 'Lee el estado actual del proyecto en `src/` y genera un nuevo plan para continuar con la tarea X'."
+
+III_RAPS_2_0:
+  ID: SEC-RAPS-01
+  Ref: DEF-RAPS
+  R_Reasoning_Protocols:
+    ID: RAPS-R-01
+    Def: "Capa de gobernanza y lógica: Rules + Workflows + Skills."
+    Rules:
+      ID: RAPS-R-RULES-01
+      Ref: DEF-RULE
+      Def: "Instrucciones persistentes inyectadas en el System Prompt."
+      Power_Hierarchy:
+        - Level: Global_Rules
+          Ref: PATH-GLOBAL-RULES
+          Scope: "Aplicadas a todos los workspaces."
+        - Level: Workspace_Rules
+          Ref: PATH-WORKSPACE-RULES
+          Scope: "Específicas del proyecto; precedencia sobre globales."
+      Limits:
+        - Ref: LIM-RULES-CHARS-12000
+      Activation_Modes:
+        - Mode: Manual
+          Def: "Activada vía @-mention en el input del agente."
+        - Mode: Always_On
+          Def: "Siempre aplicada."
+        - Mode: Model_Decision
+          Def: "El modelo decide según descripción natural."
+        - Mode: Glob
+          Def: "Aplicada a archivos que coincidan con patrón glob."
+          Ex: ["*.ts", "src/**/*.js"]
+      At_Mentions:
+        Def: "Referenciar archivos usando `@filename` dentro de un archivo de Rules."
+        Resolution:
+          - Cond: "`filename` es ruta relativa"
+            Res: "Interpretar relativo a la ubicación del archivo de regla."
+          - Cond: "`filename` es ruta absoluta"
+            Res: "Resolver como ruta absoluta real."
+          - Cond: "Otro caso"
+            Res: "Resolver relativo al repositorio."
+      Warn:
+        - "Vector de seguridad: el System Prompt fuerza obediencia de user-defined rules."
+        - "Auditar siempre carpeta `.agent` en repositorios desconocidos."
+    Workflows:
+      ID: RAPS-R-WORKFLOWS-01
+      Ref: DEF-WORKFLOW
+      Def: "Guiones imperativos multi-paso; disparo manual vía `/nombre`."
+      Paths:
+        - Level: Global_Workflows
+          Ref: PATH-GLOBAL-WORKFLOWS
+        - Level: Workspace_Workflows
+          Ref: PATH-WORKSPACE-WORKFLOWS
+      Limits:
+        - Ref: LIM-WORKFLOWS-CHARS-12000
+      Technical_Structure:
+        Req: "Encabezado YAML (`description:`) seguido de pasos en Markdown."
+        Rec: "Permitir encadenamiento: un workflow puede invocar otro."
+      Turbo_Mode:
+        - Token: "// turbo"
+          Def: "Antes de un paso: autoriza ejecución sin pausa."
+        - Token: "// turbo-all"
+          Def: "Al inicio del archivo: autoriza todo el workflow."
+      Rec:
+        - "Generar workflows luego de ejecutar el proceso manual en una conversación."
+    Skills:
+      ID: RAPS-R-SKILLS-01
+      Ref: DEF-SKILL
+      Def: "Paquetes de conocimiento latente cargados dinámicamente; reduce 'tool bloat'."
+      Paths:
+        - Level: Global_Skills
+          Ref: PATH-GLOBAL-SKILLS
+        - Level: Workspace_Skills
+          Ref: PATH-WORKSPACE-SKILLS
+      Folder_Structure:
+        Req: ["SKILL.md"]
+        Optional: ["scripts/", "examples/", "resources/"]
+      Frontmatter_Required:
+        Ex: |
+          ---
+          name: my-skill
+          description: Helps with a specific task. Use when you need to do X or Y.
+          ---
+      Progressive_Disclosure:
+        Steps:
+          - Step: Discovery
+            Def: "Agente ve lista de skills (nombre+descripción) al inicio."
+          - Step: Activation
+            Def: "Si relevante, agente lee `SKILL.md` completo."
+          - Step: Execution
+            Def: "Agente sigue instrucciones mientras trabaja."
+      Best_Practices:
+        - "Skills enfocadas (una cosa bien)."
+        - "Descripciones claras (qué y cuándo)."
+        - "Scripts como cajas negras; sugerir `--help`."
+        - "Incluir árboles de decisión si la skill es compleja."
+  A_Armoury_MCP:
+    ID: RAPS-A-01
+    Def: "Armoury: conexión a realidad externa vía Model Context Protocol (MCP)."
+    MCP_Definition:
+      Def: "MCP permite conectar editor a herramientas locales, DBs y servicios externos de forma segura."
+      Config: "~/.gemini/antigravity/mcp_config.json"
+      Anatomy: "Servidores exponen Tools (acciones), Resources (lectura), Prompts (plantillas)."
+    Core_Features:
+      - Feature: Context_Resources
+        Def: "IA lee datos de servidores MCP para informar sugerencias (ej: inspeccionar schema SQL en vivo)."
+      - Feature: Custom_Tools
+        Def: "Ejecutar acciones específicas definidas por servidores (ej: crear issue en Linear)."
+    Connection:
+      - Method: MCP_Store
+        Act: "Abrir MCP Store (`...`) en panel del editor; navegar/instalar/autenticar."
+      - Method: Custom_Server
+        Act: "MCP Store -> Manage MCP Servers -> View raw config -> editar `mcp_config.json`."
+    Supported_Servers_Official:
+      Items:
+        - Airweave
+        - AlloyDB_for_PostgreSQL
+        - Atlassian
+        - BigQuery
+        - Cloud_SQL_PostgreSQL_MySQL_SQL_Server
+        - Dart
+        - Dataplex
+        - Figma_Dev_Mode
+        - Firebase
+        - GitHub
+        - Harness
+        - Heroku
+        - Linear
+        - Locofy
+        - Looker
+        - MCP_Toolbox_for_Databases
+        - MongoDB
+        - Neon
+        - Netlify
+        - Notion
+        - PayPal
+        - Perplexity_Ask
+        - Pinecone
+        - Prisma
+        - Redis
+        - Sequential_Thinking
+        - SonarQube
+        - Spanner
+        - Stripe
+        - Supabase
+    Forced_Descent_Attack_Vector:
+      ID: RAPS-A-ATTACK-01
+      Def: "Forced Descent: repositorio malicioso induce sobrescritura de configuración MCP global."
+      Mechanism: "Regla maliciosa instruye al agente a sobrescribir configuración MCP global."
+      Impact: "Agente sobrescribe `~/.gemini/antigravity/mcp_config.json` apuntando a servidor MCP malicioso."
+      Defense:
+        - "Vigilar permisos de escritura en `~/.gemini/antigravity/`."
+        - "No permitir configuraciones automáticas en repositorios no confiables."
+        - "Revisar manualmente `mcp_config.json` ante comportamientos extraños."
+  P_Parallel_Orchestration:
+    ID: RAPS-P-01
+    Def: "Gestión de fuerza laboral digital: multi-agente + selección de modelos."
+    Reasoning_Models_User_Selectable:
+      - Model: "Gemini 3 Pro (high)"
+        Use: "Razonamiento complejo; planes arquitectónicos."
+      - Model: "Gemini 3 Pro (low)"
+        Use: "Balance velocidad/calidad."
+      - Model: "Gemini 3 Flash"
+        Use: "Tareas rápidas; iteraciones de corrección."
+      - Model: "Claude Sonnet 4.5"
+        Use: "Lógica y análisis profundo."
+      - Model: "Claude Sonnet 4.5 (thinking)"
+        Use: "Razonamiento explícito."
+      - Model: "Claude Opus 4.5 (thinking)"
+        Use: "Tareas muy complejas."
+      - Model: "GPT-OSS"
+        Use: "Alternativa open source."
+    Model_Selection:
+      UI_Location: "Dropdown bajo el cuadro de prompt."
+      Behavior:
+        - "Elección sticky entre mensajes dentro de una conversación."
+        - Cond: "Cambiar modelo mientras el agente corre"
+          Res: "Continúa con modelo previo hasta completar pasos."
+    Additional_Models_Not_Customizable:
+      - Model: "Nano Banana Pro"
+        Use: "Generación de imágenes (mockups UI, diagramas)."
+      - Model: "Gemini 2.5 Pro UI Checkpoint"
+        Use: "Browser Subagent (clicks, scroll, input)."
+      - Model: "Gemini 2.5 Flash"
+        Use: "Background checkpointing y summarization."
+      - Model: "Gemini 2.5 Flash Lite"
+        Use: "Semantic search en codebase."
+    Roles_And_Specialization:
+      - Role: "Agente A (The Architect)"
+        Model: "Claude 3.5 Sonnet o Gemini 3 Pro"
+        Def: "Análisis de requisitos + generación de plan."
+      - Role: "Agente B (The Builder)"
+        Model: "Gemini 3 Pro"
+        Def: "Implementación/codificación."
+      - Role: "Agente C (The Auditor/QA)"
+        Model: "Gemini 3 Flash"
+        Def: "Loops de corrección rápida."
+    Rate_Limits:
+      Plans:
+        - Plan: "Google AI Ultra / Workspace AI Ultra for Business"
+          Quota: "Más generosa; refresco cada 5 horas; sin límite semanal."
+        - Plan: "Google AI Pro"
+          Quota: "Alta; refresco cada 5 horas; límite semanal mayor."
+        - Plan: "Sin plan Google AI"
+          Quota: "Significativa; refresco semanal; límite semanal."
+      Note: "No soporta bring-your-own-key ni bring-your-own-endpoint."
+      Rec: "Usar Fast Mode (Gemini 3 Flash) para tareas mecánicas; limitar concurrencia a 2-3 agentes pesados."
+  S_Serverless_And_Surface:
+    ID: RAPS-S-01
+    Def: "Ejecución/verificación: Browser Surface + terminal + despliegues serverless."
+    Surface_Browser:
+      ID: RAPS-S-BROWSER-01
+      Def: "Instancia Chrome integrada operada por Browser Subagent."
+      Capabilities:
+        - "Control: clicking, scrolling, typing, reading console logs."
+        - "Lectura: DOM capture, screenshots, markdown parsing."
+        - "Grabación: videos."
+      UI_Behavior:
+        - "Overlay mientras controla página (borde azul + panel acciones)."
+        - "Usuario no puede interactuar mientras overlay activo."
+        - "Puede actuar en tabs no enfocados; usuario usa otros tabs sin interrupciones."
+      Chrome_Extension:
+        Req: "Extensión Antigravity requerida para acceso web."
+        First_Run: "Redirige a Chrome Web Store para instalar."
+      Chrome_Profile_Isolation:
+        Def: "Browser opera en perfil separado; no comparte cookies/sign-in con perfil normal; sign-ins se persisten."
+      Allowlist_Denylist:
+        Denylist:
+          Def: "Enforceada por Google Superroots's BadUrlsChecker; si servidor no disponible, acceso denegado por defecto."
+        Allowlist:
+          Def: "Archivo local editable; inicializado con localhost; se agregan URLs manualmente o via prompt 'always allow'."
+      Disable_Browser_Tools:
+        Act: "Settings > Browser > Disable browser tools."
+    Terminal_Security:
+      ID: RAPS-S-TERMINAL-01
+      Execution_Policy:
+        - Policy: Request_Review
+          Def: "Agente siempre pide permiso antes de ejecutar comandos."
+        - Cond: "Secure Mode"
+          Res: "Terminal allowlist ignorado."
+      Deny_List_Commands: ["rm", "rmdir", "curl", "sudo", "wget"]
+    Serverless_Deployment:
+      ID: RAPS-S-SERVERLESS-01
+      Def: "Usar Workflows o MCP para conectar con plataformas (Modal, Vercel)."
+      Ex: "Prompt: 'Deploy the scraper to Modal. Run hourly'."
+
+IV_Global_vs_Local:
+  ID: SEC-SCOPE-01
+  Truth_About_Paths:
+    ID: SCOPE-PATHS-01
+    Items:
+      - Path: "~/.antigravity/"
+        Function: "Binarios, caché de actualizaciones"
+        Status: "No configuración"
+      - Path: "~/.gemini/"
+        Function: "Raíz del sistema Antigravity"
+        Status: "Operativa"
+      - Path: "~/.gemini/antigravity/"
+        Function: "Cerebro del agente"
+        Status: "Principal"
+  Global_Directory_Structure_SSOT:
+    ID: SCOPE-GLOBAL-TREE-01
+    Ex: |
+      ~/.gemini/
+      ├── GEMINI.md                           # Global Rules
+      ├── user/
+      │   ├── glosario.md                     # Glosario personal
+      │   ├── convenciones.md                 # Convenciones personales
+      │   └── rules/                          # Reglas globales alternativas
+      └── antigravity/
+          ├── annotations/                    # Anotaciones del agente
+          ├── brain/                          # Datos de sesiones del agente
+          ├── browser_recordings/             # Grabaciones del browser
+          ├── browserAllowlist.txt            # URLs permitidas
+          ├── conversations/                  # Historial de conversaciones
+          ├── global_workflows/               # Workflows globales (/nombre)
+          ├── implicit/                       # Datos implícitos
+          ├── knowledge/                      # Knowledge Items
+          ├── mcp_config.json                 # Configuración MCP
+          ├── sesiones/                       # 🆕 Sesiones de trabajo (handoffs)
+          │   └── {session-id}/
+          │       ├── _handoff.md
+          │       ├── _contexto.md
+          │       └── rules/
+          ├── skills/                         # Skills globales
+          │   └── {skill-folder}/
+          │       ├── SKILL.md
+          │       ├── scripts/
+          │       ├── examples/
+          │       └── resources/
+          └── user_settings.pb                # Configuración de usuario
+  Workspace_Directory_Structure:
+    ID: SCOPE-WORKSPACE-TREE-01
+    Ex: |
+      <project-root>/
+      ├── .agent/
+      │   ├── rules/                          # Reglas del proyecto
+      │   │   └── *.md
+      │   ├── workflows/                      # Workflows del proyecto
+      │   │   └── *.md
+      │   └── skills/                         # Skills del proyecto
+      │       └── {skill-folder}/
+      │           └── SKILL.md
+      └── .antigravity/                       # Metadatos locales del proyecto
+          ├── catalogo.yml                    # Catálogo de sesiones/workspace
+          ├── conocimiento/                   # Knowledge local
+          ├── diagnosticos/                   # Reportes de diagnóstico
+          └── rules/                          # Rules locales alternativas
+  Conflict_Resolution_Precedence:
+    ID: SCOPE-PRECEDENCE-01
+    Ordered:
+      - "Core Safety Policies (Google; inmutables)"
+      - "System Prompts del IDE (hardcode)"
+      - "Workspace Rules & Workflows (.agent/) (prioridad sobre globales)"
+      - "Global Rules (~/.gemini/GEMINI.md)"
+      - "User Chat Prompt"
+  Decision_Matrix_Global_vs_Local:
+    ID: SCOPE-MATRIX-01
+    Items:
+      - Component: "Estilo de Código"
+        Question: "¿Estándar industria o capricho del equipo?"
+        Recommendation: "Local (.agent/rules)"
+      - Component: "Formato de Commits"
+        Question: "¿Preferencia personal o política de empresa?"
+        Recommendation: "Global si personal; Local si CI/CD lo exige"
+      - Component: "Conexión a DB"
+        Question: "¿Producción o local de pruebas?"
+        Recommendation: "Global MCP para general; Local para credenciales específicas"
+      - Component: "Scripts de Despliegue"
+        Question: "¿Dependen de package.json del proyecto?"
+        Recommendation: "Local (.agent/workflows)"
+      - Component: "Personalidad del Agente"
+        Question: "¿Breve o explicativo?"
+        Recommendation: "Global (~/.gemini/GEMINI.md)"
+      - Component: "Sesiones de Trabajo"
+        Question: "¿Dónde persisten handoffs y contexto?"
+        Recommendation: "Global (~/.gemini/antigravity/sesiones/)"
+
+V_Knowledge_Items:
+  ID: SEC-KI-01
+  Def: "Knowledge Items: memoria persistente de Antigravity; captura/organiza insights, patrones y soluciones."
+  Structure:
+    - Field: Title
+      Def: "Nombre descriptivo del tema."
+    - Field: Summary
+      Def: "Resumen breve."
+    - Field: Artifacts
+      Def: "Artefactos asociados (auto-docs, ejemplos, memorias persistentes de instrucciones, etc.)."
+  Generation: "Antigravity analiza conversaciones para crear nuevos KIs o actualizar existentes."
+  Visualization: "Vista de Knowledge Items en Antigravity Agent Manager."
+  Agent_Use:
+    Def: "Resúmenes de KIs disponibles para informar respuestas; si KI relevante, agente estudia artifacts y aplica la info."
+
+VI_Editor_Advanced_Features:
+  ID: SEC-EDITOR-01
+  Tab_Features:
+    ID: EDITOR-TAB-01
+    Items:
+      - Feature: Supercomplete
+        Def: "Sugerencias que pueden modificar todo el documento (renombrar variables, actualizar definiciones). Press Tab para aceptar."
+      - Feature: Tab-to-Jump
+        Def: "Sugiere siguiente ubicación lógica del cursor. Press Tab para saltar."
+      - Feature: Tab-to-Import
+        Def: "Si escribes clase/función no importada, sugiere import. Press Tab para completar y agregar import."
+  Command_Cmd_I:
+    ID: EDITOR-CMDI-01
+    Trigger: ["Cmd+I (Mac)", "Ctrl+I (Windows/Linux)"]
+    Res: "Cuadro de texto aparece en posición actual del cursor."
+    Use:
+      - Context: Editor
+        Def: "Genera boilerplate, refactoriza funciones, escribe documentación."
+      - Context: Terminal
+        Def: "Genera comandos shell complejos sin memorizar sintaxis."
+  Tab_Settings:
+    ID: EDITOR-TAB-SETTINGS-01
+    Items:
+      - Setting: Enable/Disable Features
+        Def: "Desactivar individualmente Autocomplete, Tab-to-Jump, Supercomplete, Tab-to-Import."
+      - Setting: Tab Speed
+        Def: "Slow (más contexto), Default (balanceado), Fast (sugerencias rápidas)."
+      - Setting: Highlight Inserted Text
+        Def: "Resaltar texto insertado via Tab."
+      - Setting: Clipboard Context
+        Def: "Usar contenido del clipboard para mejorar precisión."
+      - Setting: Allow Gitignored Files
+        Def: "Habilitar Tab features en archivos listados en `.gitignore`."
+
+VII_Secure_Mode:
+  ID: SEC-SECURE-01
+  Def: "Secure Mode: controles mejorados que restringen acceso a recursos externos y operaciones sensibles."
+  Review_Policies:
+    ID: SECURE-REVIEW-01
+    Items:
+      - Area: Terminal_Auto_Execution
+        Behavior: "Request Review: siempre pide permiso; terminal allowlist ignorado."
+      - Area: Browser_JavaScript_Execution
+        Behavior: "Request Review: siempre pide permiso."
+      - Area: Artifact_Review
+        Behavior: "Request Review: pide confirmación antes de actuar en planes."
+  File_System_Access:
+    - Policy: Respect_Gitignore
+      Def: "Agente respeta `.gitignore`."
+    - Policy: Workspace_Isolation
+      Def: "Acceso a archivos fuera del workspace deshabilitado."
+
+VIII_Workflows_By_Profile:
+  ID: SEC-PROFILES-01
+  Profiles:
+    - Profile: "A: Desarrollador Full Stack"
+      Steps:
+        - Step: Inicio
+          Act: "Planning Mode con prompt de arquitectura que analice `package.json`."
+        - Step: Negociación
+          Act: "Editar Implementation Plan directamente."
+        - Step: Ejecución
+          Act: "Skills de scaffolding con templates deterministas."
+        - Step: Verificación
+          Act: "QA autónomo en Browser Surface con video artifacts."
+    - Profile: "B: Abogado / Legal Tech"
+      Steps:
+        - Step: Configuración
+          Act: "Rules como 'jurisprudencia' en `.agent/rules/legal-tone.md`."
+        - Step: Herramientas
+          Act: "Skill de verificación con scripts de Regex y recursos de cláusulas estándar."
+        - Step: Acción
+          Act: "Redlining y comparación."
+        - Step: Entrega
+          Act: "Markdown Artifact con tabla semáforo + diff de texto."
+    - Profile: "C: Gestor de Conocimiento Público"
+      Steps:
+        - Step: Conexión
+          Act: "MCP para romper silos (Postgres, Filesystem)."
+        - Step: Gobernanza
+          Act: "Sanitización PII con Workspace Rule estricta."
+        - Step: Orquestación
+          Act: "Workflow de resumen legislativo con `// turbo`."
+        - Step: Memoria
+          Act: "Knowledge Items para persistencia institucional."
+
+Annex_Quick_Reference:
+  ID: SEC-ANNEX-01
+  Items:
+    - Component: Rules
+      Global: "~/.gemini/GEMINI.md"
+      Workspace: "<project>/.agent/rules/*.md"
+    - Component: Workflows
+      Global: "~/.gemini/antigravity/global_workflows/"
+      Workspace: "<project>/.agent/workflows/"
+    - Component: Skills
+      Global: "~/.gemini/antigravity/skills/"
+      Workspace: "<project>/.agent/skills/"
+    - Component: MCP_Config
+      Global: "~/.gemini/antigravity/mcp_config.json"
+      Workspace: "N/A"
+    - Component: Sesiones
+      Global: "~/.gemini/antigravity/sesiones/"
+      Workspace: "<project>/.antigravity/catalogo.yml (índice)"
+    - Component: Knowledge_Items
+      Global: "~/.gemini/antigravity/knowledge/"
+      Workspace: "N/A"
+
+Validation:
+  ID: VALIDATION-01
+  Claim: "Documento validado contra DOC-ANTIGRAVITY-OFFICIAL-01 (manual fuente)."
+  Src: "staging/manual_ag_fx_v2.md"

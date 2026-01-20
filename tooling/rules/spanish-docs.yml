@@ -1,0 +1,29 @@
+_manifest:
+  urn: "urn:tooling:koda:rules:spanish-docs:1.0.0"
+  type: rule
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+
+metadata:
+  description: "Reglas para documentación y comunicación en español"
+  scope: global
+  priority: medium
+  activation_mode: MODEL_DECISION
+
+content:
+  rules:
+    - rule: "Toda documentación de usuario en español (es-CL)"
+      rationale: "Audiencia principal hispanohablante"
+
+    - rule: "Keywords KODA en inglés, contenido en español"
+      rationale: "Separación protocolo/contenido"
+
+    - rule: "Usar terminología técnica en español cuando exista"
+      rationale: "Comprensión sin sacrificar precisión"
+
+    - rule: "Comentarios de código en español"
+      rationale: "Consistencia documental"
+
+    - rule: "Formato fecha ISO 8601 (YYYY-MM-DD)"
+      rationale: "Estándar internacional"

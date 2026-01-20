@@ -1,11 +1,11 @@
 # KODA Knowledge Resolver Configuration
 # Defines how URNs are resolved to physical file paths
-# Spec: urn:knowledge:koda:core:federation:1.0.0
+# Spec: urn:knowledge:koda:core:hub-federation:1.0.0
 #
 # IMPORTANT: This resolver is SPECULATIVE, not OPERATIVE
 # It DOCUMENTS how URNs should resolve, but does not execute resolution.
 # LLMs need physical file access - use symlinks or git submodules.
-# See FED-RESOLVER-REALITY-01 in guide_core_009_federation-protocol.yml
+# See FED-RESOLVER-REALITY-01 in guide_core_003_koda-hub-federation_koda.yml
 
 # =============================================================================
 # METADATA - Required for federation health tracking
@@ -13,7 +13,7 @@
 _meta:
   resolver_version: "1.0.0"
   koda_compatibility: ">=1.0.0 <2.0.0"
-  last_sync: "2025-12-16T03:30:00-03:00"
+  last_sync: "2026-01-19T16:26:17Z"
   health_check_interval: weekly
 
 # =============================================================================
@@ -82,16 +82,18 @@ resolution_rules:
   "urn:knowledge:koda:core:quickstart:*": "./knowledge/core/guide_core_000_quickstart_koda.yml"
   "urn:knowledge:koda:core:spec:*": "./knowledge/core/guide_core_001_koda-spec_koda.yml"
   "urn:knowledge:koda:core:transform:*": "./knowledge/core/guide_core_002_koda-transform_koda.yml"
-  "urn:knowledge:koda:core:hub:*": "./knowledge/core/guide_core_003_koda-hub-master_koda.yml"
+  "urn:knowledge:koda:core:hub:*": "./knowledge/core/guide_core_003_koda-hub-federation_koda.yml"
+  "urn:knowledge:koda:core:hub-federation:*": "./knowledge/core/guide_core_003_koda-hub-federation_koda.yml"
   "urn:knowledge:koda:core:life:*": "./knowledge/core/guide_core_004_koda-life-master_koda.yml"
   "urn:knowledge:koda:core:agent:*": "./knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
   "urn:knowledge:koda:core:agent-construct:*": "./knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
   "urn:knowledge:koda:core:test:*": "./knowledge/core/guide_core_007_koda-test-spec_koda.yml"
   "urn:knowledge:koda:core:schema-versioning:*": "./knowledge/core/guide_core_008_schema-versioning_koda.yml"
-  "urn:knowledge:koda:core:federation:*": "./knowledge/core/guide_core_009_federation-protocol_koda.yml"
+  "urn:knowledge:koda:core:tooling:*": "./knowledge/core/guide_core_009_koda-tooling-spec_koda.yml"
 
   # Schema
   "urn:knowledge:koda:core:agent-schema:*": "./schemas/koda-agent-schema-1.0.0.json"
+  "urn:knowledge:koda:core:tooling-schema:*": "./schemas/koda-tooling-schema-1.0.0.json"
 
   # Agents
   "urn:knowledge:koda:agents:architect:*": "./agents/knowledge-architect/agent_koda_architect.yaml"
@@ -104,6 +106,10 @@ resolution_rules:
 
   # Registry
   "urn:knowledge:koda:registry:namespaces:*": "./registry/namespaces.yml"
+
+  # Local domain knowledge
+  "urn:knowledge:koda:antigravity:doc-antigravity-official:*": "./knowledge/domains/google_antigravity/doc_oficial_ag_koda.yml"
+  "urn:knowledge:koda:antigravity:manual-ag-fx-v2:*": "./knowledge/domains/google_antigravity/manual_ag_fx_v2_koda.yml"
 
 # Directory structure conventions
 directories:

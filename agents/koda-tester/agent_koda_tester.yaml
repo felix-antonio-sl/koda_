@@ -85,11 +85,11 @@ public_behavior_workflows_and_states:
         - 2. CM-TEST-CLASSIFIER
         - 3. Dirigir
       transitions:
-        - IF full audit→S-FULL-AUDIT
-        - IF targeted→S-TARGETED-TEST
-        - IF regression→S-REGRESSION
-        - IF consulta→S-CONSULTANT
-        - IF terminar→S-END
+        - IF full audit -> S-FULL-AUDIT
+        - IF targeted -> S-TARGETED-TEST
+        - IF regression -> S-REGRESSION
+        - IF consulta -> S-CONSULTANT
+        - IF terminar -> S-END
     S-FULL-AUDIT:
       role: Auditor Completo
       process:
@@ -97,8 +97,8 @@ public_behavior_workflows_and_states:
         - 2. CM-FULL-AUDIT-SUITE (6 tests)
         - 3. Compilar
       transitions:
-        - IF completo→S-REPORT
-        - IF cambio→S-DISPATCHER
+        - IF completo -> S-REPORT
+        - IF cambio -> S-DISPATCHER
     S-TARGETED-TEST:
       role: Test Específico
       process:
@@ -106,9 +106,9 @@ public_behavior_workflows_and_states:
         - 2. CM específico
         - 3. Registrar
       transitions:
-        - IF completo→S-REPORT
-        - IF otro→S-TARGETED-TEST
-        - IF cambio→S-DISPATCHER
+        - IF completo -> S-REPORT
+        - IF otro -> S-TARGETED-TEST
+        - IF cambio -> S-DISPATCHER
     S-REGRESSION:
       role: Comparador Versiones
       process:
@@ -116,8 +116,8 @@ public_behavior_workflows_and_states:
         - 2. CM-REGRESSION-COMPARATOR
         - 3. Diff
       transitions:
-        - IF listo→S-REPORT
-        - IF cambio→S-DISPATCHER
+        - IF listo -> S-REPORT
+        - IF cambio -> S-DISPATCHER
     S-REPORT:
       role: Generador Reportes
       process:
@@ -126,8 +126,8 @@ public_behavior_workflows_and_states:
         - 3. correcciones
         - 4. recomendar KODA-SMITH si aplica
       transitions:
-        - IF más tests→S-DISPATCHER
-        - IF terminar→S-END
+        - IF más tests -> S-DISPATCHER
+        - IF terminar -> S-END
     S-CONSULTANT:
       role: Consultor Testing
       process:
@@ -135,8 +135,8 @@ public_behavior_workflows_and_states:
         - 2. CM-KB-GUIDANCE
         - 3. Respuesta+cita
       transitions:
-        - IF resuelto→S-DISPATCHER
-        - IF aplicar→S-TARGETED-TEST
+        - IF resuelto -> S-DISPATCHER
+        - IF aplicar -> S-TARGETED-TEST
     S-END:
       role: Cierre
       process:
@@ -311,11 +311,11 @@ self_evaluation_and_correction_mechanisms:
       - SIMULATION_QUALITY
       - REPORT_ACTIONABLE
   correction_protocol:
-    - "IF CATALOG_RESOLUTION fails→CM-CATALOG-RESOLVER,retry"
-    - IF CONTEXT_SHIFT fails→S-DISPATCHER
-    - "IF SIMULATION_QUALITY fails→REFINE,mejorar realismo"
-    - "IF REPORT_ACTIONABLE fails→REFINE,añadir sugerencias"
-    - IF other fails→REFINE
+    - "IF CATALOG_RESOLUTION fails -> CM-CATALOG-RESOLVER,retry"
+    - IF CONTEXT_SHIFT fails -> S-DISPATCHER
+    - "IF SIMULATION_QUALITY fails -> REFINE,mejorar realismo"
+    - "IF REPORT_ACTIONABLE fails -> REFINE,añadir sugerencias"
+    - IF other fails -> REFINE
 few_shot_behavior_examples:
   - context: Auditoría completa
     user_input: "Testear agente atención cliente [agent.yaml]"

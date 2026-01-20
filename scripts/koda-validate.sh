@@ -198,27 +198,24 @@ echo -e "${YELLOW}4. Artifact Checks${NC}"
 ARTIFACT_COUNT=0
 MANIFEST_ERRORS=0
 
-shopt -s nullglob
-for f in knowledge/**/*.yml knowledge/**/*.yaml agents/**/*.yml agents/**/*.yaml; do
-    if [ -f "$f" ]; then
-        ARTIFACT_COUNT=$((ARTIFACT_COUNT + 1))
-        
-        # Check for _manifest
-        if ! grep -q "_manifest:" "$f"; then
-            if [ "$VERBOSE" = true ]; then
-                warn "Missing _manifest in: $f"
-            fi
-            MANIFEST_ERRORS=$((MANIFEST_ERRORS + 1))
+while IFS= read -r -d '' f; do
+    ARTIFACT_COUNT=$((ARTIFACT_COUNT + 1))
+
+    # Check for _manifest
+    if ! grep -q "_manifest:" "$f"; then
+        if [ "$VERBOSE" = true ]; then
+            warn "Missing _manifest in: $f"
         fi
-        
-        # Validate YAML
-        if command -v ruby &> /dev/null; then
-            if ! ruby -ryaml -e "YAML.load_file('$f')" 2>/dev/null; then
-                fail "Invalid YAML: $f"
-            fi
+        MANIFEST_ERRORS=$((MANIFEST_ERRORS + 1))
+    fi
+
+    # Validate YAML
+    if command -v ruby &> /dev/null; then
+        if ! ruby -ryaml -e "YAML.load_file('$f')" 2>/dev/null; then
+            fail "Invalid YAML: $f"
         fi
     fi
-done
+done < <(find knowledge agents -type f \( -name "*.yml" -o -name "*.yaml" \) -print0 2>/dev/null)
 
 if [ $ARTIFACT_COUNT -gt 0 ]; then
     pass "Found $ARTIFACT_COUNT artifacts"
@@ -288,17 +285,16 @@ if [ "$STRICT" = true ]; then
             
             # Validate all agent files
             AGENT_ERRORS=0
-            for agent_file in agents/**/agent*.yaml agents/**/agent*.yml; do
-                if [ -f "$agent_file" ]; then
-                    if [ "$VALIDATOR" = "ajv" ]; then
-                        if ajv validate -s "$SCHEMA_FILE" -d "$agent_file" 2>/dev/null; then
-                            info "Schema valid: $agent_file"
-                        else
-                            fail "Schema invalid: $agent_file"
-                            AGENT_ERRORS=$((AGENT_ERRORS + 1))
-                        fi
-                    elif [ "$VALIDATOR" = "python" ]; then
-                        if python3 -c "
+            while IFS= read -r -d '' agent_file; do
+                if [ "$VALIDATOR" = "ajv" ]; then
+                    if ajv validate -s "$SCHEMA_FILE" -d "$agent_file" 2>/dev/null; then
+                        info "Schema valid: $agent_file"
+                    else
+                        fail "Schema invalid: $agent_file"
+                        AGENT_ERRORS=$((AGENT_ERRORS + 1))
+                    fi
+                elif [ "$VALIDATOR" = "python" ]; then
+                    if python3 -c "
 import json, yaml, sys
 from jsonschema import validate, ValidationError
 with open('$SCHEMA_FILE') as s:
@@ -311,14 +307,13 @@ except ValidationError as e:
     print(f'Validation error: {e.message}', file=sys.stderr)
     sys.exit(1)
 " 2>/dev/null; then
-                            info "Schema valid: $agent_file"
-                        else
-                            fail "Schema invalid: $agent_file"
-                            AGENT_ERRORS=$((AGENT_ERRORS + 1))
-                        fi
+                        info "Schema valid: $agent_file"
+                    else
+                        fail "Schema invalid: $agent_file"
+                        AGENT_ERRORS=$((AGENT_ERRORS + 1))
                     fi
                 fi
-            done
+            done < <(find agents -type f \( -name "agent*.yaml" -o -name "agent*.yml" \) -print0 2>/dev/null)
             
             if [ $AGENT_ERRORS -eq 0 ]; then
                 pass "All agents pass schema validation"

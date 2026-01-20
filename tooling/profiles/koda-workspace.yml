@@ -6,7 +6,7 @@ _manifest:
   namespace: "koda"
 
 metadata:
-  platform: [antigravity, windsurf]
+  platform: [generic]
   description: "Configuración para workspace KODA Framework"
   author: "KODA Core"
   created_at: "2025-12-14"
@@ -33,10 +33,9 @@ recommended_workflows:
 active_rules:
   - "koda-conventions.yml" # Nomenclatura KODA
   - "yaml-strict.yml" # Formato YAML
-  - "agent-principles.yml" # Principios P1-P7
+  - "agent-principles.md" # Principios P1-P7
 
-# Note: IDE-specific settings delegated to adapters
-# Generate adapters: ./scripts/koda-generate-adapters.sh --all
+# Note: Los settings de tooling son consumidos por cualquier IDE/plataforma
 
 # Directorios clave
 key_directories:

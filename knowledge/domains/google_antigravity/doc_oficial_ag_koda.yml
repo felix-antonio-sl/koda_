@@ -1,0 +1,865 @@
+---
+# Antigravity Official Documentation (KODA)
+# Source: Antigravity Docs (author unknown)
+
+_manifest:
+  urn: "urn:knowledge:koda:antigravity:doc-antigravity-official:1.0.0"
+  federation:
+    visibility: private
+    license: "Proprietary"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/domains/google_antigravity/doc_oficial_ag_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "KODA/Spec base"
+  provenance:
+    created_by: "Antigravity Docs (author unknown)"
+    created_at: "2026-01-19"
+    last_modified_by: "felixsanhueza"
+    last_modified_at: "2026-01-19"
+    signature: null
+
+ID: DOC-ANTIGRAVITY-OFFICIAL-01
+Version: 1.0.0
+Status: Draft
+Human-Creator: "Antigravity Docs (author unknown)"
+Human-Editor: "felixsanhueza"
+Model-Collaborator: "GPT-5.2"
+Creation-Date: 2026-01-19
+Modification-Date: 2026-01-19
+Source: "/Users/felixsanhueza/Developer/koda/staging/doc_oficial_ag.md"
+Ctx: "Antigravity official documentation: Agent, Tools, Artifacts, Knowledge, Editor, Agent Manager, Browser, Plans, Settings."
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Definitions:
+  - ID: DEF-ANTIGRAVITY
+    Def: "Antigravity: AI-enabled editor + agent system with integrated tools (terminal, browser), artifacts, and persistent knowledge."
+  - ID: DEF-AGENT
+    Def: "Agent: main assistant that runs a selectable reasoning model and can invoke subagents/tools."
+  - ID: DEF-BROWSER-SUBAGENT
+    Def: "Browser subagent: specialized agent/model used to operate Antigravity-managed browser pages (click, scroll, type, read, record)."
+  - ID: DEF-RULE
+    Def: "Rule: manually defined constraint (Markdown file) guiding agent behavior; can be global or workspace-scoped."
+  - ID: DEF-WORKFLOW
+    Def: "Workflow: Markdown-defined, repeatable multi-step procedure invoked via slash command `/workflow-name`."
+  - ID: DEF-SKILL
+    Def: "Skill: open-standard package (folder) with `SKILL.md` instructions + optional resources/scripts to extend agent capabilities."
+  - ID: DEF-ARTIFACT
+    Def: "Artifact: any agent-created output used to do work or communicate progress/thinking (markdown, diffs, diagrams, images, recordings, etc.)."
+  - ID: DEF-KNOWLEDGE-ITEM
+    Def: "Knowledge Item (KI): persistent memory object with title+summary and a collection of artifacts on a topic; auto-created/updated from conversations."
+
+Antigravity:
+  Agent:
+    Ref: DEF-AGENT
+
+    Models:
+      ID: AG-AGENT-MODELS-01
+      Reasoning_Model:
+        Def: "Core reasoning model options are offered from the Google Vertex Model Garden."
+        Offered_Models:
+          - "Gemini 3 Pro (high)"
+          - "Gemini 3 Pro (low)"
+          - "Gemini 3 Flash"
+          - "Claude Sonnet 4.5"
+          - "Claude Sonnet 4.5 (thinking)"
+          - "Claude Opus 4.5 (thinking)"
+          - "GPT-OSS"
+        Selection:
+          UI_Location: "Model selector drop down under the conversation prompt box."
+          Behavior:
+            - Def: "Model choice is sticky between user messages within a conversation."
+            - Cond: "If model is changed while Agent is running"
+              Res: "Agent continues using previously selected model until it completes its steps for that user turn (or until user cancels current execution)."
+        Ref: PLANS-RATE-LIMITS-01
+        UI_References:
+          - "Model Selector Drop Down"
+      Additional_Models:
+        Def: "Additional models are used for parts of the stack and are not customizable."
+        Models:
+          - Model: "Nano Banana Pro"
+            Use: "Generative image tool: UI mockups, images to populate pages/apps, system/architecture diagrams, other generative image tasks."
+          - Model: "Gemini 2.5 Pro UI Checkpoint"
+            Use: "Browser subagent actuation: clicking, scrolling, filling input."
+          - Model: "Gemini 2.5 Flash"
+            Use: "Background checkpointing and context summarization."
+          - Model: "Gemini 2.5 Flash Lite"
+            Use: "Codebase semantic search."
+
+    Rules_And_Workflows:
+      ID: AG-AGENT-RULES-WORKFLOWS-01
+      Rules:
+        Ref: DEF-RULE
+        Def: "Rules are manually defined constraints for the Agent to follow at both local and global levels."
+        Purp: "Guide agent behavior to match user use cases and style."
+        Getting_Started:
+          - Act: "Open Customizations panel via the `...` dropdown at the top of the editor's agent panel."
+          - Act: "Navigate to the Rules panel."
+          - Act: "Click `+ Global` (Global Rules) or `+ Workspace` (Workspace-specific rules)."
+          - Def: "A Rule is a Markdown file containing constraints."
+        Limits:
+          - Req: "Rules files are limited to 12,000 characters each."
+        Global_Rules:
+          Path: "~/.gemini/GEMINI.md"
+          Scope: "Applied across all workspaces."
+        Workspace_Rules:
+          Path: ".agent/rules (folder in workspace or git root)"
+          Scope: "Workspace-specific."
+        Activation_Modes:
+          - Mode: Manual
+            Def: "Manually activated via at-mention in Agent’s input box."
+          - Mode: Always_On
+            Def: "Always applied."
+          - Mode: Model_Decision
+            Def: "Model decides whether to apply, based on a natural language description of the rule."
+          - Mode: Glob
+            Def: "Applied to all files matching defined glob pattern."
+            Ex:
+              - ".js"
+              - "src/**/.ts"
+        At_Mentions:
+          Def: "Reference other files using `@filename` inside a Rules file."
+          Resolution:
+            - Cond: "If `filename` is a relative path"
+              Res: "Interpret relative to the Rules file location."
+            - Cond: "If `filename` is an absolute path"
+              Res: "Resolve as a true absolute path."
+            - Cond: "Otherwise"
+              Res: "Resolve relative to the repository."
+          Ex: "@/path/to/file.md (try absolute; if missing, resolve to `workspace/path/to/file.md`)."
+      Workflows:
+        Ref: DEF-WORKFLOW
+        Def: "Series of steps to guide the Agent through repetitive tasks (e.g., deploy service, respond to PR comments)."
+        Distinction:
+          - Def: "Rules provide persistent/reusable context at the prompt level."
+          - Def: "Workflows provide structured multi-step sequences at the trajectory level."
+        Create_Workflow:
+          - Act: "Open Customizations panel via the `...` dropdown at the top of the editor's agent panel."
+          - Act: "Navigate to the Workflows panel."
+          - Act: "Click `+ Global` for a global workflow or `+ Workspace` for a workspace-specific workflow."
+        Execute_Workflow:
+          Req: "Invoke via slash command `/workflow-name`."
+          Ex: "/workflow-1 can include steps like “Call /workflow-2” and “Call /workflow-3”."
+          Res: "Upon invocation, Agent sequentially processes each step and performs actions or generates responses."
+        Storage_And_Limits:
+          - Def: "Workflows are saved as Markdown files with title, description, and a series of steps."
+          - Req: "Workflow files are limited to 12,000 characters each."
+      Agent_Generated_Workflows:
+        Def: "You can ask Agent to generate Workflows; works well after manually doing the process in a conversation since it can use conversation history."
+
+    Skills:
+      ID: AG-AGENT-SKILLS-01
+      Ref: DEF-SKILL
+      Def: "A skill is a folder containing a `SKILL.md` file with instructions for specific tasks."
+      What_A_Skill_Contains:
+        - "Instructions for how to approach a specific type of task"
+        - "Best practices and conventions to follow"
+        - "Optional scripts and resources the agent can use"
+      Skill_Discovery_And_Use:
+        - Def: "On conversation start, agent sees available skill names+descriptions."
+        - Cond: "If a skill is relevant"
+          Res: "Agent reads full `SKILL.md` and follows instructions."
+      Locations:
+        Workspace_Specific:
+          Path: "<workspace-root>/.agent/skills/<skill-folder>/"
+          Scope: "Workspace-specific"
+        Global:
+          Path: "~/.gemini/antigravity/skills/<skill-folder>/"
+          Scope: "Global (all workspaces)"
+        Notes:
+          - "Workspace skills: project-specific workflows (team deployment/testing conventions)."
+          - "Global skills: personal utilities/general-purpose tools across projects."
+      Create_Skill:
+        Steps:
+          - Act: "Create a folder for your skill in one of the skill directories."
+          - Act: "Add a `SKILL.md` file inside that folder."
+        Example_Folder:
+          Path: ".agent/skills/my-skill/SKILL.md"
+        SKILL_MD_Frontmatter:
+          Req: "Every skill needs a `SKILL.md` file with YAML frontmatter at the top."
+          Template: |
+            ---
+            name: my-skill
+            description: Helps with a specific task. Use when you need to do X or Y.
+            ---
+        Frontmatter_Fields:
+          - Field: name
+            Required: false
+            Def: "Unique identifier (lowercase, hyphens for spaces). Defaults to folder name if not provided."
+          - Field: description
+            Required: true
+            Def: "What agent sees when deciding whether to apply the skill."
+        Tip:
+          Def: "Write `description` in third person with keywords that make relevance obvious."
+          Ex: "Generates unit tests for Python code using pytest conventions."
+      Skill_Folder_Structure:
+        Req: "`SKILL.md` is the only required file."
+        Optional_Resources:
+          - Path: ".agent/skills/my-skill/scripts/"
+            Def: "Helper scripts (optional)"
+          - Path: ".agent/skills/my-skill/examples/"
+            Def: "Reference implementations (optional)"
+          - Path: ".agent/skills/my-skill/resources/"
+            Def: "Templates/assets (optional)"
+      Progressive_Disclosure:
+        Steps:
+          - Step: Discovery
+            Def: "Agent sees list of skills (names+descriptions)."
+          - Step: Activation
+            Def: "If relevant, agent reads full `SKILL.md`."
+          - Step: Execution
+            Def: "Agent follows instructions while working."
+        Notes:
+          - "No need to explicitly tell agent to use a skill; it decides based on context."
+          - "You can mention a skill by name to ensure it’s used."
+      Best_Practices:
+        - "Keep skills focused (one thing well; split a do-everything skill into multiple)."
+        - "Write clear descriptions (specific about what + when)."
+        - "Use scripts as black boxes: encourage `--help` first rather than reading entire source."
+        - "Include decision trees for complex skills."
+      Example_Code_Review_Skill:
+        Ex: |
+          ---
+          name: code-review
+          description: Reviews code changes for bugs, style issues, and best practices. Use when reviewing PRs or checking code quality.
+          ---
+          # Code Review Skill
+          ## Review checklist
+          1. **Correctness**: Does the code do what it's supposed to?
+          2. **Edge cases**: Are error conditions handled?
+          3. **Style**: Does it follow project conventions?
+          4. **Performance**: Are there obvious inefficiencies?
+          ## How to provide feedback
+          - Be specific about what needs to change
+          - Explain why, not just what
+          - Suggest alternatives when possible
+
+    Task_Groups:
+      ID: AG-AGENT-TASK-GROUPS-01
+      Def: "In Planning mode, large/complex tasks are handled with Task Groups to break work into smaller units."
+      Behavior:
+        - Def: "Agent may work on multiple parts of the greater task at the same time."
+        - Def: "Task sections present these changes to the user."
+      UI_Components:
+        - Component: "Task Group (top component)"
+          Def: "Specifies overarching goal and summarizes changes in the unit of work."
+          Includes:
+            - "Edited files section for quick audit."
+            - Act: "Click file pill to view current state of changed files."
+        - Component: Subtasks
+          Def: "Progress update sections showing work done by the agent."
+          Default: "Details in each subtask not directly exposed."
+          Act: "Toggle to expand exact steps Agent made."
+        - Component: Pending_Steps_Section
+          Cond: "If there are pending steps (e.g., browser setup, terminal commands requiring approval)"
+          Res: "Agent provides a special section at end of Task Group for reviewing pending steps."
+      UI_References:
+        - "Task Group"
+        - "Task Group Clicked Pill"
+        - "Task Group Expanded"
+        - "Task Group Pending"
+
+    Browser_Subagent:
+      ID: AG-AGENT-BROWSER-SUBAGENT-01
+      Ref: DEF-BROWSER-SUBAGENT
+      Def: "Invoked when the agent wants to interact with the browser."
+      Model:
+        Def: "Runs a model specialized to operate on pages open within the Antigravity-managed browser."
+        Note: "This model is different from the main agent model selected by the user."
+      Capabilities:
+        - "Control tools: clicking, scrolling, typing, reading console logs, etc."
+        - "Read open pages: DOM capture, screenshots, markdown parsing."
+        - "Can take videos."
+      UI_Behavior:
+        - Def: "While controlling a page, an overlay is shown (blue border + small panel describing actions)."
+        - Req: "User cannot interact with the page while overlay is shown to avoid confusion."
+        - Def: "Can act on tabs that are not focused; user may use other tabs uninterrupted."
+
+    Secure_Mode:
+      ID: AG-AGENT-SECURE-MODE-01
+      Def: "Enhanced security controls restricting access to external resources and sensitive operations."
+      Browser_URL_Allowlist_Denylist:
+        Def: "Agent’s ability to interact with external websites is governed by Allowlist and Denylist."
+        Applies_To:
+          - "External Markdown Images: render only from allowed URLs."
+          - "Read URL Tool: auto-executes only for allowed URLs."
+      Review_Policies:
+        Def: "Enforces review-request behavior for terminal, browser, and artifact interactions."
+        Terminal_Auto_Execution:
+          Setting: "Request Review"
+          Res: "Agent always prompts for permission before executing any terminal command."
+          Note: "Terminal allowlist is ignored when Secure Mode is enabled."
+        Browser_Javascript_Execution:
+          Setting: "Request Review"
+          Res: "Agent always prompts for permission before executing Javascript in the browser."
+        Artifact_Review:
+          Setting: "Request Review"
+          Res: "Agent always prompts for confirmation before acting on plans laid out in artifacts."
+      File_System_Access:
+        Def: "Restricts agent access to file system."
+        Respect_Gitignore:
+          Req: "Agent respects `.gitignore` rules; cannot access ignored files."
+        Workspace_Isolation:
+          Req: "Access to files outside the workspace is disabled."
+          Res: "Agent can only view/edit files within the designated workspace."
+
+  Tools:
+    MCP:
+      ID: TOOLS-MCP-01
+      Def: "Model Context Protocol (MCP): standard allowing editor to securely connect to local tools, databases, and external services for real-time context."
+      Purp: "Fetch context (schemas/logs/etc.) directly instead of manual copy/paste."
+      Core_Features:
+        - Feature: Context_Resources
+          Def: "AI can read data from connected MCP servers to inform suggestions."
+          Ex:
+            - "SQL: inspect live Neon/Supabase schema to suggest correct table/column names."
+            - "Debugging: pull recent build logs from Netlify/Heroku."
+        - Feature: Custom_Tools
+          Def: "Execute specific, safe actions defined by connected servers."
+          Ex:
+            - "Create a Linear issue for this TODO."
+            - "Search Notion or GitHub for authentication patterns."
+      Connect:
+        Def: "Connections managed through built-in MCP Store."
+        Steps:
+          - Act: "Access Store: open MCP Store panel within `...` dropdown at top of editor side panel."
+          - Act: "Browse & Install: select a supported server and click Install."
+          - Act: "Authenticate: follow prompts to link accounts (where applicable)."
+          - Res: "Resources/tools from server automatically available to editor."
+      Connect_Custom_Server:
+        Steps:
+          - Act: "Open MCP store via `...` dropdown at top of editor's agent panel."
+          - Act: "Click `Manage MCP Servers`."
+          - Act: "Click `View raw config`."
+          - Act: "Modify `mcp_config.json` with custom MCP server configuration."
+      Supported_Servers:
+        - Airweave
+        - AlloyDB_for_PostgreSQL
+        - Atlassian
+        - BigQuery
+        - Cloud_SQL_for_PostgreSQL
+        - Cloud_SQL_for_MySQL
+        - Cloud_SQL_for_SQL_Server
+        - Dart
+        - Dataplex
+        - Figma_Dev_Mode_MCP
+        - Firebase
+        - GitHub
+        - Harness
+        - Heroku
+        - Linear
+        - Locofy
+        - Looker
+        - MCP_Toolbox_for_Databases
+        - MongoDB
+        - Neon
+        - Netlify
+        - Notion
+        - PayPal
+        - Perplexity_Ask
+        - Pinecone
+        - Prisma
+        - Redis
+        - Sequential_Thinking
+        - SonarQube
+        - Spanner
+        - Stripe
+        - Supabase
+
+  Artifacts:
+    Ref: DEF-ARTIFACT
+
+    Overview:
+      ID: ARTIFACTS-OVERVIEW-01
+      Def: "Artifacts are outputs the agent creates to do work or communicate work/thinking to the user."
+      Examples:
+        - "Rich markdown files"
+        - "Diff views"
+        - "Architecture diagrams"
+        - "Images"
+        - "Browser recordings"
+        - "Code diffs"
+      Value:
+        - Def: "As agents become more autonomous and run longer, artifacts allow asynchronous communication."
+        - Def: "Reduces need for user to monitor every step synchronously."
+      Production:
+        Cond: "Agent is in Planning mode"
+        Res: "Artifacts are produced and appear in Agent Manager and Editor views."
+        Note: "Agent Manager is optimized for displaying/organizing/managing artifacts."
+      Feedback:
+        Def: "Agent may request review on intermediate artifacts depending on settings."
+        Purp: "Confirm progress aligns with user intent/goal."
+        Res: "User can provide feedback/comments; UI/UX varies by artifact type."
+
+    Task_List:
+      ID: ARTIFACT-TASK-LIST-01
+      Def: "Markdown list snapshot of agent progress for complex tasks (research/implementation/verification/etc.)."
+      Purp: "Helps agent track user’s overarching goal."
+      Note: "Typically user does not need to directly interact with this artifact."
+
+    Implementation_Plan:
+      ID: ARTIFACT-IMPLEMENTATION-PLAN-01
+      Def: "Plan artifact used to architect codebase changes needed to accomplish a task; meant for user review."
+      Review_And_Proceed:
+        Cond: "Artifact review policy is not set to “Always Proceed”"
+        Res: "Agent typically requests user review before making changes."
+        Proceed:
+          Act: "Click in-conversation or artifact header `Proceed` to continue with plan."
+      Feedback_Via_Comments:
+        Def: "Comment on implementation plan artifact to provide feedback (e.g., scope reduction, different tech stack, correct discrepancies)."
+        Options_After_Comments:
+          - Act: "Use `Proceed` to continue with plan."
+          - Act: "Toggle `Review` in artifact header to examine all comments and leave a feedback message instead of proceeding."
+      Res: "Agent continues work by iterating on plan and re-requesting review or by beginning implementation."
+      UI_References:
+        - "Artifact Implementation Plan"
+        - "Artifact Implementation Plan Proceed"
+        - "Artifact Implementation Plan Comments"
+        - "Artifact Implementation Plan Submit Comments"
+        - "Artifact Implementation Plan Proceeded"
+
+    Walkthrough:
+      ID: ARTIFACT-WALKTHROUGH-01
+      Def: "Created after task implementation; concise summary of changes made in the conversation."
+      Purp: "Helps user get up to speed on codebase state without following every step."
+      Browser_Tasks:
+        Def: "Walkthroughs often include screenshots and screen recordings of what Agent built in browser."
+      UI_References:
+        - "Walkthrough with Image"
+
+    Screenshots:
+      ID: ARTIFACT-SCREENSHOTS-01
+      Def: "Browser subagent can take screenshots of open pages/elements for review."
+      Availability:
+        - Def: "Surfaced as a tool to the agent."
+        - Def: "User can prompt agent to take a screenshot."
+      Storage_And_Feedback:
+        - Def: "Saved as image artifacts."
+        - Def: "Screenshots can be commented on to give feedback."
+      UI_References:
+        - "Browser Screenshot Capture Tool"
+        - "Browser Screenshot Artifact"
+
+    Browser_Recordings:
+      ID: ARTIFACT-BROWSER-RECORDINGS-01
+      Def: "When browser subagent actuates, it may generate a recording of its actions for review."
+      Viewing:
+        Location: "Bottom of the Browser step UI (if available)."
+        Note: "Playback view loops through browser agent’s actions."
+      Storage:
+        Def: "Saved as recording artifacts."
+      UI_References:
+        - "Browser Recording Capture Tool"
+        - "Browser Recording Artifact"
+
+  Knowledge:
+    Ref: DEF-KNOWLEDGE-ITEM
+
+    Overview:
+      ID: KNOWLEDGE-OVERVIEW-01
+      Def: "Knowledge Items are Antigravity's persistent memory system capturing/organizing important insights, patterns, and solutions from coding sessions."
+      Purp: "Build on previous work across conversations."
+
+    Knowledge_Item:
+      Def: "Collection of related information on a specific topic."
+      Contains:
+        - Title
+        - Summary
+        - Artifacts: "Provide information on the topic (auto-docs, code examples, persistent memories of user instructions, etc.)."
+
+    Generation:
+      Def: "Antigravity analyzes and extracts info from conversation to create new KIs or update existing KIs."
+
+    Viewing:
+      Act: "View Knowledge Items in the Antigravity Agent Manager."
+      UI_References:
+        - "Knowledge View"
+
+    Agent_Usage:
+      Def: "Summaries of all Knowledge Items are available to the agent to inform responses."
+      Cond: "Agent identifies a relevant Knowledge Item"
+      Res: "Agent studies artifacts in that Knowledge Item and uses applicable information."
+
+  Editor:
+    ID: EDITOR-OVERVIEW-01
+    Def: "Primary entry point: editor based on VS Code codebase with AI-enabled features."
+    Capabilities:
+      - "Open/edit files directly."
+      - "Get suggestions with Tab."
+      - "Work with an agent on tasks of varying size."
+      - "Review changes and interface with source control."
+      - "Download extensions from Open VSX marketplace (syntax highlighting, source control integrations, etc.)."
+    UI_References:
+      - "Editor Screenshot"
+
+    Tab_And_Navigation:
+      ID: EDITOR-TAB-NAV-01
+      Title: "Antigravity Editor: Tab & Navigation"
+      Scope: "Supercomplete, Tab-to-Jump, Tab-to-Import."
+      Supercomplete:
+        Def: "Provides code suggestions near current cursor position."
+        How_It_Works:
+          - Def: "File-wide suggestions can modify code throughout document (e.g., rename variables, update separate function definitions simultaneously)."
+          - Act: "Accept: press Tab to accept changes."
+      Tab_to_Jump:
+        Def: "Navigation tool suggesting next logical cursor location."
+        How_It_Works:
+          - Def: "A 'Tab to jump' icon appears offering to move cursor to next logical edit location."
+          - Act: "Accept: press Tab to jump."
+      Tab_to_Import:
+        Def: "Handles missing dependencies without breaking flow."
+        How_It_Works:
+          - Def: "Detection: if you type a class/function that isn't imported, Antigravity suggests the import."
+          - Act: "Press Tab to complete word and add import statement to top of file."
+      Settings:
+        Def: "Customize behavior."
+        Options:
+          - Setting: Enable_Disable_Features
+            Def: "Individually turn off Autocomplete, Tab-to-Jump, Supercomplete, or Tab-to-Import."
+          - Setting: Tab_Speed
+            Def: "Controls responsiveness of suggestions."
+            Values:
+              - Slow: "Waits for more context before suggesting."
+              - Default: "Balanced pace."
+              - Fast: "Rapid-fire suggestions."
+          - Setting: Highlight_Inserted_Text
+            Def: "When enabled, text inserted via Tab is highlighted."
+          - Setting: Clipboard_Context
+            Def: "When enabled, uses clipboard contents to improve completion accuracy."
+          - Setting: Allow_Gitignored_Files
+            Def: "Enables Tab features in files listed in `.gitignore`."
+            Note: "Tab will only ignore gitignored files if git is installed."
+
+    Command:
+      ID: EDITOR-COMMAND-01
+      Title: "Antigravity Editor: Command"
+      Def: "Natural language inline completions or terminal commands on the fly."
+      How_It_Works:
+        - Act: "Trigger: press Command + I (Mac) or Ctrl + I (Windows/Linux)."
+        - Res: "Text input box appears at current cursor position."
+        - Act: "Type request in natural language."
+        - Res: "Antigravity generates code/command inline for review and acceptance."
+      Where_To_Use:
+        In_Editor:
+          Def: "Generate boilerplate, refactor complex functions, write documentation."
+          Ex: "Create a React component for a login form."
+        In_Terminal:
+          Def: "Generate complex shell commands without memorizing syntax."
+          Ex: "Find all processes listening on port 3000 and kill them."
+
+    Agent_Side_Panel:
+      ID: EDITOR-AGENT-SIDE-PANEL-01
+      Def: "Right-side panel to work directly with agent."
+      Capabilities:
+        - "Start new conversations."
+        - "Attach images."
+        - "Switch agent modes."
+        - "Select between different models."
+      Monitoring:
+        Def: "As conversation progresses, track open file changes, running terminal processes, and artifacts via bottom toolbar above input."
+      UI_References:
+        - "Editor Agent Panel"
+
+    Review_Changes_And_Source_Control:
+      ID: EDITOR-REVIEW-CHANGES-01
+      Def: "When agent begins writing code, Review Changes appears in Agent panel bottom toolbar."
+      Act: "Click Review Changes to open editor pane showing all diffs made in conversation."
+      Feedback:
+        Def: "Comment on file diffs to communicate with agent."
+      UI_References:
+        - "Editor Review Changes"
+        - "Editor Source Control"
+
+  Agent_Manager:
+    ID: MANAGER-OVERVIEW-01
+    Def: "Birds-eye surface to oversee work of multiple agents across multiple workspaces; under open public preview."
+    Capabilities:
+      - "Work across multiple workspaces."
+      - "Oversee dozens of agents simultaneously."
+      - "Interact with codebase primarily through agent (vs writing code directly)."
+    Toggle_Editor_Manager:
+      Act:
+        - "CMD+E (Mac) or CTRL+E (Windows) toggles between Agent Manager and editor."
+        - "Use Open Editor & Open Agent Manager buttons at top right of menu bar."
+      Editor_Window_Management:
+        - "Hide editor windows."
+        - "Focus editor windows."
+        - "Close editor windows."
+    UI_References:
+      - "Agent Manager Editor"
+
+    Workspaces:
+      ID: MANAGER-WORKSPACES-01
+      Def: "Work across multiple workspaces simultaneously."
+      Open_New_Workspace:
+        Act: "Select button in left sidebar and select a starting folder."
+      Switch_Workspaces:
+        Def: "Switch between conversations across workspaces through left sidebar."
+      Start_New_Conversation:
+        Act:
+          - "Select desired workspace from Start Conversation tab."
+          - "Or hit Plus button next to workspace name in the sidebar."
+      UI_References:
+        - "Switch Workspaces"
+        - "Start Conversation Within Workspace"
+
+    Playground:
+      ID: MANAGER-PLAYGROUND-01
+      Def: "Independent workspace for instant idea exploration without setting up a new workspace."
+      Create:
+        Act: "From Start Conversation page, click Use Playground button below input box."
+        Res: "Send a message to a new playground and continue as normal."
+      Persist_Work:
+        Def: "Move playground contents into a dedicated workspace folder while preserving conversation history and files created."
+        UI_Behavior:
+          - Act: "Click move button in top bar."
+          - Res: "Modal appears."
+      UI_References:
+        - "Playground Button"
+        - "Playground Send Message"
+        - "Playground Persist"
+        - "Playground Move Modal"
+
+    Inbox:
+      ID: MANAGER-INBOX-01
+      Def: "Central place to track all conversations."
+      Includes:
+        - Def: "Shows conversations awaiting approval (terminal commands, browser use, implementation plan)."
+        - Def: "Search bar + pending switch to filter by folder or title."
+        - Def: "Selecting a conversation jumps directly to it to continue."
+      UI_References:
+        - "Inbox Overview"
+        - "Continue Conversation"
+
+    Conversation_View:
+      ID: MANAGER-CONVERSATION-VIEW-01
+      Def: "Agent Panel is central in the manager; follow agent progress."
+      Follow_Along_Mode:
+        Act: "Toggle off by hitting Following button at top right of conversation."
+      UI_References:
+        - "Follow Along Manager"
+
+    Browser_Subagent_View:
+      ID: MANAGER-BROWSER-SUBAGENT-VIEW-01
+      Overview:
+        Def: "Dedicated side panel to inspect browser subagent work."
+        Cond: "In regular manager conversation view"
+        Res: "Browser subagent work is hidden."
+        Act: "Click expand button to open subagent view; updates stream into this view."
+        Interactions: "Follow along and confirm/deny actions as required."
+      Contents:
+        - "All subagent actions (clicking, scrolling, navigating, etc.)."
+        - "Visual feedback showing exactly where clicks happened."
+        - "Screenshots captured at each step."
+      Visual_Inspection_Feature:
+        Def: "Browser tool calls include a button opening a screenshot at that moment with a red dot showing the interaction."
+
+    Panes:
+      ID: MANAGER-PANES-01
+      Def: "Open files, artifacts, knowledge items, and other content in per-conversation persistent panes."
+      Open_Pane:
+        Act:
+          - "Open quick picker: CMD+P (Mac) or CTRL+P (Windows/Linux) and select a resource."
+          - "Or hit `+` from within conversation header."
+      Behavior:
+        - "Panes are resizable, splittable, and drag-and-droppable."
+        - Cond: "CMD+Click / CMD+Enter (Mac) or CTRL+Click / CTRL+Enter (non-Mac)"
+          Res: "Open content in a new pane instead of replacing current pane."
+      UI_References:
+        - "Manager New Tab"
+        - "Manager File Picker"
+        - "Manager Split Pane"
+
+    Review_Changes_And_Source_Control:
+      ID: MANAGER-REVIEW-CHANGES-01
+      Def: "Review collaborative work within manager (similar to editor)."
+      Act: "Toggle Review Changes pane via button at top right in conversation."
+      Res: "Scroll through and comment on file diffs."
+      Source_Control:
+        Act: "Switch to Source Control tab within Review Changes pane."
+        Capabilities:
+          - "See changed files."
+          - "Stage/unstage."
+          - "Commit upstream."
+      UI_References:
+        - "Review Changes Manager"
+        - "Manager Source Control"
+
+    Changes_Sidebar:
+      ID: MANAGER-CHANGES-SIDEBAR-01
+      Def: "Quick view of artifacts created and files modified in a conversation."
+      Act: "Click listed resource to open in a pane."
+      Indicators:
+        Def: "Icons indicate whether there are new changes since last review."
+      UI_References:
+        - "Aux Sidebar"
+
+    Terminal:
+      ID: MANAGER-TERMINAL-01
+      Def: "Agent Manager window has terminal support."
+      Toggle:
+        Act: "Cmd/Ctrl + J opens bottom pane where terminals live."
+      Attachment:
+        Def: "Terminals attached to the workspace of the current conversation."
+      Note:
+        - "Manager terminal integration works for local workspaces only."
+        - "Agent-used terminals run inside the editor window."
+      UI_References:
+        - "agent-manager-terminal"
+
+    Files:
+      ID: MANAGER-FILES-01
+      Def: "In file panes within manager, you can leave comments to highlight specific points for the agent."
+      UI_References:
+        - "File commenting manager"
+
+  Browser:
+    ID: BROWSER-OVERVIEW-01
+    Ref: DEF-BROWSER-SUBAGENT
+    Def: "Antigravity can open/read/control a Chrome browser for testing sites, reading internet data sources, and automating browser tasks."
+    Operation:
+      Def: "Uses a subagent to operate on the browser and can record actions + present screenshots/videos as artifacts."
+    Separate_Profile:
+      Def: "Runs in a separate browser profile to isolate from normal browsing."
+      Ref: BROWSER-SEPARATE-PROFILE-01
+    Disable_Browser_Tools:
+      Act: "Disable browser tools setting in the `Browser` section of settings to disable all browser tools."
+      UI_References:
+        - "Enable Browser Tools"
+    Chrome_Install_And_Path:
+      Def: "Detects and uses existing Chrome application."
+      Req: "If Chrome is not installed, it must be downloaded."
+      Cond: "If Antigravity cannot detect Chrome installation"
+      Res: "Specify path via setting."
+      UI_References:
+        - "Chrome Binary Path"
+
+    Chrome_Extension:
+      ID: BROWSER-CHROME-EXTENSION-01
+      Def: "Antigravity Browser Extension is required for Antigravity Agent to access the web."
+      Capabilities:
+        - "Lets agent see and interact with websites to complete development goals."
+        - "Improves UX: cancel current conversation from browser, switch focus back to Antigravity, work more seamlessly in parallel with browser agent."
+      Installation:
+        Cond: "First time using browser agent"
+        Res: "Directed to Chrome Web Store to install extension."
+      Troubleshooting_Manual_Install:
+        Steps:
+          - Act: "Click Chrome icon in Antigravity (opens Chrome with Antigravity user profile)."
+          - Def: "Chrome icon location: editor top right."
+          - Def: "Chrome icon location: Agent Manager bottom left."
+          - Act: "Navigate to the URL and click “Add to Chrome”."
+
+    Allowlist_Denylist:
+      ID: BROWSER-ALLOWLIST-DENYLIST-01
+      Def: "Two-layer security system controlling accessible URLs."
+      Layers:
+        - Layer: Denylist
+          Def: "Deny dangerous/malicious URLs."
+        - Layer: Allowlist
+          Def: "Explicitly allow trusted URLs."
+      How_It_Works:
+        Denylist:
+          Def: "Maintained/enforced using Google Superroots’s BadUrlsChecker service."
+          Proc:
+            - Act: "When navigating to a URL, hostname checked against server-side denylist via RPC."
+          Fail_Closed:
+            Warn: "If server is unavailable, access is denied by default."
+        Allowlist:
+          Def: "Local text file editable to trust specific URLs."
+          Initialization:
+            Def: "Initialized with just localhost."
+          Prompt_Flow:
+            Cond: "Navigate to non-allowlisted URL"
+            Res: "Browser prompts with “always allow” button."
+            Act: "Clicking “always allow” adds URL to allowlist and enables interaction."
+            UI_References:
+              - "Always Allow"
+          Manual_Editing:
+            Act: "Add/remove URLs manually."
+            Precedence:
+              Req: "Denylist always takes precedence; cannot allowlist a URL on denylist."
+
+    Separate_Chrome_Profile:
+      ID: BROWSER-SEPARATE-PROFILE-01
+      Def: "Browser operates on a separate Chrome profile to isolate from general browsing."
+      Cookies_And_Sign_In:
+        - Def: "Does not share cookies/sign-in from normal profile."
+        - Def: "Sign-ins are persisted for future browser sessions."
+        - Def: "Profile contains Chrome Extension installation; normal browsing profile unaffected."
+      UI_Behavior:
+        Scenarios:
+          - Cond: "Normal Chrome open while launching this profile"
+            Res: "Shows as separate dock icon; considered separate application."
+          - Cond: "Chrome was not open beforehand"
+            Res: "Application looks the same as default profile."
+        Return_To_Default_Profile:
+          Act: "Quit application and relaunch Chrome."
+      Settings:
+        Act: "Change browser profile location via setting in browser section."
+        UI_Reference: "Browser Profile"
+
+  Plans:
+    ID: PLANS-RATE-LIMITS-01
+    Ctx: "Rate limits and model availability differ by Google AI / Google Workspace AI Ultra for Business plan."
+    Availability:
+      - Def: "Google Antigravity available to individual accounts derived from Google's terms of service."
+      - Def: "Preview (pre-GA) to teams derived from Section 5 of the General Service Terms in Google Cloud enterprise TOS."
+    All_Plans_Receive:
+      - "Use of Gemini 3 Pro, Gemini 3 Flash, and other offered Vertex Model Garden models as the core agent model"
+      - "Unlimited Tab completions"
+      - "Unlimited Command requests"
+      - "Access to all product features (Agent Manager, Browser integration, etc.)"
+    Google_AI_Ultra_Or_Google_Workspace_AI_Ultra_For_Business:
+      Receive:
+        - "Highest, most generous quota, refreshed every five hours"
+        - "No weekly rate limit"
+    Google_AI_Pro:
+      Receive:
+        - "High, generous quota, refreshed every five hours"
+        - "Higher weekly rate limit"
+    Not_On_Google_AI_Plans:
+      Receive:
+        - "Meaningful quota, refreshed weekly"
+        - "Weekly rate limit"
+    Notes_On_Rate_Limits:
+      Notes:
+        - Def: "Rate limits determined primarily by capacity and to prevent abuse."
+        - Def: "Limits correlate with amount of work done by agent; prompt-to-prompt workload differs."
+        - Res: "More straightforward tasks may allow many more prompts; complex tasks may allow fewer."
+    Not_Supported:
+      - "Bring-your-own-key or bring-your-own-endpoint for additional rate limits"
+      - "Organizational tiers in general availability, or via contract"
+
+  Settings:
+    ID: SETTINGS-OVERVIEW-01
+    Def: "Configure Antigravity settings across Agent, Browser, Editor, and more."
+    Access_Methods:
+      - "Keyboard shortcut in any surface: Cmd + ,"
+      - "From Settings tab or gear icon in the Agent Manager"
+      - "From `Settings > Open Antigravity User Settings` in the Editor"
+    Data_Collection_Settings:
+      Enable_Telemetry:
+        Location: "Settings panel > Account section"
+        Def: "When enabled, Antigravity collects interactions for evaluating, developing, and improving Antigravity and supporting models."

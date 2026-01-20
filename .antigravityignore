@@ -1,0 +1,65 @@
+# .antigravityignore - Control de Indexación para Antigravity en KODA
+
+# === Metadatos de Sistema y Control de Versiones ===
+.git/
+.github/
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+thumbs.db
+ehthumbs.db
+
+# === Artefactos de Sesión (Recursivos) ===
+.antigravity/
+.agent/
+.windsurf/
+.cursor/
+.vscode/
+.idea/
+
+# === Dependencias y Entornos ===
+node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# === Archivos Temporales y Logs ===
+logs/
+*.log
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+*.old
+*.swp
+*.swo
+*~
+
+# === Secretos y Configuración Local ===
+.env
+.env.*
+secrets/
+*.key
+*.pem
+.local/
+*.local.yml
+*.local.yaml
+.knowledge-resolver.local.yml
+
+# === Build y Tests ===
+dist/
+build/
+coverage/
+.nyc_output/
+test-results/
+*.min.js
+
+# === KODA Staging (Permitido para trabajo activo) ===
+# Se eliminan los bloqueos de wip/draft para que Antigravity pueda asistir en archivos en desarrollo.
+

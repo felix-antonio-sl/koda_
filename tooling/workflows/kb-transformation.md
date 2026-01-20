@@ -7,63 +7,49 @@ _manifest:
     license: "CC-BY-4.0"
 
 metadata:
-  description: "Workflow de transformación de documentos a KODA/Spec"
+  description: "Workflow de transformación de documentación a KODA/Spec (análisis → telegrafización → deduplicación → validación)"
   compatible_agents:
     - "urn:knowledge:koda:agents:transformer:*"
     - "urn:knowledge:koda:agents:architect:*"
-  trigger_states: [S-TRANSFORM, S-ANALYZE]
+    - "*"
+  trigger_states: [S-ANALYZER, S-TELEGRAFIZER, S-VALIDATOR]
   turbo: false
 ---
 
-# Workflow: Transformación de Documentos a KODA
+# Workflow: KB Transformation
 
-Este workflow guía la transformación de documentos textuales a artefactos KODA/Spec.
+Transforma una fuente (texto/markdown/PDF extraído) a un artefacto KODA/Spec.
+
+## Uso
+```
+/kb-transformation
+```
 
 ## Fases
 
-### 1. Análisis (Meat/Fat/Skeleton)
+### 1) Intake (entrada)
+- Definir objetivo del artefacto y audiencia.
+- Identificar SSOT (fuente) y limitaciones de licencia.
+- Definir URN + `canonical_url` destino.
 
-Escanear documento identificando:
+### 2) Análisis (meat/fat/skeleton)
+- Enumerar hechos/reqs/defs (MEAT).
+- Marcar redundancia/retórica (FAT).
+- Capturar estructura (SKELETON): secciones, tablas, listas.
 
-- **MEAT**: Hechos, datos, requisitos, definiciones (preservar 100%)
-- **FAT**: Filler, retórica, redundancia (eliminar)
-- **SKELETON**: Jerarquía, tablas, listas (mantener estructura)
+### 3) Telegrafización
+- Reducir sin perder MEAT.
+- Consolidar wording y keywords canónicas.
 
-### 2. Telegrafización
+### 4) Deduplicación
+- Extraer definiciones repetidas a un único lugar.
+- Reemplazar repetidos por `Ref:`/`XRef:` (URN) donde aplique.
 
-Aplicar transformación:
+### 5) Validación
+```bash
+./scripts/koda validate --verbose
+```
 
-- Eliminar fat (palabras de relleno, muletillas)
-- Aplicar keywords Tier 1 (ID, Ref, Def, Act, Cond, Res, Req, Ctx, Ex, etc.)
-- Aplicar keywords Tier 2 (dominio específico, Snake_Case)
-- Mantener densidad informacional alta
-
-### 3. Deduplicación
-
-Consolidar información repetida:
-
-- Identificar conceptos duplicados
-- Crear definición única con ID
-- Reemplazar ocurrencias con Ref: ID
-- Verificar ratio deduplicación RD ≥ 2.0
-
-### 4. Validación
-
-Verificar métricas de calidad:
-
-- TER (Token Economy Ratio) ≥ 30%
-- FS (Fidelity Score) = 100%
-- RD (Redundancy Deduplicated) ≥ 2.0
-- YAML válido con _manifest
-
-## Métricas
-
-| Métrica | Fórmula                               | Objetivo |
-| ------- | ------------------------------------- | -------- |
-| TER     | 1 - (tokens_koda / tokens_original)   | ≥ 30%    |
-| FS      | hechos_preservados / hechos_original  | 100%     |
-| RD      | conceptos_total / definiciones_unicas | ≥ 2.0    |
-
-## Comando
-
-Ejecutar transformación con KODA-TRANSFORMER.
+## Resultado
+- Un `.yml` con `_manifest` completo y URN resolvible.
+- Dependencias explícitas (`_manifest.dependencies.requires`) cuando aplique.

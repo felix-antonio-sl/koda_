@@ -19,12 +19,7 @@ This corpus contains the foundational artifacts for **Agent Engineering** using 
 ## Quick Start
 
 **New to the framework?** Start with the Quickstart guide:
-```
-knowledge/core/guide_core_000_quickstart_koda.yml → Build your first agent in 30 minutes
-```
-├── sources/                # Source materials
-└── staging/                # Work-in-progress (gitignored)
-```
+`knowledge/core/guide_core_000_quickstart_koda.yml` → Build your first agent in 30 minutes
 
 ## Artifact Inventory
 
@@ -35,19 +30,20 @@ All core guides located in `knowledge/core/`:
 | 000 | `guide_core_000_quickstart_koda.yml`           | `urn:knowledge:koda:core:quickstart:1.0.0`        | **Quick start guide (START HERE)**    |
 | 001 | `guide_core_001_koda-spec_koda.yml`            | `urn:knowledge:koda:core:spec:1.0.0`              | KODA/Spec format specification (ROOT) |
 | 002 | `guide_core_002_koda-transform_koda.yml`       | `urn:knowledge:koda:core:transform:1.0.0`         | KODA/Spec transformation methodology  |
-| 003 | `guide_core_003_koda-hub-master_koda.yml`      | `urn:knowledge:koda:core:hub:1.0.0`               | KODA/Hub Management                   |
+| 003 | `guide_core_003_koda-hub-federation_koda.yml`  | `urn:knowledge:koda:core:hub-federation:1.0.0`    | KODA Hub & Federation                 |
 | 004 | `guide_core_004_koda-life-master_koda.yml`     | `urn:knowledge:koda:core:life:1.0.0`              | KODA/Life Management                  |
 | 005 | `guide_core_005_koda-agent-spec_koda.yml`      | `urn:knowledge:koda:core:agent:1.0.0`             | KODA/Agent Protocol spec              |
 | 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:koda:core:agent-construct:1.0.0`   | KODA/Agent construction methodology   |
 | 007 | `guide_core_007_koda-test-spec_koda.yml`       | `urn:knowledge:koda:core:test:1.0.0`              | KODA/Test Framework                   |
 | 008 | `guide_core_008_schema-versioning_koda.yml`    | `urn:knowledge:koda:core:schema-versioning:1.0.0` | Schema versioning policy              |
-| 009 | `guide_core_009_federation-protocol_koda.yml`  | `urn:knowledge:koda:core:federation:1.0.0`        | Cross-repo federation protocol        |
+| 009 | `guide_core_009_koda-tooling-spec_koda.yml`    | `urn:knowledge:koda:core:tooling:1.0.0`           | KODA/Tooling specification            |
 
 ### Schema Files
 
 | File                                   | Purpose                               |
 | -------------------------------------- | ------------------------------------- |
 | `schemas/koda-agent-schema-1.0.0.json` | JSON Schema for agent.yaml validation |
+| `schemas/koda-tooling-schema-1.0.0.json` | JSON Schema for tooling artifacts    |
 
 ## Dependency Graph
 
@@ -59,7 +55,7 @@ koda-spec (001) ─────────────────────�
     │                                                                     │
     ├──► koda-transform (002)                                             │
     │                                                                     │
-    ├──► koda-hub-master (003) ◄── koda-life-master (004)                 │
+├──► koda-hub-federation (003) ◄── koda-life-master (004)             │
     │         │                           │                               │
     │         └───────────────────────────┼──► koda-agent-spec (005) ◄────┤
     │                                     │         │                     │
@@ -242,7 +238,7 @@ format: koda
 ### For Knowledge Architects
 
 1. Use `koda-spec` + `koda-transform` to create new KODA artifacts
-2. Follow `koda-hub-master` for directory structure and federation
+2. Follow `koda-hub-federation` for directory structure and federation
 3. Register artifacts in catalog with URNs
 
 ### For Agent Developers
@@ -263,7 +259,7 @@ format: koda
 
 | Version | Date       | Changes                                                                                                                                                                                    |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1.0.0   | 2025-11-25 | Initial release. Complete KODA Framework with 10 core guides (including Federation Protocol), JSON Schema, reference agent, CLI tools, templates, registry, and GitHub Actions automation. |
+| 1.0.0   | 2025-11-25 | Initial release. Complete KODA Framework with 10 core guides (including Hub & Federation), JSON Schemas, reference agents, CLI tools, templates, registry, and GitHub Actions automation. |
 
 ## Authors
 

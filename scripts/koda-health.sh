@@ -73,7 +73,15 @@ if [ -z "$RESOLVER_FILE" ]; then
 fi
 
 # Get namespace
-NAMESPACE=$(grep -A1 "^self:" "$RESOLVER_FILE" | grep "namespace:" | sed 's/.*namespace: *"\?\([^"]*\)"\?/\1/' | tr -d ' ')
+if command -v ruby &> /dev/null; then
+    NAMESPACE=$(ruby -ryaml -e 'puts YAML.load_file(ARGV[0]).dig("self", "namespace").to_s' "$RESOLVER_FILE" 2>/dev/null)
+else
+    NAMESPACE=$(grep -A1 "^self:" "$RESOLVER_FILE" | grep "namespace:" | awk -F: '{print $2}' | tr -d ' "' | tr -d ' ')
+fi
+
+if [ -z "$NAMESPACE" ]; then
+    NAMESPACE="unknown"
+fi
 echo -e "Namespace: ${GREEN}${NAMESPACE}${NC}"
 echo -e "Resolver:  ${CYAN}${RESOLVER_FILE}${NC}"
 echo -e "Date: $(date '+%Y-%m-%d %H:%M:%S')"
@@ -109,7 +117,14 @@ echo -e "${YELLOW}━━━ 2. Resolver Status ━━━${NC}"
 echo ""
 
 # Check last sync
-LAST_SYNC=$(grep "last_sync:" "$RESOLVER_FILE" | head -1 | sed 's/.*last_sync: *"\?\([^"]*\)"\?/\1/' | tr -d ' ')
+LAST_SYNC=""
+if command -v ruby &> /dev/null; then
+    LAST_SYNC=$(ruby -ryaml -e 'puts YAML.load_file(ARGV[0]).dig("_meta", "last_sync").to_s' "$RESOLVER_FILE" 2>/dev/null)
+else
+    LAST_SYNC=$(grep "last_sync:" "$RESOLVER_FILE" | head -1 | awk -F: '{print $2}' | tr -d ' "' | tr -d ' ')
+fi
+
+DAYS_AGO=-1
 
 if [ -n "$LAST_SYNC" ]; then
     echo -e "  Last sync: ${CYAN}${LAST_SYNC}${NC}"
@@ -156,7 +171,11 @@ fi
 echo ""
 
 # Count configured namespaces
-NS_COUNT=$(grep -E "^  [a-z].*:$" "$RESOLVER_FILE" | grep -v "_meta\|self\|resolution\|directories\|cache" | wc -l | tr -d ' ')
+if command -v ruby &> /dev/null; then
+    NS_COUNT=$(ruby -ryaml -e 'r = YAML.load_file(ARGV[0]); puts (r["namespaces"] || {}).keys.size' "$RESOLVER_FILE" 2>/dev/null)
+else
+    NS_COUNT=$(grep -E "^  [a-z].*:$" "$RESOLVER_FILE" | grep -v "_meta\\|self\\|resolution\\|directories\\|cache" | wc -l | tr -d ' ')
+fi
 echo -e "  Configured namespaces: ${CYAN}${NS_COUNT}${NC}"
 echo ""
 
@@ -181,7 +200,7 @@ namespaces.each do |name, config|
     required = config["required"]
     
     # Check local
-    local_ok = base_path && File.exist?(base_path.gsub("./", ""))
+    local_ok = base_path && File.exist?(base_path)
     
     print "  #{name}: "
     
@@ -282,9 +301,9 @@ echo ""
 
 # Count dependencies
 if command -v ruby &> /dev/null; then
-    ruby -ryaml -e '
+    NAMESPACE="$NAMESPACE" ruby -ryaml -e '
 deps = []
-Dir["knowledge/**/*.yml", "agents/**/*.yaml"].each do |f|
+Dir["knowledge/**/*.yml", "knowledge/**/*.yaml", "agents/**/*.yml", "agents/**/*.yaml"].each do |f|
     begin
         doc = YAML.load_file(f)
         next unless doc.is_a?(Hash) && doc["_manifest"]
@@ -298,8 +317,9 @@ Dir["knowledge/**/*.yml", "agents/**/*.yaml"].each do |f|
     end
 end
 
-internal = deps.select { |d| d.include?(":'"${NAMESPACE}"':") }.uniq
-external = deps.reject { |d| d.include?(":'"${NAMESPACE}"':") }.uniq
+namespace = ENV["NAMESPACE"].to_s
+internal = deps.select { |d| d.start_with?("urn:knowledge:#{namespace}:") || d.start_with?("urn:tooling:#{namespace}:") }.uniq
+external = deps.reject { |d| d.start_with?("urn:knowledge:#{namespace}:") || d.start_with?("urn:tooling:#{namespace}:") }.uniq
 
 puts "  Internal dependencies: \033[0;36m#{internal.size}\033[0m"
 puts "  External dependencies: \033[0;36m#{external.size}\033[0m"
@@ -323,8 +343,8 @@ echo ""
 echo -e "${YELLOW}━━━ 6. Artifact Health ━━━${NC}"
 echo ""
 
-TOTAL_ARTIFACTS=$(find knowledge -name "*.yml" 2>/dev/null | wc -l | tr -d ' ')
-TOTAL_AGENTS=$(find agents -name "*.yaml" 2>/dev/null | wc -l | tr -d ' ')
+TOTAL_ARTIFACTS=$(find knowledge -type f \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | wc -l | tr -d ' ')
+TOTAL_AGENTS=$(find agents -type f \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | wc -l | tr -d ' ')
 TOTAL_SCHEMAS=$(find schemas -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
 
 echo -e "  Knowledge artifacts: ${CYAN}${TOTAL_ARTIFACTS}${NC}"
@@ -332,13 +352,13 @@ echo -e "  Agent definitions:   ${CYAN}${TOTAL_AGENTS}${NC}"
 echo -e "  Schema files:        ${CYAN}${TOTAL_SCHEMAS}${NC}"
 
 # Check for drafts
-DRAFTS=$(grep -l "Status: Draft" knowledge/**/*.yml 2>/dev/null | wc -l | tr -d ' ')
+DRAFTS=$(find knowledge -type f \( -name "*.yml" -o -name "*.yaml" \) -exec grep -l "Status: Draft" {} + 2>/dev/null | wc -l | tr -d ' ')
 if [ "$DRAFTS" -gt 0 ]; then
     echo -e "  Draft artifacts:     ${YELLOW}${DRAFTS}${NC}"
 fi
 
 # Check for deprecated
-DEPRECATED=$(grep -l "status: deprecated" knowledge/**/*.yml 2>/dev/null | wc -l | tr -d ' ')
+DEPRECATED=$(find knowledge -type f \( -name "*.yml" -o -name "*.yaml" \) -exec grep -l "status: deprecated" {} + 2>/dev/null | wc -l | tr -d ' ')
 if [ "$DEPRECATED" -gt 0 ]; then
     echo -e "  Deprecated:          ${YELLOW}${DEPRECATED}${NC}"
 fi

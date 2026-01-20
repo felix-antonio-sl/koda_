@@ -33,9 +33,9 @@ Catalog:
       file: "knowledge/core/guide_core_002_koda-transform_koda.yml"
       status: published
 
-    - urn: "urn:knowledge:koda:core:hub:1.0.0"
-      title: "KODA/Hub Management Guide"
-      file: "knowledge/core/guide_core_003_koda-hub-master_koda.yml"
+    - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
+      title: "KODA Hub & Federation Guide"
+      file: "knowledge/core/guide_core_003_koda-hub-federation_koda.yml"
       status: published
 
     - urn: "urn:knowledge:koda:core:life:1.0.0"
@@ -62,25 +62,20 @@ Catalog:
       file: "knowledge/core/guide_core_008_schema-versioning_koda.yml"
       status: published
 
-    - urn: "urn:knowledge:koda:core:federation:1.0.0"
-      title: "Federation Protocol"
-      file: "knowledge/core/guide_core_009_federation-protocol_koda.yml"
-      status: published
-
     - urn: "urn:knowledge:koda:core:tooling:1.0.0"
       title: "KODA/Tooling Specification"
-      file: "knowledge/core/guide_core_010_koda-tooling-spec_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:ide-adapters:1.0.0"
-      title: "IDE Adapters Reference"
-      file: "knowledge/core/guide_core_011_ide-adapters-reference_koda.yml"
+      file: "knowledge/core/guide_core_009_koda-tooling-spec_koda.yml"
       status: published
 
   Schemas:
     - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       title: "KODA/Agent JSON Schema"
       file: "schemas/koda-agent-schema-1.0.0.json"
+      status: published
+
+    - urn: "urn:knowledge:koda:core:tooling-schema:1.0.0"
+      title: "KODA/Tooling JSON Schema"
+      file: "schemas/koda-tooling-schema-1.0.0.json"
       status: published
 
   Agents:
@@ -128,11 +123,6 @@ Catalog:
       file: "agents/orquestador-generico/agent_orquestador_generico.yaml"
       status: published
       higher_order: true
-    - urn: "urn:knowledge:koda:agents:core-keeper:1.0.0"
-      title: "KODA Core Keeper Agent"
-      description: "Specialist for core framework consistency auditing and drift diagnosis"
-      file: "agents/koda-core-keeper/agent_koda_core_keeper.yaml"
-      status: published
 
     - urn: "urn:knowledge:koda:agents:ci-assistant:1.0.0"
       title: "KODA CI Assistant Agent"
@@ -144,6 +134,31 @@ Catalog:
       title: "KODA Taskmaster Agent"
       description: "Specialist for project and task management using GitHub Issues and Projects"
       file: "agents/koda-taskmaster/agent_koda_taskmaster.yaml"
+      status: published
+
+  Domain_Artifacts:
+    - urn: "urn:knowledge:koda:antigravity:doc-antigravity-official:1.0.0"
+      title: "Antigravity Official Documentation (KODA)"
+      description: "KODA/Spec rendering of Antigravity official documentation (draft)."
+      file: "knowledge/domains/google_antigravity/doc_oficial_ag_koda.yml"
+      status: published
+
+    - urn: "urn:knowledge:koda:antigravity:manual-ag-fx-v2:2.0.0"
+      title: "Manual AG FX v2 (KODA)"
+      description: "Manual de orquestación avanzada en Google Antigravity (Artifact-First + R.A.P.S. 2.0) (draft)."
+      file: "knowledge/domains/google_antigravity/manual_ag_fx_v2_koda.yml"
+      status: published
+
+    - urn: "urn:knowledge:koda:antigravity:guide-context-manager:3.0.0"
+      title: "Guide: Context Manager (KODA)"
+      description: "Official guide for Context Management (Snapshots, Handoffs, Skeletons)"
+      file: "knowledge/domains/google_antigravity/guide_ag_003_context-manager_koda.yml"
+      status: published
+
+    - urn: "urn:knowledge:koda:codex:doc-official:1.0.0"
+      title: "Codex Official Documentation (KODA)"
+      description: "Official OpenAI Codex documentation telegrafized for KODA"
+      file: "knowledge/domains/codex/doc_codex_001_official_koda.yml"
       status: published
 
   Domains:
@@ -169,12 +184,3 @@ Catalog:
       artifacts_count: 1
       status: active
       registered: "2025-12-09"
-
-Statistics:
-  total_artifacts: 23
-  core_guides: 11
-  schemas: 1
-  agents: 10
-  domains: 2
-  last_updated: "2025-12-16"
-  notes: "Added guide_011 IDE adapters. All catalogs synchronized."

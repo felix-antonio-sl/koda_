@@ -11,7 +11,7 @@ _manifest:
     min_consumer_version: "1.0.0"
     breaking_changes_from: null
   resolution:
-    canonical_url: "file://knowledge/core/guide_core_010_koda-tooling-spec_koda.yml"
+    canonical_url: "file://knowledge/core/guide_core_009_koda-tooling-spec_koda.yml"
     mirrors: []
   dependencies:
     requires:
@@ -84,7 +84,7 @@ Tooling:
 URN_Specification:
   ID: KODA-TOOLING-URN-01
 
-  Format: "urn:tooling:{namespace}:{type}:{artifact-id}:{version}"
+  Format: "urn:knowledge:{namespace}:tooling:{type}:{artifact-id}:{version}"
 
   Components:
     - Component: namespace
@@ -104,10 +104,10 @@ URN_Specification:
       Values: ["\\d+\\.\\d+\\.\\d+", latest, stable]
 
   Examples:
-    - "urn:tooling:fxsl:workflows:modelamiento-mbt:1.0.0"
-    - "urn:tooling:fxsl:rules:yaml-strict:1.0.0"
-    - "urn:tooling:fxsl:profiles:antigravity:1.0.0"
-    - "urn:tooling:koda:workflows:agent-audit:latest"
+    - "urn:knowledge:fxsl:tooling:workflows:modelamiento-mbt:1.0.0"
+    - "urn:knowledge:fxsl:tooling:rules:yaml-strict:1.0.0"
+    - "urn:knowledge:fxsl:tooling:profiles:antigravity:1.0.0"
+    - "urn:knowledge:koda:tooling:workflows:agent-audit:latest"
 
 # =============================================================================
 # TIPOS DE ARTEFACTOS
@@ -135,7 +135,7 @@ Artifact_Types:
 
     Template: |
       _manifest:
-        urn: "urn:tooling:{namespace}:workflows:{id}:1.0.0"
+        urn: "urn:knowledge:{namespace}:tooling:workflows:{id}:1.0.0"
         type: workflow
         federation:
           visibility: public
@@ -177,7 +177,7 @@ Artifact_Types:
 
     Template: |
       _manifest:
-        urn: "urn:tooling:{namespace}:rules:{id}:1.0.0"
+        urn: "urn:knowledge:{namespace}:tooling:rules:{id}:1.0.0"
         type: rule
         federation:
           visibility: public
@@ -215,7 +215,7 @@ Artifact_Types:
 
     Template: |
       _manifest:
-        urn: "urn:tooling:{namespace}:profiles:{id}:1.0.0"
+        urn: "urn:knowledge:{namespace}:tooling:profiles:{id}:1.0.0"
         type: profile
         federation:
           visibility: internal
@@ -280,17 +280,17 @@ Agent_Integration:
       
       tooling_artifacts:
         workflows:
-          - urn: "urn:tooling:fxsl:workflows:modelamiento-mbt:1.0.0"
+          - urn: "urn:knowledge:fxsl:tooling:workflows:modelamiento-mbt:1.0.0"
             context: S-CONTEXTUALIZACION
-          - urn: "urn:tooling:fxsl:workflows:audit-ontology:1.0.0"
+          - urn: "urn:knowledge:fxsl:tooling:workflows:audit-ontology:1.0.0"
             context: S-AUDIT
         rules:
-          - urn: "urn:tooling:fxsl:rules:yaml-strict:1.0.0"
+          - urn: "urn:knowledge:fxsl:tooling:rules:yaml-strict:1.0.0"
             context: global
-          - urn: "urn:tooling:fxsl:rules:spanish-docs:1.0.0"
+          - urn: "urn:knowledge:fxsl:tooling:rules:spanish-docs:1.0.0"
             context: global
         profiles:
-          - urn: "urn:tooling:fxsl:profiles:antigravity:1.0.0"
+          - urn: "urn:knowledge:fxsl:tooling:profiles:antigravity:1.0.0"
 
 # =============================================================================
 # ACTIVACIÓN CONTEXTUAL
@@ -356,54 +356,16 @@ Directory_Structure:
 
     artifacts:
       workflows:
-        - urn: "urn:tooling:ns:workflows:a:1.0.0"
+        - urn: "urn:knowledge:ns:tooling:workflows:a:1.0.0"
           file: "workflows/workflow-a.md"
-        - urn: "urn:tooling:ns:workflows:b:1.0.0"
+        - urn: "urn:knowledge:ns:tooling:workflows:b:1.0.0"
           file: "workflows/workflow-b.md"
       rules:
-        - urn: "urn:tooling:ns:rules:a:1.0.0"
+        - urn: "urn:knowledge:ns:tooling:rules:a:1.0.0"
           file: "rules/rule-a.yml"
       profiles:
-        - urn: "urn:tooling:ns:profiles:windsurf:1.0.0"
+        - urn: "urn:knowledge:ns:tooling:profiles:windsurf:1.0.0"
           file: "profiles/windsurf.yml"
-
-# =============================================================================
-# POLÍTICA DE DESACOPLAMIENTO IDE
-# =============================================================================
-
-IDE_Decoupling_Policy:
-  ID: KODA-TOOLING-DECOUPLING-01
-  Purp: Mantener KODA/Tooling independiente de implementaciones IDE específicas.
-
-  Principle:
-    Def: Los artefactos KODA/Tooling son la fuente de verdad. IDEs consumen via adapters.
-    Mech: Adapters generados bajo demanda transforman formato KODA a formato IDE nativo.
-    Prohib: Hardcodear paths o configuraciones IDE-specific en artefactos core.
-
-  Adapter_Generation:
-    Def: Script dedicado genera symlinks/configs para IDE específico.
-    Command: "./scripts/koda-generate-adapters.sh [--antigravity|--windsurf|--cursor|--all]"
-    Output: Estructura en directorio .{ide}/ con symlinks a tooling/
-    Note: Directorios de adapters son .gitignore'd (no versionados).
-
-  Supported_Platforms:
-    - Platform: antigravity
-      Adapter_Dir: ".agent/"
-      Consumes: "tooling/workflows/, tooling/rules/"
-    - Platform: windsurf
-      Adapter_Dir: ".windsurf/"
-      Consumes: "tooling/workflows/, tooling/rules/"
-    - Platform: cursor
-      Adapter_Dir: ".cursor/"
-      Consumes: "tooling/workflows/"
-    - Platform: vscode
-      Adapter_Dir: ".vscode/"
-      Consumes: "tasks.json generated from tooling/workflows/"
-
-  Benefits:
-    - IDE performance (fewer files to index)
-    - Core portability (consumers without specific IDE)
-    - Clean separation of concerns
 
 # =============================================================================
 # PATRONES Y ANTI-PATRONES
@@ -425,22 +387,10 @@ Patterns:
       Use: Convenciones base + especialización por dominio.
       Ex: "yaml-strict (global) + categorical-rigor (S-CATEGORICAL-MODELING)"
 
-    - Pattern: Adapter por Plataforma
-      ID: PATTERN-PLATFORM-ADAPTER
-      Def: Adapters generados bajo demanda para cada IDE.
-      Use: Integración IDE sin contaminar core.
-      Ex: "./scripts/koda-generate-adapters.sh --antigravity"
-
 Anti_Patterns:
   ID: KODA-TOOLING-ANTI-PATTERNS-01
 
   Anti_Patterns:
-    - Anti_Pattern: IDE Paths in Core
-      ID: ANTI-IDE-PATHS-CORE
-      Def: Paths IDE-specific (.agent/, .windsurf/) hardcodeados en specs core.
-      Symptom: Core contaminado, difícil portabilidad.
-      Mitigation: Usar adapters generados, referencias abstractas.
-
     - Anti_Pattern: Rules Dispersas
       ID: ANTI-SCATTERED-RULES
       Def: Reglas distribuidas en múltiples archivos sin catálogo.
@@ -483,7 +433,7 @@ Validation:
 Quick_Reference:
   ID: KODA-TOOLING-QUICKREF-01
 
-  URN_Format: "urn:tooling:{namespace}:{type}:{id}:{version}"
+  URN_Format: "urn:knowledge:{namespace}:tooling:{type}:{id}:{version}"
 
   Types: [workflows, rules, profiles]
 

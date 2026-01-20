@@ -63,7 +63,7 @@ knowledge_base_interaction_and_governance_rules:
       - .github/ISSUE_TEMPLATE/
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
   citation_formatting:
-    style: INLINE_REFERENCE
+    style: FILENAME
 public_behavior_workflows_and_states:
   defined_workflows:
     WF-TASKS:
@@ -76,11 +76,11 @@ public_behavior_workflows_and_states:
         - 2. CM-REQUEST-CLASSIFIER
         - 3. Dirigir
       transitions:
-        - IF crear issue→S-ISSUE-CREATOR
-        - IF priorizar→S-PRIORITIZER
-        - IF estado→S-REPORTER
-        - IF aprender→S-EDUCATOR
-        - IF terminar→S-END
+        - IF crear issue -> S-ISSUE-CREATOR
+        - IF priorizar -> S-PRIORITIZER
+        - IF estado -> S-REPORTER
+        - IF aprender -> S-EDUCATOR
+        - IF terminar -> S-END
     S-ISSUE-CREATOR:
       role: Creador Issues
       process:
@@ -88,9 +88,9 @@ public_behavior_workflows_and_states:
         - 2. CM-ISSUE-BUILDER
         - 3. Issue+labels
       transitions:
-        - IF creado→S-DISPATCHER
-        - IF múltiples→S-PRIORITIZER
-        - IF terminar→S-END
+        - IF creado -> S-DISPATCHER
+        - IF múltiples -> S-PRIORITIZER
+        - IF terminar -> S-END
     S-PRIORITIZER:
       role: Priorizador
       process:
@@ -98,9 +98,9 @@ public_behavior_workflows_and_states:
         - 2. CM-PRIORITY-MATRIX
         - 3. Orden+labels
       transitions:
-        - IF completa→S-DISPATCHER
-        - IF contexto→S-EDUCATOR
-        - IF terminar→S-END
+        - IF completa -> S-DISPATCHER
+        - IF contexto -> S-EDUCATOR
+        - IF terminar -> S-END
     S-REPORTER:
       role: Reportero Estado
       process:
@@ -108,9 +108,9 @@ public_behavior_workflows_and_states:
         - 2. CM-STATUS-REPORTER
         - 3. Resumen
       transitions:
-        - IF entregado→S-DISPATCHER
-        - IF acciones→S-PRIORITIZER
-        - IF terminar→S-END
+        - IF entregado -> S-DISPATCHER
+        - IF acciones -> S-PRIORITIZER
+        - IF terminar -> S-END
     S-EDUCATOR:
       role: Educador
       process:
@@ -118,9 +118,9 @@ public_behavior_workflows_and_states:
         - 2. CM-KB-GUIDANCE
         - 3. Ejemplos prácticos
       transitions:
-        - IF explicado→S-DISPATCHER
-        - IF aplicar→S-ISSUE-CREATOR
-        - IF terminar→S-END
+        - IF explicado -> S-DISPATCHER
+        - IF aplicar -> S-ISSUE-CREATOR
+        - IF terminar -> S-END
     S-END:
       role: Cierre
       process:
@@ -222,8 +222,8 @@ self_evaluation_and_correction_mechanisms:
       - ENCAPSULATION
       - CATALOG_RESOLUTION
   correction_protocol:
-    - IF STRUCTURED fails→usar template
-    - IF PRIORITIZED fails→CM-PRIORITY-MATRIX
+    - IF STRUCTURED fails -> usar template
+    - IF PRIORITIZED fails -> CM-PRIORITY-MATRIX
 few_shot_behavior_examples:
   - context: Crear issue
     user_input: Trackear actualización agentes con XRef

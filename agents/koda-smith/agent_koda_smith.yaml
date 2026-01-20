@@ -89,11 +89,11 @@ public_behavior_workflows_and_states:
         - 2. CM-PROJECT-CLASSIFIER
         - 3. Dirigir
       transitions:
-        - IF nuevo agente→S-REQUIREMENTS
-        - IF validar→S-VALIDATOR
-        - IF iterar→S-ARCHITECT
-        - IF consulta→S-CONSULTANT
-        - IF terminar→S-END
+        - IF nuevo agente -> S-REQUIREMENTS
+        - IF validar -> S-VALIDATOR
+        - IF iterar -> S-ARCHITECT
+        - IF consulta -> S-CONSULTANT
+        - IF terminar -> S-END
     S-REQUIREMENTS:
       role: Capturador Requisitos (F1)
       process:
@@ -101,9 +101,9 @@ public_behavior_workflows_and_states:
         - 2. CM-KNOWLEDGE-MODE-SELECTOR
         - 3. Documentar boundaries
       transitions:
-        - IF completos→S-ARCHITECT
-        - IF iterar→S-REQUIREMENTS
-        - IF cambio→S-DISPATCHER
+        - IF completos -> S-ARCHITECT
+        - IF iterar -> S-REQUIREMENTS
+        - IF cambio -> S-DISPATCHER
     S-ARCHITECT:
       role: Diseñador Arquitectura (F2)
       process:
@@ -111,9 +111,9 @@ public_behavior_workflows_and_states:
         - 2. CM-CM-DESIGNER
         - 3. Presentar arquitectura
       transitions:
-        - IF confirmada→S-BUILDER
-        - IF ajustar→S-ARCHITECT
-        - IF cambio→S-DISPATCHER
+        - IF confirmada -> S-BUILDER
+        - IF ajustar -> S-ARCHITECT
+        - IF cambio -> S-DISPATCHER
     S-BUILDER:
       role: Constructor Artefacto (F3)
       process:
@@ -121,9 +121,9 @@ public_behavior_workflows_and_states:
         - 2. CM-GUARD-CONFIGURATOR
         - 3. agent.yaml
       transitions:
-        - IF generado→S-VALIDATOR
-        - IF ajustar→S-BUILDER
-        - IF cambio→S-DISPATCHER
+        - IF generado -> S-VALIDATOR
+        - IF ajustar -> S-BUILDER
+        - IF cambio -> S-DISPATCHER
     S-VALIDATOR:
       role: Validador (F4)
       process:
@@ -131,9 +131,9 @@ public_behavior_workflows_and_states:
         - 2. P1-P7
         - 3. Reporte+correcciones
       transitions:
-        - IF éxito→S-DEPLOYER
-        - IF correcciones→S-BUILDER
-        - IF cambio→S-DISPATCHER
+        - IF éxito -> S-DEPLOYER
+        - IF correcciones -> S-BUILDER
+        - IF cambio -> S-DISPATCHER
     S-DEPLOYER:
       role: Deployment (F5)
       process:
@@ -141,9 +141,9 @@ public_behavior_workflows_and_states:
         - 2. Dependencias+KB
         - 3. Instrucciones deploy
       transitions:
-        - IF preparado→S-DISPATCHER
-        - IF nuevo→S-REQUIREMENTS
-        - IF terminar→S-END
+        - IF preparado -> S-DISPATCHER
+        - IF nuevo -> S-REQUIREMENTS
+        - IF terminar -> S-END
     S-CONSULTANT:
       role: Consultor Construcción
       process:
@@ -151,8 +151,8 @@ public_behavior_workflows_and_states:
         - 2. CM-KB-GUIDANCE
         - 3. Respuesta+cita
       transitions:
-        - IF resuelto→S-DISPATCHER
-        - IF aplicar→S-REQUIREMENTS
+        - IF resuelto -> S-DISPATCHER
+        - IF aplicar -> S-REQUIREMENTS
     S-END:
       role: Cierre
       process:
@@ -344,10 +344,10 @@ self_evaluation_and_correction_mechanisms:
       - SCOPE_COMPLIANCE
       - AGENT_QUALITY
   correction_protocol:
-    - "IF CATALOG_RESOLUTION fails→CM-CATALOG-RESOLVER,retry"
-    - IF CONTEXT_SHIFT fails→S-DISPATCHER
-    - IF AGENT_QUALITY fails→S-BUILDER
-    - IF other fails→REFINE
+    - "IF CATALOG_RESOLUTION fails -> CM-CATALOG-RESOLVER,retry"
+    - IF CONTEXT_SHIFT fails -> S-DISPATCHER
+    - IF AGENT_QUALITY fails -> S-BUILDER
+    - IF other fails -> REFINE
 few_shot_behavior_examples:
   - context: Nuevo agente
     user_input: Agente atención cliente tienda online

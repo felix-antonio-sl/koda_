@@ -29,15 +29,27 @@ Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-11-21
-Modification-Date: 2025-12-01
+Modification-Date: 2025-12-08
 Version-Notes: "v1.1.0 - Added XRef/XRef_Required keywords for cross-artifact referencing, consolidated Cross_Artifact_Referencing section, anti-cycle validation rule"
 Source: GUIDE-KODA-MASTER-01
 Ctx: Technical specification of KODA as YAML extension
 
 LLM_Parsing_Instructions:
   ID: KODA-LLM-PARSER-01
-  Req: First block post-Metadata. Prohib artifact creation.
-  Content: "FIDELITY:meat+skeleton=preserve,fat=ignore. LEXICON:Act→Action,Cond→Condition,Ctx→Context,Ctx_Required→Required External,Def→Definition,Ex→Example,Mssn→Mission,Obj→Objective,Proc→Process,Purp→Purpose,Ref→Reference(internal),XRef→Cross-Artifact(external URN),XRef_Required→Mandatory XRef,Req→Requirement,Res→Result,Src→Source,Prohib→Prohibition,Warn→Warning,Just→Justification,Rec→Recommendation. REF_POLICY:Ref=internal ID,XRef/XRef_Required=external URN#fragment. LANG:keys EN,content original."
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
 
 Purp: Define KODA/Spec ( Specification) as formal extension of YAML for RAG-optimized knowledge artifacts.
 

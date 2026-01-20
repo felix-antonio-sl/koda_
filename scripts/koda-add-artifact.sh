@@ -16,11 +16,18 @@ NC='\033[0m'
 
 # Get namespace from resolver
 get_namespace() {
-    if [ -f ".knowledge-resolver.yml" ]; then
-        grep -A1 "^self:" .knowledge-resolver.yml | grep "namespace:" | sed 's/.*namespace: *"\?\([^"]*\)"\?/\1/' | tr -d ' '
-    else
+    if [ ! -f ".knowledge-resolver.yml" ]; then
         echo ""
+        return
     fi
+
+    if command -v ruby &> /dev/null; then
+        ruby -ryaml -e 'puts YAML.load_file(ARGV[0]).dig("self", "namespace").to_s' ".knowledge-resolver.yml" 2>/dev/null
+        return
+    fi
+
+    # Fallback: best-effort parse for `self.namespace: value`
+    grep -A2 "^self:" .knowledge-resolver.yml | grep "namespace:" | awk -F: '{print $2}' | tr -d ' "' | tr -d ' '
 }
 
 NAMESPACE=$(get_namespace)

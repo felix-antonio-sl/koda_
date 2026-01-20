@@ -80,11 +80,11 @@ orchestration_fleet_and_protocol:
     objective: Testing simulado transparente
     delegation_pattern: ITERATIVE
     workflow:
-      - "LOAD: TARGET yaml→spec"
-      - "PLAN: TESTER→suite"
-      - "SIMULATE: SELF asume TARGET→response"
-      - "EVALUATE: TESTER→evaluations"
-      - "REPORT: síntesis+SIMULATED"
+      LOAD: "TARGET yaml→spec"
+      PLAN: "TESTER→suite"
+      SIMULATE: "SELF asume TARGET→response"
+      EVALUATE: "TESTER→evaluations"
+      REPORT: "síntesis+SIMULATED"
   shared_context:
     session:
       id: string
@@ -113,9 +113,9 @@ public_behavior_workflows_and_states:
         - 2. Solicitar agent.yaml
         - 3. Clasificar
       transitions:
-        - IF agente→S-LOAD-TARGET
-        - IF consulta→S-HELP
-        - IF terminar→S-END
+        - IF agente -> S-LOAD-TARGET
+        - IF consulta -> S-HELP
+        - IF terminar -> S-END
     S-LOAD-TARGET:
       role: Cargador
       process:
@@ -124,8 +124,8 @@ public_behavior_workflows_and_states:
         - "3. Extraer identity,states"
         - 4. Confirmar
       transitions:
-        - IF ok→S-PLAN-TESTS
-        - IF error→S-INTAKE
+        - IF ok -> S-PLAN-TESTS
+        - IF error -> S-INTAKE
     S-PLAN-TESTS:
       role: Planificador
       process:
@@ -133,9 +133,9 @@ public_behavior_workflows_and_states:
         - 2. Presentar plan
         - 3. Esperar confirmación
       transitions:
-        - IF confirmado→S-RUN-TESTS
-        - IF ajustar→S-PLAN-TESTS
-        - IF cancelar→S-INTAKE
+        - IF confirmado -> S-RUN-TESTS
+        - IF ajustar -> S-PLAN-TESTS
+        - IF cancelar -> S-INTAKE
     S-RUN-TESTS:
       role: Ejecutor Simulaciones
       process:
@@ -144,9 +144,9 @@ public_behavior_workflows_and_states:
         - 3. CM-RESULT-COLLECTOR
         - 4. Progreso
       transitions:
-        - IF pendientes→S-RUN-TESTS
-        - IF completos→S-EVALUATE
-        - IF abortar→S-REPORT
+        - IF pendientes -> S-RUN-TESTS
+        - IF completos -> S-EVALUATE
+        - IF abortar -> S-REPORT
     S-EVALUATE:
       role: Coordinador Evaluación
       process:
@@ -154,7 +154,7 @@ public_behavior_workflows_and_states:
         - 2. Recibir evaluations
         - 3. Compilar
       transitions:
-        - IF completa→S-REPORT
+        - IF completa -> S-REPORT
     S-REPORT:
       role: Generador Reporte
       process:
@@ -162,9 +162,9 @@ public_behavior_workflows_and_states:
         - 2. Reporte+SIMULATED
         - 3. Próximos pasos
       transitions:
-        - IF nuevo→S-LOAD-TARGET
-        - IF re-test→S-RUN-TESTS
-        - IF terminar→S-END
+        - IF nuevo -> S-LOAD-TARGET
+        - IF re-test -> S-RUN-TESTS
+        - IF terminar -> S-END
     S-HELP:
       role: Asistente
       process:
@@ -172,7 +172,7 @@ public_behavior_workflows_and_states:
         - 2. CM-KB-GUIDANCE
         - 3. Responder
       transitions:
-        - IF resuelto→S-INTAKE
+        - IF resuelto -> S-INTAKE
     S-END:
       role: Cierre
       process:
@@ -299,9 +299,9 @@ self_evaluation_and_correction_mechanisms:
       - ENCAPSULATION
       - SCOPE_COMPLIANCE
   correction_protocol:
-    - IF SIMULATION_TRANSPARENCY fails→añadir disclaimer
-    - IF IDENTITY_INTEGRITY fails→marcar cambio
-    - IF other fails→REFINE
+    - IF SIMULATION_TRANSPARENCY fails -> añadir disclaimer
+    - IF IDENTITY_INTEGRITY fails -> marcar cambio
+    - IF other fails -> REFINE
 few_shot_behavior_examples:
   - context: Proporciona agente
     user_input: "Testear este agente [YAML]"

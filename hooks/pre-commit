@@ -8,7 +8,7 @@
 echo "🔍 KODA: Validando cambios..."
 
 # Detectar agentes modificados
-MODIFIED_AGENTS=$(git diff --cached --name-only --diff-filter=ACM | grep "agents/agent_.*\.yaml$" || true)
+MODIFIED_AGENTS=$(git diff --cached --name-only --diff-filter=ACM | grep -E "^agents/(.*/)?agent_.*\\.(ya?ml)$" || true)
 
 if [ -z "$MODIFIED_AGENTS" ]; then
   echo "✓ No hay agentes modificados"

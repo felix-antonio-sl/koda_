@@ -1,0 +1,278 @@
+_manifest:
+  urn: "urn:knowledge:koda:antigravity:guide-context-manager:3.0.0"
+  federation:
+    visibility: private
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/domains/google_antigravity/guide_ag_003_context-manager_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "KODA/Spec base"
+      - urn: "urn:knowledge:koda:core:transform:1.0.0"
+        reason: "KODA transformation methodology"
+  provenance:
+    created_by: "FS"
+    created_at: "2026-01-20"
+    last_modified_by: "GPT-5.2 (KODA-TRANSFORMER)"
+    last_modified_at: "2026-01-20"
+    signature: null
+
+ID: GUIDE-AG-CONTEXT-MANAGER-03
+Version: 3.0.0
+Status: Draft
+Human-Creator: "FS"
+Human-Editor: "GPT-5.2 (KODA-TRANSFORMER)"
+Model-Collaborator: "GPT-5.2"
+Creation-Date: 2026-01-20
+Modification-Date: 2026-01-20
+Source: "staging/manual_context_manager.md"
+Ctx: "Sistema de gestión de contexto (snapshots, handoffs, dominio.md) para optimizar ventana de contexto y transiciones de sesión."
+Version-Notes: "Transformado desde Markdown a KODA/Spec (telegraphic + dedup)."
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Purp: "Optimizar ventana de contexto y mejorar transiciones entre sesiones."
+Obj:
+  - "Reducir olvido/repetición en sesiones largas mediante snapshots periódicos."
+  - "Habilitar continuidad entre sesiones mediante handoffs estructurados."
+  - "Evitar conocimiento disperso mediante esqueleto semántico y `dominio.md`."
+
+Definitions:
+  - ID: DEF-SNAPSHOT
+    Def: "Snapshot: captura del estado mental con esqueleto poblado de conocimiento."
+  - ID: DEF-HANDOFF
+    Def: "Handoff: paquete de transferencia para continuar en otra sesión."
+  - ID: DEF-DOMINIO-MD
+    Def: "`dominio.md`: conocimiento permanente del proyecto (stakeholders, glosario, arquitectura)."
+  - ID: DEF-ESQUELETO
+    Def: "Esqueleto (semántico): estructura/punteros para organizar conocimiento y referencias a secciones/archivos."
+  - ID: DEF-SESIÓN-INICIAR
+    Def: "Comando: `/sesion iniciar` (crea sesión y carga contexto base)."
+  - ID: DEF-SESIÓN-INICIAR-CONTINUAR
+    Def: "Comando: `/sesion iniciar --continuar {id}` (reanuda una sesión desde su handoff)."
+  - ID: DEF-SESIÓN-CERRAR
+    Def: "Comando: `/sesion cerrar` (consolida snapshots y genera handoff)."
+  - ID: DEF-SESIÓN-ESTADO
+    Def: "Comando: `/sesion estado` (lista últimas sesiones)."
+  - ID: DEF-EXTRACCION-CORPUS
+    Def: "Comando: `/extraccion-corpus` (genera esqueleto de documento extenso y lo integra en el snapshot activo)."
+
+Why_This_System:
+  ID: CTX-MGR-WHY-01
+  Purp: "Motivación: problemas típicos y mitigaciones."
+  Problems:
+    - Problem: "Sesión larga"
+      Symptom: "Agente olvida/repite"
+      Solution: "Snapshots periódicos"
+    - Problem: "Transición sin contexto"
+      Symptom: "Nueva sesión sin memoria"
+      Solution: "Handoffs estructurados"
+    - Problem: "Conocimiento disperso"
+      Symptom: "Archivos sin organizar"
+      Solution: "Esqueleto semántico"
+
+Key_Concepts:
+  ID: CTX-MGR-CONCEPTS-01
+
+  Snapshot:
+    Ref: DEF-SNAPSHOT
+    Template_Example: |
+      ```markdown
+      # Snapshot: 2026-01-19T12:00
+
+      ## Objetivo Activo
+      Diseñar API de autenticación
+
+      ## Esqueleto de Conocimiento
+      📁 Archivos Consultados
+      ├── 📄 auth_spec.md
+      │   └── §2.1 JWT Tokens → "Usar RS256 para firma"
+      └── 📄 security_policy.md
+          └── §3 Expiración → "Token válido 1h"
+
+      ## Decisiones Tomadas
+      | Decisión | Razón                     |
+      | :------- | :------------------------ |
+      | RS256    | Mayor seguridad que HS256 |
+      ```
+
+  Handoff:
+    Ref: DEF-HANDOFF
+
+  Dominio_File:
+    Ref: DEF-DOMINIO-MD
+
+Workflow:
+  ID: CTX-MGR-WORKFLOW-01
+  Proc:
+    - Step: "INICIAR SESIÓN"
+      Ref: DEF-SESIÓN-INICIAR
+      Res:
+        - "Crea directorio en `~/.gemini/antigravity/sesiones/`."
+        - "Lee `dominio.md` si existe."
+    - Step: "TRABAJAR"
+      Act:
+        - 'Crear snapshot: "Crea un snapshot" (captura estado actual).'
+        - Ref: DEF-EXTRACCION-CORPUS
+        - "Trabajo normal: skill monitorea saturación."
+    - Step: "CERRAR SESIÓN"
+      Ref: DEF-SESIÓN-CERRAR
+      Res:
+        - "Consolida snapshots en `_handoff.md`."
+        - "Genera próximos pasos."
+    - Step: "CONTINUAR DESPUÉS"
+      Ref: DEF-SESIÓN-INICIAR-CONTINUAR
+      Res:
+        - "Lee `_handoff.md`."
+        - "Restaura esqueleto de conocimiento."
+
+Usage_Examples:
+  ID: CTX-MGR-EXAMPLES-01
+
+  Example_1_Sesion_Simple:
+    Ex: |
+      ```
+      Usuario: /sesion iniciar
+      Agente:  ✅ Nueva sesión creada: sesion-20260119-120000
+               📁 Ruta: ~/.gemini/antigravity/sesiones/sesion-20260119-120000
+
+      [... 30 minutos de trabajo ...]
+
+      Usuario: Crea un snapshot
+      Agente:  📸 Snapshot creado: _snapshot_20260119-123000.md
+
+      [... más trabajo ...]
+
+      Usuario: /sesion cerrar
+      Agente:  📦 Generando handoff...
+               ✅ Handoff creado: _handoff.md
+      ```
+
+  Example_2_Continuar_Sesion:
+    Ex: |
+      ```
+      Usuario: /sesion estado
+      Agente:  📂 Últimas sesiones:
+               - sesion-20260119-120000 (hace 2 horas)
+               - sesion-20260118-150000 (ayer)
+
+      Usuario: /sesion iniciar --continuar sesion-20260119-120000
+      Agente:  📖 Cargando handoff...
+               
+               ## Objetivo Original
+               Diseñar API de autenticación
+               
+               ## Estado Final
+               JWT implementado, falta refresh tokens
+               
+               ## Próximos Pasos
+               - [ ] Implementar refresh tokens
+               - [ ] Agregar logout
+               
+               ¿Continuamos con refresh tokens?
+      ```
+
+  Example_3_Extraccion_Corpus:
+    Ex: |
+      ```
+      Usuario: Necesito analizar este documento largo: @[spec.md]
+      Agente:  📄 Documento extenso detectado (2000 líneas)
+               Ejecutando /extraccion-corpus...
+
+               📋 Esqueleto generado:
+               spec.md
+               ├── §1 Introducción (1-50) - contexto
+               ├── §2 Autenticación (51-300) - JWT, OAuth
+               ├── §3 Autorización (301-500) - RBAC
+               └── §4 Auditoría (501-700) - logs
+               
+               Integrado en _snapshot.md activo.
+               
+               ¿Qué sección exploramos primero?
+      ```
+
+  Example_4_Sesion_Larga_Saturacion:
+    Ex: |
+      ```
+      [Después de 1 hora de trabajo intenso]
+
+      Agente:  ⚠️ Contexto al 85%. Recomiendo snapshot.
+               
+      Usuario: Ok, haz snapshot
+      Agente:  📸 Snapshot creado con esqueleto poblado.
+               Contexto liberado. Continuemos.
+      ```
+
+File_Locations:
+  ID: CTX-MGR-LOCATIONS-01
+  Paths:
+    Antigravity_Home: "~/.gemini/antigravity/"
+    Project_Antigravity: "{proyecto}/.antigravity/"
+  Tree: |
+    ```
+    ~/.gemini/antigravity/
+    ├── skills/
+    │   └── context-manager/           # Skill de gestión
+    │       ├── SKILL.md
+    │       └── templates/
+    │           ├── snapshot.md
+    │           └── handoff.md
+    └── sesiones/
+        └── {session-id}/
+            ├── _snapshot_*.md         # Capturas
+            └── _handoff.md            # Transferencia
+
+    {proyecto}/.antigravity/
+    └── conocimiento/
+        └── dominio.md                 # Conocimiento del proyecto
+    ```
+
+Quick_Commands:
+  ID: CTX-MGR-COMMANDS-01
+  Commands:
+    - Command: "/sesion iniciar"
+      Act: "Nueva sesión"
+      Ref: DEF-SESIÓN-INICIAR
+    - Command: "/sesion iniciar --continuar {id}"
+      Act: "Continuar sesión"
+      Ref: DEF-SESIÓN-INICIAR-CONTINUAR
+    - Command: "/sesion cerrar"
+      Act: "Generar handoff"
+      Ref: DEF-SESIÓN-CERRAR
+    - Command: "/sesion estado"
+      Act: "Ver sesiones"
+      Ref: DEF-SESIÓN-ESTADO
+    - Command: '"snapshot" o "guarda contexto"'
+      Act: "Capturar estado"
+      Ref: DEF-SNAPSHOT
+    - Command: "/extraccion-corpus"
+      Act: "Esqueleto de documento"
+      Ref: DEF-EXTRACCION-CORPUS
+
+Best_Practices:
+  ID: CTX-MGR-BP-01
+  Rec:
+    - "Haz snapshots cada 30 minutos en sesiones largas."
+    - "Al cerrar día, siempre genera handoff."
+    - "Crea `dominio.md` al iniciar proyecto nuevo."
+    - "Usa esqueletos para documentos >500 líneas."

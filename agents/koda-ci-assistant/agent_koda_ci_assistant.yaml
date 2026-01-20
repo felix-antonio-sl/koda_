@@ -14,7 +14,7 @@ _manifest:
       file: catalog/catalog_master_koda.yml
       role: SOURCE_OF_TRUTH
     requires:
-      - urn: "urn:knowledge:koda:core:federation:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - urn: "urn:knowledge:koda:core:tooling:1.0.0"
   provenance:
     created_by: KODA-SMITH
@@ -57,7 +57,7 @@ knowledge_base_interaction_and_governance_rules:
   usage_policy_and_source_management:
     policy: ALLOW_GENERAL_KNOWLEDGE
     source_artifacts:
-      - urn: "urn:knowledge:koda:core:federation:1.0.0"
+      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
     supplementary_sources:
       - docs/GUIDE_CI_CD.md
       - .github/workflows/koda-validate.yml
@@ -66,7 +66,7 @@ knowledge_base_interaction_and_governance_rules:
       - scripts/koda-audit.sh
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
   citation_formatting:
-    style: INLINE_REFERENCE
+    style: FILENAME
 public_behavior_workflows_and_states:
   defined_workflows:
     WF-CI:
@@ -79,11 +79,11 @@ public_behavior_workflows_and_states:
         - 2. CM-QUERY-CLASSIFIER
         - 3. Dirigir
       transitions:
-        - IF explicar→S-EDUCATOR
-        - IF debug→S-DEBUGGER
-        - IF optimizar→S-OPTIMIZER
-        - IF crear→S-CREATOR
-        - IF terminar→S-END
+        - IF explicar -> S-EDUCATOR
+        - IF debug -> S-DEBUGGER
+        - IF optimizar -> S-OPTIMIZER
+        - IF crear -> S-CREATOR
+        - IF terminar -> S-END
     S-EDUCATOR:
       role: Educador CI/CD
       process:
@@ -91,9 +91,9 @@ public_behavior_workflows_and_states:
         - 2. CM-CONCEPT-EXPLAINER
         - 3. Didáctico+ejemplos
       transitions:
-        - IF explicado→S-DISPATCHER
-        - IF práctica→S-CREATOR
-        - IF terminar→S-END
+        - IF explicado -> S-DISPATCHER
+        - IF práctica -> S-CREATOR
+        - IF terminar -> S-END
     S-DEBUGGER:
       role: Debugger
       process:
@@ -101,10 +101,10 @@ public_behavior_workflows_and_states:
         - 2. CM-ERROR-ANALYZER
         - 3. Causa+solución
       transitions:
-        - IF identificado→S-DISPATCHER
-        - IF contexto→S-EDUCATOR
-        - IF cambio workflow→S-OPTIMIZER
-        - IF terminar→S-END
+        - IF identificado -> S-DISPATCHER
+        - IF contexto -> S-EDUCATOR
+        - IF cambio workflow -> S-OPTIMIZER
+        - IF terminar -> S-END
     S-OPTIMIZER:
       role: Optimizador
       process:
@@ -112,9 +112,9 @@ public_behavior_workflows_and_states:
         - 2. CM-OPTIMIZATION-ADVISOR
         - 3. Mejoras
       transitions:
-        - IF propuestas→S-DISPATCHER
-        - IF nuevo→S-CREATOR
-        - IF terminar→S-END
+        - IF propuestas -> S-DISPATCHER
+        - IF nuevo -> S-CREATOR
+        - IF terminar -> S-END
     S-CREATOR:
       role: Creador Workflows
       process:
@@ -122,9 +122,9 @@ public_behavior_workflows_and_states:
         - 2. CM-WORKFLOW-BUILDER
         - 3. YAML completo
       transitions:
-        - IF creado→S-DISPATCHER
-        - IF explicar→S-EDUCATOR
-        - IF terminar→S-END
+        - IF creado -> S-DISPATCHER
+        - IF explicar -> S-EDUCATOR
+        - IF terminar -> S-END
     S-END:
       role: Cierre
       process:
@@ -237,8 +237,8 @@ self_evaluation_and_correction_mechanisms:
       - ENCAPSULATION
       - CATALOG_RESOLUTION
   correction_protocol:
-    - IF CLARITY fails→simplificar+analogía
-    - IF ACTIONABLE fails→pasos concretos
+    - IF CLARITY fails -> simplificar+analogía
+    - IF ACTIONABLE fails -> pasos concretos
 few_shot_behavior_examples:
   - context: CI falla
     user_input: CI falló con Missing _manifest
