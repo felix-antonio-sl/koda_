@@ -9,7 +9,7 @@ _manifest:
   provenance:
     created_by: "FS"
     created_at: "2025-11-25"
-    last_modified_at: "2025-12-14"
+    last_modified_at: "2026-01-22"
 
 ID: KODA-CATALOG-MASTER-01
 Version: 1.1.0
@@ -136,29 +136,35 @@ Catalog:
       file: "agents/koda-taskmaster/agent_koda_taskmaster.yaml"
       status: published
 
-  Domain_Artifacts:
+  IDE_Tools:
+    - urn: "urn:knowledge:koda:claude:use-claude-code-vscode:1.0.0"
+      title: "Use Claude Code in VS Code"
+      description: "Installation, configuration and usage guide for Claude Code VS Code extension"
+      file: "knowledge/domains/ide_tools/claude/guide_011_claude-code-vscode_koda.yml"
+      status: draft
+
     - urn: "urn:knowledge:koda:antigravity:doc-antigravity-official:1.0.0"
       title: "Antigravity Official Documentation (KODA)"
       description: "KODA/Spec rendering of Antigravity official documentation (draft)."
-      file: "knowledge/domains/google_antigravity/doc_oficial_ag_koda.yml"
+      file: "knowledge/domains/ide_tools/google_antigravity/doc_oficial_ag_koda.yml"
       status: published
 
     - urn: "urn:knowledge:koda:antigravity:manual-ag-fx-v2:2.0.0"
       title: "Manual AG FX v2 (KODA)"
       description: "Manual de orquestación avanzada en Google Antigravity (Artifact-First + R.A.P.S. 2.0) (draft)."
-      file: "knowledge/domains/google_antigravity/manual_ag_fx_v2_koda.yml"
+      file: "knowledge/domains/ide_tools/google_antigravity/manual_ag_fx_v2_koda.yml"
       status: published
 
     - urn: "urn:knowledge:koda:antigravity:guide-context-manager:3.0.0"
       title: "Guide: Context Manager (KODA)"
       description: "Official guide for Context Management (Snapshots, Handoffs, Skeletons)"
-      file: "knowledge/domains/google_antigravity/guide_ag_003_context-manager_koda.yml"
+      file: "knowledge/domains/ide_tools/google_antigravity/guide_ag_003_context-manager_koda.yml"
       status: published
 
     - urn: "urn:knowledge:koda:codex:doc-official:1.0.0"
       title: "Codex Official Documentation (KODA)"
       description: "Official OpenAI Codex documentation telegrafized for KODA"
-      file: "knowledge/domains/codex/doc_codex_001_official_koda.yml"
+      file: "knowledge/domains/ide_tools/codex/doc_codex_001_official_koda.yml"
       status: published
 
   Domains:

@@ -1,0 +1,457 @@
+---
+# Claude Code in VS Code (KODA)
+# Source: staging/clude.md
+
+_manifest:
+  urn: "urn:knowledge:koda:claude:use-claude-code-vscode:1.0.0"
+  federation:
+    visibility: private
+    license: "Proprietary"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://staging/clude_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "KODA/Spec base"
+  provenance:
+    created_by: "Anthropic Docs (author unknown)"
+    created_at: "2026-01-22"
+    last_modified_by: "KODA-TRANSFORMER (GPT-5.2)"
+    last_modified_at: "2026-01-22"
+    signature: null
+
+ID: CLAUDE-CODE-VSCODE-001
+Version: 1.0.0
+Status: Draft
+Human-Creator: "Anthropic Docs (author unknown)"
+Human-Editor: "felixsanhueza"
+Model-Collaborator: "GPT-5.2"
+Creation-Date: 2026-01-22
+Modification-Date: 2026-01-22
+Source: "staging/clude.md"
+Ctx: "Guide: install/configure Claude Code VS Code extension; usage, shortcuts, settings, MCP, git, providers, security, troubleshooting."
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+Definitions:
+  - ID: DEF-CLAUDE-CODE
+    Def: "Claude Code: AI coding assistant (VS Code extension + CLI)."
+  - ID: DEF-CLAUDE-CLI
+    Def: "Claude Code CLI: terminal interface; configured via CLI; shared history with extension."
+  - ID: DEF-SPARK-ICON
+    Def: "Spark icon: opens Claude Code from VS Code UI."
+  - ID: DEF-PERMISSION-MODES
+    Def: "Permission modes: prompt box mode controlling when Claude asks permission."
+  - ID: DEF-MCP
+    Def: "MCP (Model Context Protocol): servers providing tools/resources to Claude."
+  - ID: DEF-RESTRICTED-MODE
+    Def: "VS Code Restricted Mode: Workspace Trust mode for untrusted workspaces."
+
+Shortcuts:
+  - ID: SH-EXTENSIONS-VIEW
+    Key:
+      mac: "Cmd+Shift+X"
+      win_linux: "Ctrl+Shift+X"
+    Act: "Open Extensions view"
+  - ID: SH-CMD-PALETTE
+    Key:
+      mac: "Cmd+Shift+P"
+      win_linux: "Ctrl+Shift+P"
+    Act: "Open Command Palette"
+  - ID: SH-VSCODE-SETTINGS
+    Key:
+      mac: "Cmd+,"
+      win_linux: "Ctrl+,"
+    Act: "Open VS Code settings"
+  - ID: SH-TOGGLE-FOCUS
+    Key:
+      mac: "Cmd+Esc"
+      win_linux: "Ctrl+Esc"
+    Act: "Toggle focus: editor ↔ Claude"
+  - ID: SH-OPEN-NEW-TAB
+    Key:
+      mac: "Cmd+Shift+Esc"
+      win_linux: "Ctrl+Shift+Esc"
+    Act: "Open new Claude conversation (editor tab)"
+  - ID: SH-NEW-CONVERSATION
+    Key:
+      mac: "Cmd+N"
+      win_linux: "Ctrl+N"
+    Act: "Start new conversation (Claude focused)"
+  - ID: SH-INSERT-MENTION
+    Key:
+      mac: "Option+K"
+      win_linux: "Alt+K"
+    Act: "Insert @-mention reference to current file + selection"
+  - ID: SH-INTEGRATED-TERMINAL
+    Key:
+      mac: "Cmd+`"
+      win_linux: "Ctrl+`"
+    Act: "Open integrated terminal"
+
+Claude_Code_in_VS_Code:
+  ID: CCVS-ROOT
+  Ref: DEF-CLAUDE-CODE
+  Title: "Use Claude Code in VS Code"
+
+  Overview:
+    Purp: "Install/configure Claude Code extension; use it effectively in VS Code."
+    Benefits:
+      - "Native graphical interface inside VS Code."
+      - "Review/edit plans; inline diffs; @-mentions; keyboard shortcuts."
+      - "Conversation history; multiple conversations (tabs/windows)."
+
+  Prerequisites:
+    Req:
+      - "VS Code >= 1.98.0"
+      - "Anthropic account (sign in on first open)"
+    Cond:
+      - "If using Amazon Bedrock or Google Vertex AI: see Use third-party providers."
+    Tip:
+      - Ref: DEF-CLAUDE-CLI
+        Note: "Extension includes the CLI (integrated terminal)."
+
+  Install_extension:
+    Direct_Links:
+      - Name: "Install for VS Code"
+        Link: "vscode:extension/anthropic.claude-code"
+      - Name: "Install for Cursor"
+        Link: "cursor:extension/anthropic.claude-code"
+    Proc:
+      - Ref: SH-EXTENSIONS-VIEW
+      - 'Search: "Claude Code"'
+      - "Install"
+    Note: "If extension doesn't appear: restart VS Code or run Developer: Reload Window (Command Palette)."
+
+  Get_started:
+    Steps:
+      - ID: CCVS-STEP-OPEN-PANEL
+        Title: "Open the Claude Code panel"
+        Primary:
+          - Ref: DEF-SPARK-ICON
+            Cond: "File is open"
+            Act: "Click Spark icon in Editor Toolbar (top-right)."
+        Alternatives:
+          - Ref: SH-CMD-PALETTE
+            Act: 'Type: "Claude Code" → select e.g. "Open in New Tab".'
+          - Act: "Status Bar → click ✱ Claude Code (bottom-right). Works without open file."
+        Rec: "Panel is draggable; see Customize."
+      - ID: CCVS-STEP-SEND-PROMPT
+        Title: "Send a prompt"
+        Act: "Ask Claude to explain/debug/make changes."
+        Tip:
+          - "Claude sees editor selection."
+          - Ref: SH-INSERT-MENTION
+            Ex: "@file.ts#5-10"
+      - ID: CCVS-STEP-REVIEW-CHANGES
+        Title: "Review changes"
+        Proc:
+          - "Claude shows side-by-side diff."
+          - "Claude asks permission; accept/reject/redirect."
+    Ctx_Optional: "/en/common-workflows"
+    Tip:
+      - 'Tutorial: "Claude Code: Open Walkthrough"'
+      - "Interactive checklist: graduation cap icon"
+
+  Prompt_box:
+    Features:
+      - Ref: DEF-PERMISSION-MODES
+        Modes:
+          - "Normal: ask each action"
+          - "Plan: plan + approval before changes"
+          - "Auto-accept: edits without asking"
+        Setting: "claudeCode.initialPermissionMode"
+      - Name: "Command menu"
+        Act: "Type / or click /"
+        Includes:
+          - "attach files"
+          - "switch models"
+          - "toggle extended thinking"
+          - "view plan usage (/usage)"
+          - "customize: MCP servers, hooks, memory, permissions, plugins"
+        Note: "Terminal-icon items open integrated terminal."
+      - Name: "Context indicator"
+        Def: "Shows context window usage; auto-compacts; /compact manual."
+      - Name: "Extended thinking"
+        Act: "Enable via / menu."
+        Ctx_Optional: "/en/common-workflows#use-extended-thinking-thinking-mode"
+      - Name: "Multi-line"
+        Act: "Shift+Enter adds newline without sending."
+
+    Reference_files_folders:
+      Act: "@ + file/folder name → Claude reads content (fuzzy match supported)."
+      Ex:
+        - "> Explain the logic in @auth (fuzzy matches auth.js, AuthService.ts, etc.)"
+        - "> What's in @src/components/ (include trailing slash for folders)"
+      Selection:
+        - "Selection auto-visible; footer shows selected lines count."
+        - Ref: SH-INSERT-MENTION
+          Act: "Insert file path + line numbers."
+        - "Selection indicator toggles visibility (eye-slash = hidden)."
+      Attachments:
+        - "Shift + drag files into prompt box to attach."
+        - "X removes attachment."
+
+    Resume_conversations:
+      Proc:
+        - "Panel dropdown → conversation history."
+        - "Search by keyword or browse by time (Today/Yesterday/Last 7 days/...)."
+        - "Open a conversation to resume full history."
+      Ctx_Optional: "/en/common-workflows#resume-previous-conversations"
+
+  Customize_workflow:
+    Panel_location:
+      Act: "Drag panel tab/title bar."
+      Options:
+        - Name: "Secondary sidebar (right)"
+          Res: "Claude visible while coding."
+        - Name: "Primary sidebar (left)"
+          Ctx: "Explorer/Search/etc."
+        - Name: "Editor area"
+          Res: "Claude as a tab alongside files."
+      Tip:
+        - "Use sidebar for main session; additional tabs for side tasks; preference remembered."
+        - Ref: DEF-SPARK-ICON
+          Cond: "Claude panel docked left"
+          Res: "Spark icon appears in Activity Bar; default is right → use Editor Toolbar icon."
+
+    Multiple_conversations:
+      Act: "Command Palette → Open in New Tab / Open in New Window."
+      Res:
+        - "Each conversation has own history/context."
+        - "Spark icon dot: blue = permission pending; orange = finished while tab hidden."
+
+    Terminal_mode:
+      Cond: "Prefer CLI-style interface."
+      Proc:
+        - "Enable: vscode://settings/claudeCode.useTerminal"
+        - Ref: SH-VSCODE-SETTINGS
+          Act: "Extensions → Claude Code → check Use Terminal"
+
+  VS_Code_commands_shortcuts:
+    Proc:
+      - Ref: SH-CMD-PALETTE
+        Act: 'Type "Claude Code" to list VS Code commands.'
+      - Ref: SH-TOGGLE-FOCUS
+        Note: "Focus affects which shortcuts work (editor vs Claude prompt box)."
+    Note: "VS Code extension controls only; not all Claude commands available (see Extension vs CLI)."
+    Commands:
+      - Command: "Focus Input"
+        Ref: SH-TOGGLE-FOCUS
+      - Command: "Open in Side Bar"
+        Shortcut: "-"
+      - Command: "Open in Terminal"
+        Shortcut: "-"
+      - Command: "Open in New Tab"
+        Ref: SH-OPEN-NEW-TAB
+      - Command: "Open in New Window"
+        Shortcut: "-"
+      - Command: "New Conversation"
+        Ref: SH-NEW-CONVERSATION
+      - Command: "Insert @-Mention Reference"
+        Ref: SH-INSERT-MENTION
+      - Command: "Show Logs"
+        Shortcut: "-"
+      - Command: "Logout"
+        Shortcut: "-"
+
+  Settings:
+    Types:
+      - Type: "Extension settings (VS Code)"
+        Def: "Controls extension behavior."
+        Proc:
+          - Ref: SH-VSCODE-SETTINGS
+          - "Extensions → Claude Code"
+          - "/ → General Config"
+      - Type: "Claude settings (~/.claude/settings.json)"
+        Def: "Shared with CLI; allowed commands, env vars, hooks, MCP servers."
+        Ctx_Optional: "/en/settings"
+    Extension_settings:
+      - Setting: "selectedModel"
+        Default: "default"
+        Def: "Model for new conversations; /model per session."
+      - Setting: "useTerminal"
+        Default: "false"
+      - Setting: "initialPermissionMode"
+        Default: "default"
+        Values: "default|plan|acceptEdits|bypassPermissions"
+      - Setting: "preferredLocation"
+        Default: "panel"
+        Values: "sidebar (right)|panel (new tab)"
+      - Setting: "autosave"
+        Default: "true"
+      - Setting: "useCtrlEnterToSend"
+        Default: "false"
+      - Setting: "enableNewConversationShortcut"
+        Default: "true"
+      - Setting: "hideOnboarding"
+        Default: "false"
+      - Setting: "respectGitIgnore"
+        Default: "true"
+      - Setting: "environmentVariables"
+        Default: "[]"
+      - Setting: "disableLoginPrompt"
+        Default: "false"
+      - Setting: "allowDangerouslySkipPermissions"
+        Default: "false"
+        Warn: "Use with extreme caution."
+      - Setting: "claudeProcessWrapper"
+        Default: "-"
+
+  Extension_vs_CLI:
+    Ref: DEF-CLAUDE-CLI
+    Cond: "Need a CLI-only feature"
+    Act: "Run: claude (integrated terminal)."
+    Feature_matrix:
+      - Feature: "Commands and skills"
+        CLI: "All (/en/interactive-mode#built-in-commands)"
+        VS_Code_Extension: "Subset (type /)"
+      - Feature: "MCP server config"
+        CLI: "Yes"
+        VS_Code_Extension: "No (configure via CLI)"
+      - Feature: "Checkpoints"
+        CLI: "Yes"
+        VS_Code_Extension: "Coming soon"
+      - Feature: "! bash shortcut"
+        CLI: "Yes"
+        VS_Code_Extension: "No"
+      - Feature: "Tab completion"
+        CLI: "Yes"
+        VS_Code_Extension: "No"
+    Integrated_terminal:
+      Ref: SH-INTEGRATED-TERMINAL
+      Act: "Run: claude"
+    External_terminal:
+      Act: "Run /ide inside Claude Code to connect to VS Code."
+    Shared_history:
+      Proc:
+        - "Extension and CLI share conversation history."
+        - "Resume: claude --resume"
+    Terminal_output_reference:
+      Act: "Use @terminal:name (name = terminal title)."
+    Long_running_commands:
+      Note: "Extension shows status bar progress; less visibility than CLI."
+      Rec: "Have Claude output the command; run it in integrated terminal."
+
+  MCP:
+    Ref: DEF-MCP
+    Proc:
+      - "Configure via CLI; use in extension + CLI."
+    Add_server:
+      Ex:
+        Lang: bash
+        Code: "claude mcp add --transport http github https://api.githubcopilot.com/mcp/"
+    Use:
+      - 'Ask Claude to use tools (e.g., "Review PR #456").'
+      - "Some servers require auth: run claude, then /mcp."
+    Ctx_Optional: "/en/mcp"
+
+  Git:
+    Def: "Git workflows inside VS Code (commit/PR/worktrees)."
+    Ex:
+      Prompts:
+        - "> commit my changes with a descriptive message"
+        - "> create a pr for this feature"
+        - "> summarize the changes I've made to the auth module"
+    Worktrees:
+      Ex:
+        Lang: bash
+        Code: |
+          git worktree add ../project-feature-a -b feature-a
+          cd ../project-feature-a && claude
+      Res: "Parallel sessions on separate branches; isolated files; shared history."
+    Ctx_Optional: "/en/common-workflows#create-pull-requests"
+
+  Third_party_providers:
+    Def: "Alternative providers: Amazon Bedrock, Google Vertex AI, Microsoft Foundry."
+    Steps:
+      - Title: "Disable login prompt"
+        Proc:
+          - "Enable: vscode://settings/claudeCode.disableLoginPrompt"
+          - Ref: SH-VSCODE-SETTINGS
+            Act: 'Search "Claude Code login" → check Disable Login Prompt'
+      - Title: "Configure provider"
+        Guides:
+          - Name: "Claude Code on Amazon Bedrock"
+            Link: "/en/amazon-bedrock"
+          - Name: "Claude Code on Google Vertex AI"
+            Link: "/en/google-vertex-ai"
+          - Name: "Claude Code on Microsoft Foundry"
+            Link: "/en/microsoft-foundry"
+        Note: "Provider config is in ~/.claude/settings.json; shared between extension and CLI."
+
+  Security_privacy:
+    Statements:
+      - "Your code stays private."
+      - "Claude Code processes your code to provide assistance but does not use it to train models."
+    Ctx_Optional: "/en/data-usage"
+    Warn:
+      - "Auto-edit permissions can modify VS Code config (settings.json, tasks.json) that VS Code may execute automatically."
+    Risk_mitigation:
+      - Ref: DEF-RESTRICTED-MODE
+        Act: "Enable for untrusted workspaces."
+      - Act: "Use manual approval mode (not auto-accept)."
+      - Act: "Review changes before accepting."
+
+  Troubleshooting:
+    Extension_wont_install:
+      Proc:
+        - "Confirm VS Code >= 1.98.0."
+        - "Check VS Code permission to install extensions."
+        - "Try Marketplace install: https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code"
+    Spark_icon_not_visible:
+      Ref: DEF-SPARK-ICON
+      Cond: "Spark icon appears only when a file is open."
+      Proc:
+        - "Open a file (folder-only is not enough)."
+        - "Verify VS Code >= 1.98.0 (Help → About)."
+        - "Developer: Reload Window."
+        - "Temporarily disable other AI extensions (Cline, Continue, etc.)."
+        - "Not supported in Restricted Mode."
+      Alternative:
+        - "Status Bar: ✱ Claude Code (works without open file)."
+        - Ref: SH-CMD-PALETTE
+          Act: 'Type "Claude Code".'
+    Claude_never_responds:
+      Proc:
+        - "Check internet connection."
+        - "Start a new conversation."
+        - "Try CLI (claude) for more detailed errors."
+      Rec: "File issue with error details: https://github.com/anthropics/claude-code/issues"
+
+  Uninstall:
+    Proc:
+      - Ref: SH-EXTENSIONS-VIEW
+      - 'Search "Claude Code"'
+      - "Uninstall"
+    Reset_data:
+      Ex:
+        Lang: bash
+        Code: "rm -rf ~/.vscode/globalStorage/anthropic.claude-code"
+    Ctx_Optional: "/en/troubleshooting"
+
+  Next_steps:
+    Links:
+      - "/en/common-workflows"
+      - "/en/mcp"
+      - "/en/settings"
+
