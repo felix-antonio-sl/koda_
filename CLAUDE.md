@@ -23,8 +23,9 @@ KODA (Knowledge-Oriented Declarative Agents) is a framework for declarative AI a
 # Validate with JSON Schema checks
 ./scripts/koda validate --strict
 
-# Add new artifact interactively
-./scripts/koda add
+# Create artifacts via Agent Skills
+"Create a new agent named [name]"
+"Create a new guide for [domain]"
 
 # Check federation health
 ./scripts/koda health

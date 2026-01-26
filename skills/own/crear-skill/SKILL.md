@@ -8,6 +8,7 @@ description: Estructura y genera nuevas skills para el agente Antigravity siguie
 Instrucciones para generar directorios `agent/skills/` de alta calidad, predecibles y eficientes basados en los requerimientos del usuario.
 
 ## Cuándo usar esta skill
+
 - Cuando el usuario solicite "crear una skill" o "nueva habilidad".
 - Para estandarizar una skill existente siguiendo los lineamientos oficiales.
 - Cuando se necesite generar la estructura de carpetas y archivos para una nueva funcionalidad del agente.
@@ -26,8 +27,12 @@ Cada skill que generes debe seguir estrictamente esta jerarquía de carpetas:
 
 El archivo `SKILL.md` debe comenzar con un encabezado YAML (frontmatter) siguiendo estas reglas estrictas:
 
-- `name`: Usar formato infinitivo (ej.: `probar-codigo`, `gestionar-bases-datos`). Máximo 64 caracteres. Solo minúsculas, números y guiones. **No uses nombres de marcas** (como “claude” o “anthropic”) en el nombre.
-- `description`: Escrita en tercera persona. Debe incluir disparadores (keywords) específicos. Máximo 1024 caracteres (ej.: “Extrae texto de archivos PDF. Úsese cuando el usuario mencione procesamiento de documentos o archivos PDF.”).
+- `name`: Usar formato infinitivo (ej.: `probar-codigo`). Máximo 64 caracteres. Solo minúsculas, números y guiones. **No uses nombres de marcas** en el nombre.
+- `description`: Escrita en tercera persona. Debe incluir disparadores (keywords) específicos. Máximo 1024 caracteres.
+- **Campos Opcionales (Compatibilidad Claude):**
+  - `disable-model-invocation`: `true` si es una skill que solo debe ejecutar el usuario manualmente (acciones peligrosas).
+  - `user-invocable`: `false` si es conocimiento pasivo que el usuario no debería invocar.
+  - `allowed-tools`: Lista de herramientas permitidas (ej.: `Read, Grep`).
 
 ## 3. Principios de Redacción (Estilo Directo)
 
@@ -37,17 +42,22 @@ Al escribir el cuerpo de `SKILL.md`, adhierete a estas mejores prácticas:
 - **Divulgación Progresiva**: Mantén el archivo `SKILL.md` por debajo de las 500 líneas. Si se necesita más detalle, enlaza a archivos secundarios (ej.: Ver `AVANZADO.md`). Profundiza solo un nivel.
 - **Barras de Ruta**: Usa siempre barras normales `/` para las rutas, nunca invertidas `\`.
 - **Grados de Libertad**:
-    - Usa **Viñetas (Bullet Points)** para tareas de alta libertad (heurística/criterio).
-    - Usa **Bloques de Código** para libertad media (plantillas a rellenar).
-    - Usa **Comandos Bash Específicos** para libertad baja (operaciones frágiles).
+  - Usa **Viñetas (Bullet Points)** para tareas de alta libertad (heurística/criterio).
+  - Usa **Bloques de Código** para libertad media (plantillas a rellenar).
+  - Usa **Comandos Bash Específicos** para libertad baja (operaciones frágiles).
 
 ## 4. Flujo de Trabajo y Bucles de Retroalimentación
 
 Para tareas complejas, incluye:
 
 1. **Listas de Verificación (Checklists)**: Una lista en Markdown que el agente pueda copiar y actualizar para rastrear el estado.
-2. **Bucles de Validación**: Un patrón de “Planificar–Validar–Ejecutar” (ej.: ejecutar un script para revisar un archivo de configuración ANTES de aplicar cambios).
-3. **Gestión de Errores**: Las instrucciones para los scripts deben ser “cajas negras”; dile al agente que ejecute `--help` si tiene dudas.
+2. **Bucles de Validación**: Un patrón de “Planificar–Validar–Ejecutar”.
+3. **Gestión de Errores**: Las instrucciones para los scripts deben ser “cajas negras”.
+4. **Sincronización Obligatoria**: Al finalizar la creación, **SIEMPRE** instruye ejecutar:
+    - `koda skills sync --local` (para skills de proyecto)
+    - `koda skills sync --global` (para skills personales/globales)
+    - O `koda skills push` si se envía a un workspace específico.
+    *Esto asegura que la skill sea visible tanto para Antigravity como para Claude Code.*
 
 ## 5. Plantilla de Salida
 
@@ -58,10 +68,12 @@ Cuando se te pida crear una skill, presenta el resultado en este formato:
 Ruta: `agent/skills/[nombre-de-skill]/`
 
 #### [SKILL.md]
+
 ```markdown
 ---
 name: [nombre-en-infinitivo]
-description: [descripción en 3ª persona]
+description: [descripción en 3ª persona con keywords]
+disable-model-invocation: [true/false] # Opcional: Bloquear ejecución automática
 ---
 
 # [Título de la Skill]

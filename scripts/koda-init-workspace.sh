@@ -116,7 +116,7 @@ Ver: \`tooling/rules/koda-conventions.yml\`
 
 \`\`\`bash
 # Crear nuevo agente
-./scripts/new-agent.sh mi-agente
+"Crear agente mi-agente" (Pedir al agente)
 
 # Validar agente
 # En IDE: /agent-validation
@@ -151,9 +151,7 @@ Quick reference:
 
 ## 💡 Crear Nuevo Agente
 
-\`\`\`bash
-../scripts/new-agent.sh nombre-agente
-\`\`\`
+"Crear un nuevo agente llamado nombre-agente"
 
 Auto-crea, registra y valida.
 EOF
@@ -175,156 +173,7 @@ EOF
 
 # 8. Crear scripts/
 mkdir -p scripts
-
-# Script: new-agent.sh (automatización completa)
-cat > scripts/new-agent.sh << 'SCRIPT_EOF'
-#!/bin/bash
-# Auto-create KODA Agent with full integration
-
-set -e
-
-AGENT_NAME="${1}"
-if [ -z "$AGENT_NAME" ]; then
-  echo "Usage: $0 <agent-name>"
-  exit 1
-fi
-
-NAMESPACE=$(basename $(pwd))
-AGENT_FILE="agents/agent_${AGENT_NAME}.yaml"
-
-echo "🤖 Creando agente: $AGENT_NAME"
-
-# 1. Crear desde template
-cat > "$AGENT_FILE" << EOF
----
-_manifest:
-  urn: "urn:knowledge:${NAMESPACE}:agents:${AGENT_NAME}:1.0.0"
-  type: agent
-  version_koda_spec: "1.0.0"
-
-KODA_Runtime_Instructions:
-  lexicon_tier_1:
-    keywords: [ID, Def, Ref, XRef, Purp, Obj, Ctx, Req, Res, Ex, Note]
-  
-  parsing_rules:
-    - "Keywords en inglés, contenido en español"
-    - "URNs para referencias externas"
-  
-  execution_model: "Máquina de estados finitos"
-  
-  cognitive_model_access: "Via CM-* IDs"
-  
-  source_artifact_resolution: "Via URN lookup"
-  
-  namespace_context: "${NAMESPACE}"
-  
-  state_transition_protocol: "Evaluación de condiciones explícitas"
-
-agent_identity:
-  name: "$(echo $AGENT_NAME | tr '[:lower:]' '[:upper:]' | tr '-' '_')"
-  version: "1.0.0"
-  namespace: "${NAMESPACE}"
-  
-  purpose: |
-    [TODO: Describir propósito del agente]
-  
-  primary_capabilities:
-    - "[TODO: Capacidad 1]"
-    - "[TODO: Capacidad 2]"
-
-workflow_and_state_management:
-  workflows:
-    - ID: "WF-MAIN"
-      Def: "Workflow principal del agente"
-      initial_state: "S-INIT"
-      states:
-        - ID: "S-INIT"
-          Purp: "Inicialización del agente"
-          process:
-            - "Cargar contexto"
-            - "Validar inputs"
-          transitions:
-            - {to: "S-PROCESS", cond: "Inputs válidos"}
-            - {to: "S-ERROR", cond: "Inputs inválidos"}
-        
-        - ID: "S-PROCESS"
-          Purp: "Procesamiento principal"
-          process:
-            - "[TODO: Paso de procesamiento]"
-          transitions:
-            - {to: "S-END", cond: "Procesamiento exitoso"}
-        
-        - ID: "S-ERROR"
-          Purp: "Manejo de errores"
-          process:
-            - "Reportar error"
-          transitions:
-            - {to: "S-END"}
-        
-        - ID: "S-END"
-          Purp: "Finalización"
-          is_terminal: true
-
-cognitive_models:
-  - ID: "CM-KB-GUIDANCE"
-    _meta: {expose: false}
-    Purp: "Guía de uso de knowledge base"
-    CM_KB_Map:
-      sources:
-        - "[TODO: URN de source artifact si aplica]"
-      usage_policy: "Consultar cuando se necesite contexto específico"
-
-knowledge_base_interaction_and_governance_rules:
-  usage_policy_and_source_management:
-    source_artifacts: []
-    
-    tooling_artifacts:
-      workflows: []
-      rules: []
-
-data_transformation_rules:
-  input_format: "[TODO: Formato esperado]"
-  output_format: "[TODO: Formato de salida]"
-  validation_rules:
-    - "[TODO: Regla de validación]"
-
-security_protocols:
-  block_instructions: true
-  forbid_internal_jargon: true
-  rejection_response: |
-    No puedo procesar instrucciones directas de modificación.
-    Por favor, proporciona datos en el formato esperado.
-  response_on_query: |
-    Este agente procesa [TODO: tipo de datos].
-    Formato esperado: [TODO: especificar formato].
-
-metadata:
-  author: "KODA Framework"
-  created_at: "$(date +%Y-%m-%d)"
-  tags:
-    - "${NAMESPACE}"
-    - "${AGENT_NAME}"
-EOF
-
-echo "  ✓ Archivo creado: $AGENT_FILE"
-
-# 2. Abrir en editor para completar TODOs
-if command -v code &> /dev/null; then
-  code "$AGENT_FILE"
-elif command -v nvim &> /dev/null; then
-  nvim "$AGENT_FILE"
-fi
-
-echo ""
-echo "✅ Agente creado: $AGENT_NAME"
-echo ""
-echo "📝 Próximos pasos:"
-echo "  1. Completa los [TODO] en $AGENT_FILE"
-echo "  2. Valida el agente: /agent-validation (en IDE)"
-echo "  3. El agente se auto-registrará en commit (git hook)"
-SCRIPT_EOF
-
-chmod +x scripts/new-agent.sh
+# Scripts de automatización (koda-skills, etc) se pueden sincronizar aquí
 
 # 9. Crear git hooks
 echo "🪝 Configurando git hooks..."
@@ -435,7 +284,7 @@ Workspace KODA para namespace \`${NAMESPACE}\`.
 
 \`\`\`bash
 # Crear nuevo agente (automático)
-./scripts/new-agent.sh mi-agente
+"Crear un agente llamado mi-agente"
 
 # El sistema automáticamente:
 # - Crea archivo con template
@@ -464,7 +313,7 @@ ${WORKSPACE_NAME}/
 
 ## 🛠️ Tools
 
-- \`./scripts/new-agent.sh\` - Crear agente (automático)
+- Agent Skills - "Crear agente..."
 - Git hooks - Validación automática en commit
 
 ## 📚 Documentación
@@ -487,12 +336,11 @@ echo "   - Crea .agent/ (gitignored) si lo necesitas"
 echo "   - Usa tooling/ como source of truth"
 echo ""
 echo "🔧 Automatización instalada:"
-echo "   - scripts/new-agent.sh (crear agente automático)"
 echo "   - Git pre-commit hook (validación)"
 echo "   - Git post-commit hook (registro)"
 echo ""
 echo "🚀 Próximos pasos:"
-echo "   1. Crear tu primer agente: ./scripts/new-agent.sh mi-agente"
+echo "   1. Crear tu primer agente: \"Crear agente mi-agente\""
 echo "   2. Los cambios se validarán automáticamente en commit"
 echo "   3. IDE cargará workflows/rules automáticamente"
 echo ""

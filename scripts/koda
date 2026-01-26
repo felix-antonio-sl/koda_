@@ -48,7 +48,9 @@ show_help() {
     echo ""
     echo -e "  ${GREEN}init${NC} <namespace>     Initialize a new KODA-compliant repository"
     echo -e "  ${GREEN}validate${NC}             Validate current repository structure"
-    echo -e "  ${GREEN}add${NC}                  Add a new artifact (interactive)"
+    echo -e "    # Comandos gestionados por Skills (Agente)
+    # create/add/new -> Delegado a Agent Skills
+"
     echo -e "  ${GREEN}health${NC}               Check federation health status"
     echo -e "  ${GREEN}sync${NC}                 Sync with federation registry"
     echo ""
@@ -61,7 +63,8 @@ show_help() {
     echo ""
     echo -e "  ${CYAN}koda init acme${NC}              Create new repo for 'acme' namespace"
     echo -e "  ${CYAN}koda validate${NC}               Check if current repo is valid"
-    echo -e "  ${CYAN}koda add${NC}                    Add new artifact interactively"
+    echo -e "    # koda add (deprecated, use agent)
+"
     echo -e "  ${CYAN}koda health --full${NC}          Full federation health check"
     echo ""
     echo -e "${BOLD}Documentation:${NC}"
@@ -98,12 +101,9 @@ case "${1:-}" in
     
     add|new|create)
         shift
-        if [ -f "${SCRIPT_DIR}/koda-add-artifact.sh" ]; then
-            "${SCRIPT_DIR}/koda-add-artifact.sh" "$@"
-        else
-            echo -e "${RED}Error: koda-add-artifact.sh not found${NC}"
-            exit 1
-        fi
+        echo -e "${YELLOW}Este comando ha sido migrado a una Skill.${NC}"
+        echo "Por favor, pide al agente: \"Crear un nuevo agente\" o \"Crear un nuevo artefacto\"."
+        exit 0
         ;;
     
     health|status)

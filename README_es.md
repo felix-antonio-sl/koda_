@@ -53,25 +53,25 @@ KODA/
 
 Todas las guías core ubicadas en `knowledge/core/`:
 
-| # | Archivo | URN | Propósito |
-|---|---------|-----|-----------|
-| 000 | `guide_core_000_quickstart_koda.yml` | `urn:knowledge:koda:core:quickstart:1.0.0` | **Guía de inicio rápido (EMPIEZA AQUÍ)** |
-| 001 | `guide_core_001_koda-spec_koda.yml` | `urn:knowledge:koda:core:spec:1.0.0` | Especificación del formato KODA/Spec (RAÍZ) |
-| 002 | `guide_core_002_koda-transform_koda.yml` | `urn:knowledge:koda:core:transform:1.0.0` | Metodología de transformación KODA/Spec |
-| 003 | `guide_core_003_koda-hub-federation_koda.yml` | `urn:knowledge:koda:core:hub-federation:1.0.0` | KODA Hub & Federation |
-| 004 | `guide_core_004_koda-life-master_koda.yml` | `urn:knowledge:koda:core:life:1.0.0` | Gestión KODA/Life |
-| 005 | `guide_core_005_koda-agent-spec_koda.yml` | `urn:knowledge:koda:core:agent:1.0.0` | Especificación del protocolo KODA/Agent |
-| 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:koda:core:agent-construct:1.0.0` | Metodología de construcción KODA/Agent |
-| 007 | `guide_core_007_koda-test-spec_koda.yml` | `urn:knowledge:koda:core:test:1.0.0` | Framework KODA/Test |
-| 008 | `guide_core_008_schema-versioning_koda.yml` | `urn:knowledge:koda:core:schema-versioning:1.0.0` | Política de versionado de schemas |
-| 009 | `guide_core_009_koda-tooling-spec_koda.yml` | `urn:knowledge:koda:core:tooling:1.0.0` | Especificación KODA/Tooling |
+| #   | Archivo                                        | URN                                               | Propósito                                   |
+| --- | ---------------------------------------------- | ------------------------------------------------- | ------------------------------------------- |
+| 000 | `guide_core_000_quickstart_koda.yml`           | `urn:knowledge:koda:core:quickstart:1.0.0`        | **Guía de inicio rápido (EMPIEZA AQUÍ)**    |
+| 001 | `guide_core_001_koda-spec_koda.yml`            | `urn:knowledge:koda:core:spec:1.0.0`              | Especificación del formato KODA/Spec (RAÍZ) |
+| 002 | `guide_core_002_koda-transform_koda.yml`       | `urn:knowledge:koda:core:transform:1.0.0`         | Metodología de transformación KODA/Spec     |
+| 003 | `guide_core_003_koda-hub-federation_koda.yml`  | `urn:knowledge:koda:core:hub-federation:1.0.0`    | KODA Hub & Federation                       |
+| 004 | `guide_core_004_koda-life-master_koda.yml`     | `urn:knowledge:koda:core:life:1.0.0`              | Gestión KODA/Life                           |
+| 005 | `guide_core_005_koda-agent-spec_koda.yml`      | `urn:knowledge:koda:core:agent:1.0.0`             | Especificación del protocolo KODA/Agent     |
+| 006 | `guide_core_006_koda-agent-construct_koda.yml` | `urn:knowledge:koda:core:agent-construct:1.0.0`   | Metodología de construcción KODA/Agent      |
+| 007 | `guide_core_007_koda-test-spec_koda.yml`       | `urn:knowledge:koda:core:test:1.0.0`              | Framework KODA/Test                         |
+| 008 | `guide_core_008_schema-versioning_koda.yml`    | `urn:knowledge:koda:core:schema-versioning:1.0.0` | Política de versionado de schemas           |
+| 009 | `guide_core_009_koda-tooling-spec_koda.yml`    | `urn:knowledge:koda:core:tooling:1.0.0`           | Especificación KODA/Tooling                 |
 
 ### Archivos de Schema
 
-| Archivo | Propósito |
-|---------|-----------|
-| `schemas/koda-agent-schema-1.0.0.json` | JSON Schema para validación de agent.yaml |
-| `schemas/koda-tooling-schema-1.0.0.json` | JSON Schema para artefactos de tooling |
+| Archivo                                  | Propósito                                 |
+| ---------------------------------------- | ----------------------------------------- |
+| `schemas/koda-agent-schema-1.0.0.json`   | JSON Schema para validación de agent.yaml |
+| `schemas/koda-tooling-schema-1.0.0.json` | JSON Schema para artefactos de tooling    |
 
 ## Grafo de Dependencias
 
@@ -226,9 +226,6 @@ KODA incluye herramientas CLI interactivas para operaciones comunes:
 ./scripts/koda validate
 ./scripts/koda validate --strict  # Incluye validación JSON Schema
 
-# Agregar nuevo artefacto interactivamente
-./scripts/koda add
-
 # Verificar salud de la federación
 ./scripts/koda health
 ./scripts/koda health --full  # Incluye checks remotos
@@ -285,9 +282,9 @@ formato: koda
 
 ## Historial de Versiones
 
-| Versión | Fecha | Cambios |
-|---------|-------|---------|
-| 1.0.0 | 2025-11-25 | Release inicial. Framework KODA completo con 10 guías core (incluyendo Hub & Federation), JSON Schemas, agente(s) de referencia, herramientas CLI, plantillas, registro y automatización GitHub Actions. |
+| Versión | Fecha      | Cambios                                                                                                                                                                                                  |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0.0   | 2025-11-25 | Release inicial. Framework KODA completo con 10 guías core (incluyendo Hub & Federation), JSON Schemas, agente(s) de referencia, herramientas CLI, plantillas, registro y automatización GitHub Actions. |
 
 ## Autores
 

@@ -209,9 +209,6 @@ KODA includes interactive CLI tools for common operations:
 ./scripts/koda validate
 ./scripts/koda validate --strict  # Include JSON Schema validation
 
-# Add new artifact interactively
-./scripts/koda add
-
 # Check federation health
 ./scripts/koda health
 ./scripts/koda health --full  # Include remote checks
