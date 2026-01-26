@@ -84,6 +84,7 @@ echo -e "${YELLOW}Creating directory structure...${NC}"
 mkdir -p knowledge/core
 mkdir -p knowledge/domains
 mkdir -p agents
+mkdir -p skills
 mkdir -p schemas
 mkdir -p catalog
 mkdir -p sources
@@ -93,6 +94,7 @@ mkdir -p .github/workflows
 echo -e "  ${GREEN}✓${NC} knowledge/core/"
 echo -e "  ${GREEN}✓${NC} knowledge/domains/"
 echo -e "  ${GREEN}✓${NC} agents/"
+echo -e "  ${GREEN}✓${NC} skills/"
 echo -e "  ${GREEN}✓${NC} schemas/"
 echo -e "  ${GREEN}✓${NC} catalog/"
 echo -e "  ${GREEN}✓${NC} sources/"
@@ -139,10 +141,14 @@ namespaces:
 resolution_rules:
   # Add your resolution rules here
   # "urn:knowledge:${NAMESPACE}:{domain}:{artifact}:*": "./{path}"
+  
+  # Skills
+  "urn:knowledge:${NAMESPACE}:skills:*:*": "./skills/*/SKILL.md"
 
 directories:
   knowledge: "./knowledge/"
   agents: "./agents/"
+  skills: "./skills/"
   catalog: "./catalog/"
   staging: "./staging/"
   sources: "./sources/"

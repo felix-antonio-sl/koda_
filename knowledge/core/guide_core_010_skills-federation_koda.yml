@@ -1,0 +1,112 @@
+# KODA/Skills Federation Protocol v1.0
+# Specification for decentralized skill management via reference
+# Companion to KODA Specification
+
+_manifest:
+  urn: "urn:knowledge:koda:core:skills-federation:1.0.0"
+  federation:
+    visibility: public
+    license: "CC-BY-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/core/guide_core_010_skills-federation_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
+        reason: "Extends Hub Federation model"
+  provenance:
+    created_by: "KODA-ARCHITECT"
+    created_at: "2026-01-26"
+    last_modified_at: "2026-01-26"
+
+ID: KODA-SKILLS-FED-01
+Version: 1.0.0
+Status: Published
+Ctx: "Specification for managing Agent Skills across multiple platforms (Claude/Antigravity) and workspaces."
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact.
+    FIDELITY: Preserve meat, remove fat.
+    LEXICON: Symlink->Symbolic Link, Hub->Central Koda Repo, Target->Consumption Endpoint.
+    END_LLM_INSTRUCTIONS
+
+# 1. Philosophy: Federation by Reference
+
+Philosophy:
+  ID: SKILLS-PHILOSOPHY
+  Core_Principle: "Zero-Latency Propagation"
+  Def: Skills are maintained in ONE location (The Hub) and consumed in MANY locations via symbolic links.
+  Contrast:
+    - Copy-Paste: High drift, maintenance nightmare.
+    - Git Submodules: High friction, version locking issues.
+    - Symlinks (KODA): Instant updates, zero friction, fragile if Hub moves.
+
+  Topology:
+    Hub: `~/Developer/koda/skills` (The Source of Truth)
+    Global_Target_A: `~/.claude/skills` (Claude Code)
+    Global_Target_B: `~/.gemini/antigravity/skills` (Google Antigravity)
+    Local_Target: `.claude/skills` or `.agent/skills` (Per-workspace override)
+
+# 2. The Resolver
+
+Resolver_Config:
+  ID: SKILLS-RESOLVER-SPEC
+  File: `skills/.skills-resolver.yml`
+  Purp: Configuration registry for propagation rules.
+  Structure:
+    - Master: Path to source `skills/` directory.
+    - Namespaces:
+        - koda: Framework skills (auto-sync).
+        - own: Personal skills (auto-sync).
+        - community: Third-party skills (manual-sync).
+    - Targets: List of physical paths to inject symlinks into.
+
+# 3. CLI Operations (koda-skills.sh)
+
+CLI_Reference:
+  ID: SKILLS-CLI-OPS
+  Script: `scripts/koda-skills.sh`
+  
+  Commands:
+    - `sync --global`:
+        Desc: "The Broadcast". Creates symlinks from Hub to Global Targets.
+        Use: After adding a new skill to Koda that you want everywhere.
+    
+    - `sync --local`:
+        Desc: "The Workspace Link". Links `./.claude/skills` -> `../skills`.
+        Use: When initializing a Koda workspace inside the Koda repo structure.
+
+    - `push <skill> --target ws:<path>`:
+        Desc: "The Injection". Injects a specific skill into an external workspace.
+        Use: "I need `context-manager` in my client project `sanixai`."
+        Effect: `ln -s ~/Dev/koda/skills/own/context-manager ~/Dev/sanixai/.claude/skills/context-manager`
+
+    - `pull <skill>`:
+        Desc: "The Import". Links a Hub skill to current directory.
+
+# 4. Agentic Workflow
+
+Workflow_Integration:
+  ID: SKILLS-WF-INTEGRATION
+  
+  Discovery:
+    - Agent reads `catalog_master_koda.yml` -> sees `urn:knowledge:koda:skills:*`.
+    - Agent reads `.skills-resolver.yml` -> understands propagation topology.
+  
+  Management:
+    - To Create: Use `koda-artifact-helper` (which is itself a skill).
+    - To Distribute: Run `koda skills sync`.
+
+# 5. Success Criteria
+
+Metrics:
+  - Latency: 0ms (Filesystem level).
+  - Sync_Status: Monitored by `koda-health.sh`.
+  - Integrity: No broken links (dangling symlinks).

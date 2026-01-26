@@ -14,6 +14,7 @@ This corpus contains the foundational artifacts for **Agent Engineering** using 
 - **KODA/Agent** — Declarative agent definition protocol
 - **KODA/Hub** — Federated knowledge management
 - **KODA/Life** — Agent lifecycle management
+- **KODA/Skills** — Federated skills ecosystem (Write Once, Run Everywhere)
 - **KODA/Test** — Agent testing framework
 
 ## Quick Start
@@ -37,13 +38,14 @@ All core guides located in `knowledge/core/`:
 | 007 | `guide_core_007_koda-test-spec_koda.yml`       | `urn:knowledge:koda:core:test:1.0.0`              | KODA/Test Framework                   |
 | 008 | `guide_core_008_schema-versioning_koda.yml`    | `urn:knowledge:koda:core:schema-versioning:1.0.0` | Schema versioning policy              |
 | 009 | `guide_core_009_koda-tooling-spec_koda.yml`    | `urn:knowledge:koda:core:tooling:1.0.0`           | KODA/Tooling specification            |
+| 010 | `guide_core_010_skills-federation_koda.yml`    | `urn:knowledge:koda:core:skills-federation:1.0.0` | **KODA/Skills Federation Protocol**   |
 
 ### Schema Files
 
-| File                                   | Purpose                               |
-| -------------------------------------- | ------------------------------------- |
-| `schemas/koda-agent-schema-1.0.0.json` | JSON Schema for agent.yaml validation |
-| `schemas/koda-tooling-schema-1.0.0.json` | JSON Schema for tooling artifacts    |
+| File                                     | Purpose                               |
+| ---------------------------------------- | ------------------------------------- |
+| `schemas/koda-agent-schema-1.0.0.json`   | JSON Schema for agent.yaml validation |
+| `schemas/koda-tooling-schema-1.0.0.json` | JSON Schema for tooling artifacts     |
 
 ## Dependency Graph
 
@@ -64,6 +66,8 @@ koda-spec (001) ─────────────────────�
     │                                     │         └──► koda-test-spec (007)
     │                                     │                               │
     └─────────────────────────────────────┴──► schema-versioning (008) ◄──┘
+    │
+    └──► koda-skills-federation (010)
 ```
 
 ## Key Concepts
@@ -80,6 +84,13 @@ koda-spec (001) ─────────────────────�
 - Federated knowledge architecture with URN addressing
 - **URN Format**: `urn:knowledge:{namespace}:{domain}:{artifact-id}:{version}`
 - Artifact manifests, catalog, resolver, versioning
+
+### KODA/Skills (Federated Skills Ecosystem)
+
+- **Philosophy**: Write Once, Run Everywhere (Claude + Antigravity)
+- **Federation by Reference**: Skills live in Hub, consumed via symlinks
+- **Resolver**: `.skills-resolver.yml` defines propagation topology
+- **Automated**: `koda-skills.sh` handles sync/push/pull
 
 ### KODA/Life (Agent Lifecycle Management)
 
@@ -207,6 +218,11 @@ KODA includes interactive CLI tools for common operations:
 
 # Sync with federation registry
 ./scripts/koda sync
+
+# Manage Skills
+./scripts/koda skills list
+./scripts/koda skills sync --global
+./scripts/koda skills push <namespace/skill> --target ws:<path>
 ```
 
 ### Global Installation (optional)
@@ -259,7 +275,8 @@ format: koda
 
 | Version | Date       | Changes                                                                                                                                                                                    |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1.0.0   | 2025-11-25 | Initial release. Complete KODA Framework with 10 core guides (including Hub & Federation), JSON Schemas, reference agents, CLI tools, templates, registry, and GitHub Actions automation. |
+| 1.1.0   | 2026-01-26 | **Skills Ecosystem Update**. Added `skills/` directory, `koda-skills.sh` CLI, symlink federation model, and `guide_core_010`. Updated `koda-init`, `koda-validate`, `koda-health` scripts. |
+| 1.0.0   | 2025-11-25 | Initial release. Complete KODA Framework with 10 core guides (including Hub & Federation), JSON Schemas, reference agents, CLI tools, templates, registry, and GitHub Actions automation.  |
 
 ## Authors
 

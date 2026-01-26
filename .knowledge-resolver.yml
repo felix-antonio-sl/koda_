@@ -90,6 +90,7 @@ resolution_rules:
   "urn:knowledge:koda:core:test:*": "./knowledge/core/guide_core_007_koda-test-spec_koda.yml"
   "urn:knowledge:koda:core:schema-versioning:*": "./knowledge/core/guide_core_008_schema-versioning_koda.yml"
   "urn:knowledge:koda:core:tooling:*": "./knowledge/core/guide_core_009_koda-tooling-spec_koda.yml"
+  "urn:knowledge:koda:core:skills-federation:*": "./knowledge/core/guide_core_010_skills-federation_koda.yml"
 
   # Schema
   "urn:knowledge:koda:core:agent-schema:*": "./schemas/koda-agent-schema-1.0.0.json"
@@ -122,7 +123,7 @@ directories:
   domains: "./knowledge/domains/"
   schemas: "./schemas/"
   agents: "./agents/"
-  skills: "./skills/"  # Master skills repo (symlinked to .claude/skills and .agent/skills)
+  skills: "./skills/" # Master skills repo (symlinked to .claude/skills and .agent/skills)
   catalog: "./catalog/"
   staging: "./staging/"
   sources: "./sources/"
@@ -131,8 +132,8 @@ directories:
 skills_propagation:
   master: "./skills/"
   targets:
-    claude_code: ".claude/skills"      # -> ../skills
-    antigravity: ".agent/skills"       # -> ../skills
+    claude_code: ".claude/skills" # -> ../skills
+    antigravity: ".agent/skills" # -> ../skills
 
 cache:
   enabled: true

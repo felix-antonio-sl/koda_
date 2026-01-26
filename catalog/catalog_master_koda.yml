@@ -67,6 +67,11 @@ Catalog:
       file: "knowledge/core/guide_core_009_koda-tooling-spec_koda.yml"
       status: published
 
+    - urn: "urn:knowledge:koda:core:skills-federation:1.0.0"
+      title: "KODA/Skills Federation Protocol"
+      file: "knowledge/core/guide_core_010_skills-federation_koda.yml"
+      status: published
+
   Schemas:
     - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       title: "KODA/Agent JSON Schema"
@@ -140,6 +145,25 @@ Catalog:
       title: "KODA Cartographer Agent"
       description: "Specialist for transforming chaotic sources into elegant data models (ESCUCHAR→MAPEAR→ELEVAR→CRISTALIZAR)"
       file: "agents/koda-cartographer/agent_koda_cartographer.yaml"
+      status: published
+
+  Skills:
+    - urn: "urn:knowledge:koda:skills:koda-artifact-helper:1.0.0"
+      title: "Skill: KODA Artifact Helper"
+      description: "Asiste en la creación y validación de artefactos KODA-compliant"
+      file: "skills/koda/koda-artifact-helper/SKILL.md"
+      status: published
+
+    - urn: "urn:knowledge:koda:skills:context-manager:1.0.0"
+      title: "Skill: Context Manager"
+      description: "Gestiona snapshots, handoffs y esqueletos de contexto"
+      file: "skills/own/context-manager/SKILL.md"
+      status: published
+
+    - urn: "urn:knowledge:koda:skills:crear-skill:1.0.0"
+      title: "Skill: Crear Skill"
+      description: "Generador de estructuras para nuevas skills KODA"
+      file: "skills/own/crear-skill/SKILL.md"
       status: published
 
   IDE_Tools:
@@ -218,3 +242,40 @@ Catalog:
       artifacts_count: 1
       status: active
       registered: "2026-01-20"
+
+    - namespace: tde
+      urn: "urn:knowledge:tde:catalog:master:1.0.0"
+      title: "Transformación Digital del Estado"
+      description: "TDE - Transformación Digital del Estado de Chile"
+      type: institutional
+      resolver: "../tde/.knowledge-resolver.yml"
+      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/tde/main/"
+      status: active
+      registered: "2025-11-25"
+
+    - namespace: goreos
+      urn: "urn:knowledge:goreos:catalog:master:1.0.0"
+      title: "GORE OS"
+      description: "GORE OS - Sistema Operativo de Gobernanza Regional (Turbo Monorepo)"
+      type: institutional
+      resolver: "../gore_os/.knowledge-resolver.yml"
+      fallback: null
+      status: active
+      registered: "2025-12-23"
+
+    - namespace: orko
+      urn: "urn:knowledge:orko:catalog:master:1.0.0"
+      title: "ORKO"
+      description: "ORKO - Organizational Knowledge Ontology: Complexity, Tamed"
+      type: framework
+      resolver: "../orko_/.knowledge-resolver.yml"
+      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/orko_/main/"
+      status: active
+      registered: "2025-12-02"
+
+  Gist:
+    - urn: "urn:knowledge:fxsl:gist:guide-onto-gist-001-audit-protocol:1.0.0"
+      title: "Protocolo de Auditoría Ontológica 360° (Gist)"
+      description: "Protocolo exhaustivo para auditoría de ontologías (Pragmático, Estructural, Semántico, Sintáctico)"
+      file: "knowledge/domains/gist/guide_onto_gist_001_audit_protocol_koda.yml"
+      status: draft

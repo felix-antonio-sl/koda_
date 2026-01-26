@@ -345,10 +345,13 @@ echo ""
 
 TOTAL_ARTIFACTS=$(find knowledge -type f \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | wc -l | tr -d ' ')
 TOTAL_AGENTS=$(find agents -type f \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | wc -l | tr -d ' ')
+# Only count managed skills (koda and own) for catalog sync
+TOTAL_SKILLS=$(find skills/koda skills/own -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
 TOTAL_SCHEMAS=$(find schemas -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
 
 echo -e "  Knowledge artifacts: ${CYAN}${TOTAL_ARTIFACTS}${NC}"
 echo -e "  Agent definitions:   ${CYAN}${TOTAL_AGENTS}${NC}"
+echo -e "  Skill definitions:   ${CYAN}${TOTAL_SKILLS}${NC}"
 echo -e "  Schema files:        ${CYAN}${TOTAL_SCHEMAS}${NC}"
 
 # Check for drafts
@@ -376,7 +379,7 @@ CATALOG_FILE=$(find catalog -name "catalog_master_*.yml" 2>/dev/null | head -1)
 if [ -n "$CATALOG_FILE" ]; then
     # Count entries in catalog (only file: entries, not manifest URNs or comments)
     CATALOG_COUNT=$(grep -E "^\s+file:" "$CATALOG_FILE" 2>/dev/null | wc -l | tr -d ' ')
-    ACTUAL_COUNT=$((TOTAL_ARTIFACTS + TOTAL_AGENTS + TOTAL_SCHEMAS))
+    ACTUAL_COUNT=$((TOTAL_ARTIFACTS + TOTAL_AGENTS + TOTAL_SCHEMAS + TOTAL_SKILLS))
     
     echo -e "  Catalog entries: ${CYAN}${CATALOG_COUNT}${NC}"
     echo -e "  Actual files:    ${CYAN}${ACTUAL_COUNT}${NC}"
