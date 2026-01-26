@@ -136,6 +136,12 @@ Catalog:
       file: "agents/koda-taskmaster/agent_koda_taskmaster.yaml"
       status: published
 
+    - urn: "urn:knowledge:koda:agents:cartographer:1.0.0"
+      title: "KODA Cartographer Agent"
+      description: "Specialist for transforming chaotic sources into elegant data models (ESCUCHAR→MAPEAR→ELEVAR→CRISTALIZAR)"
+      file: "agents/koda-cartographer/agent_koda_cartographer.yaml"
+      status: published
+
   IDE_Tools:
     - urn: "urn:knowledge:koda:claude:use-claude-code-vscode:1.0.0"
       title: "Use Claude Code in VS Code"

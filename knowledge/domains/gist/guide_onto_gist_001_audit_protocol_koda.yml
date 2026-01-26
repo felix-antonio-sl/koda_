@@ -1,0 +1,623 @@
+# KODA Artifact: Protocolo de Auditoría Ontológica 360° (Gist) — Versión Exhaustiva
+# URN: urn:knowledge:fxsl:gist:guide-onto-gist-001-audit-protocol:1.0.0
+---
+_manifest:
+  urn: "urn:knowledge:fxsl:gist:guide-onto-gist-001-audit-protocol:1.0.0"
+  federation:
+    visibility: internal
+    license: "CC-BY-NC-4.0"
+  compatibility:
+    min_consumer_version: "1.0.0"
+    breaking_changes_from: null
+  resolution:
+    canonical_url: "file://knowledge/domains/gist/guide_onto_gist_001_audit_protocol_koda.yml"
+    mirrors: []
+  dependencies:
+    requires:
+      - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "KODA/Spec base"
+      - urn: "urn:knowledge:koda:core:transform:1.0.0"
+        reason: "KODA/Transform methodology"
+  provenance:
+    created_by: "FS"
+    created_at: "2026-01-23"
+    last_modified_by: "KODA-TRANSFORMER (GPT-5.2)"
+    last_modified_at: "2026-01-23"
+    signature: null
+
+ID: GUIDE-ONTO-GIST-AUDIT-001
+Version: 1.0.0
+Status: Draft
+Human-Creator: "FS"
+Human-Editor: "FS"
+Model-Collaborator: "GPT-5.2"
+Creation-Date: 2026-01-23
+Modification-Date: 2026-01-23
+Source: "staging/d.md"
+Ctx: "Auditoría ontológica 360° (propósito/estructura/semántica/sintaxis). SPARQL/OWL/SHACL. Foco: Gist como ontología upper/patrones reutilizables."
+
+LLM_Parsing_Instructions:
+  ID: KODA-LLM-PARSER-01
+  Req: Mandatory block following Metadata.
+  Prohib: Using for artifact creation or translation.
+  Content: |
+    BEGIN_LLM_INSTRUCTIONS
+    You are an AI agent consuming a KODA artifact. Parse with absolute fidelity.
+
+    FIDELITY: Preserve meat (essential information) and skeleton (structure: headers, IDs, lists, tables) with zero loss. Ignore fat (filler words, rhetoric, stylistic prose).
+
+    LEXICON (expand before processing): Act->Action, Cond->Condition, Ctx->Context, Ctx_Required->Required External Reference, Ctx_Optional->Optional External Reference, Def->Definition, Ex->Example, Mssn->Mission, Obj->Objective, Proc->Process, Purp->Purpose, Ref->Reference, XRef->Cross-Artifact Reference, XRef_Required->Mandatory Cross-Artifact Reference, Req->Requirement, Res->Result, Src->Source, Prohib->Prohibition, Warn->Warning, Just->Justification, Rec->Recommendation
+
+    REFERENCE POLICY: Ref: is internal only—must point to existing ID within THIS document. XRef/XRef_Required: are external only—must point to a URN (optionally with #ID fragment) in another artifact. External documents without specific ID use Ctx:, Ctx_Required:, or Ctx_Optional:.
+
+    LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
+    END_LLM_INSTRUCTIONS
+
+XRef_Required:
+  - "urn:knowledge:koda:core:spec:1.0.0"
+  - "urn:knowledge:koda:core:transform:1.0.0"
+
+Source_Document:
+  ID: SRC-ONTO-GIST-AUDIT-001
+  Src: "staging/d.md"
+  Note: "Fuente Markdown; el artefacto KODA no incluye Body embebido."
+
+Protocol_360:
+  ID: ONTO-AUDIT-PROTOCOL-360
+  Purp: "Evaluar ontologías end-to-end; asegurar validez+utilidad+sostenibilidad."
+  Obj:
+    - "Calibrar severidad por nivel de madurez (L1-L4)."
+    - "Auditar 4 cuadrantes: pragmático/estructural/semántico/sintáctico."
+    - "Producir checklist, evidencias (SPARQL/OWL/SHACL), y reporte accionable."
+
+  Maturity_Matrix_MMO:
+    ID: ONTO-AUDIT-MMO-01
+    Def: "Nivel esperado de madurez para calibrar severidad de hallazgos."
+    Table: |
+      |Nivel|Nombre|Descripción|
+      |---|---|---|
+      |L1|Prototipo|Exploración inicial, tolerancia alta a inconsistencias|
+      |L2|Desarrollo|Modelo en construcción, requiere consistencia básica|
+      |L3|Producción|Modelo operativo, requiere conformidad estricta|
+      |L4|Federado|Modelo publicado para integración externa, máximo rigor|
+
+  Quadrants:
+    - Quadrant: Pragmatic
+      ID: ONTO-AUDIT-Q1-PRAGMATIC
+      Focus: "Propósito, alcance, gobernanza, audiencia."
+      Dimensions:
+        - Dimension: "Competency Questions (CQs) y Requisitos Funcionales"
+          ID: ONTO-AUDIT-Q1-D1-CQ
+          Criteria_Table: |
+            |ID|Criterio|Peso|L1|L2|L3|L4|
+            |---|---|---|---|---|---|---|
+            |P1.1|Existencia de CQs documentadas|Alto|○|●|●|●|
+            |P1.2|CQs traducibles a SPARQL|Alto|○|○|●|●|
+            |P1.3|Cobertura CQs vs clases/propiedades|Medio|○|○|●|●|
+            |P1.4|Trazabilidad CQ ↔ Stakeholder|Bajo|○|○|○|●|
+          Questions:
+            - "Existencia: ¿Existe un documento que liste las preguntas de competencia?"
+            - "Formalización: Para cada CQ, ¿se puede escribir una consulta SPARQL que la responda?"
+            - "Suficiencia: ¿Cada clase y propiedad del modelo está justificada por al menos una CQ?"
+            - "Completitud: ¿Hay CQs que el modelo actual no puede responder? (Gap Analysis)"
+          Anti_Patterns_Table: |
+            |Anti-patrón|Síntoma|Impacto|
+            |---|---|---|
+            |CQ-less Ontology|No hay CQs documentadas|Imposible validar utilidad|
+            |Orphan Concepts|Clases que no participan en ninguna CQ|Complejidad innecesaria|
+            |Scope Creep|CQs que exceden el dominio original|Modelo inmanejable|
+          Techniques:
+            - Technique: "Detección de clases sin instancias ni uso"
+              ID: ONTO-AUDIT-Q1-D1-TECH-01
+              SPARQL: |
+                # Verificar que todas las clases participan en al menos un patrón útil
+                SELECT ?class (COUNT(?s) AS ?instances) (COUNT(?usage) AS ?usages)
+                WHERE {
+                  ?class a owl:Class .
+                  OPTIONAL { ?s a ?class }
+                  OPTIONAL { ?usage ?p ?class }
+                }
+                GROUP BY ?class
+                HAVING (COUNT(?s) = 0 && COUNT(?usage) = 0)
+                # Resultado: Clases sin instancias ni uso = candidatas a eliminación
+
+        - Dimension: "Alineación de Alcance y Minimalismo"
+          ID: ONTO-AUDIT-Q1-D2-SCOPE
+          Criteria_Table: |
+            |ID|Criterio|Descripción|
+            |---|---|---|
+            |P2.1|Ratio Clase/CQ|Idealmente ≤ 3 clases por CQ cubierta|
+            |P2.2|Índice de Reuso|% de propiedades reutilizadas vs. creadas ad-hoc|
+            |P2.3|Densidad Axiomática|Axiomas por clase (ideal: 2-5 para L3)|
+          Questions:
+            - "Minimalismo: ¿Puede eliminarse alguna clase sin perder capacidad de respuesta a CQs?"
+            - "Granularidad: ¿El nivel de detalle es apropiado para los casos de uso? (ni excesivo ni insuficiente)"
+            - "Fronteras: ¿Están claros los límites del dominio? ¿Qué explícitamente NO se modela?"
+          Checklist:
+            - "Scope Statement documentado (máx 3 párrafos)"
+            - "Lista explícita de Out of Scope"
+            - "Versión y fecha de vigencia"
+            - "Proceso de Change Request definido"
+            - "Responsable de gobernanza identificado"
+
+        - Dimension: "Audiencia y Usabilidad Humana"
+          ID: ONTO-AUDIT-Q1-D3-AUDIENCE
+          Criteria_Table: |
+            |ID|Criterio|Verificación|
+            |---|---|---|
+            |P3.1|Legibilidad de Labels|¿rdfs:label en lenguaje natural, sin camelCase técnico?|
+            |P3.2|Completitud de Definiciones|¿100% de clases tienen skos:definition o rdfs:comment?|
+            |P3.3|Ejemplos|¿Clases complejas tienen skos:example?|
+            |P3.4|Multilingüismo|¿Labels en idiomas requeridos con @lang tags?|
+          Anti_Patterns_Table: |
+            |Anti-patrón|Ejemplo|Corrección|
+            |---|---|---|
+            |CamelCase Labels|rdfs:label \"hasEmploymentRelation\"|rdfs:label \"tiene relación de empleo\"@es|
+            |Definition-less Classes|Clase sin rdfs:comment|Añadir definición de 1-2 oraciones|
+            |Jargon Overload|\"RDF reification pattern for n-ary\"|\"Representa una relación con múltiples participantes\"|
+
+        - Dimension: "Gobernanza y Ciclo de Vida"
+          ID: ONTO-AUDIT-Q1-D4-GOV
+          Criteria_Table: |
+            |ID|Criterio|Preguntas|
+            |---|---|---|
+            |P4.1|Versionamiento|¿Existe owl:versionInfo y política de deprecación?|
+            |P4.2|Provenance|¿Documentado creador, fecha, licencia?|
+            |P4.3|Change Management|¿Proceso para proponer cambios?|
+            |P4.4|Deprecation Policy|¿Cómo se marcan términos obsoletos? (owl:deprecated)|
+          Required_Metadata_L3_Plus:
+            ID: ONTO-AUDIT-Q1-D4-META-EX-01
+            Turtle: |
+              <https://example.org/ontology/domain> a owl:Ontology ;
+                  owl:versionInfo "1.2.0" ;
+                  owl:versionIRI <https://example.org/ontology/domain/1.2.0> ;
+                  owl:priorVersion <https://example.org/ontology/domain/1.1.0> ;
+                  dc:title "Domain Ontology"@en ;
+                  dc:creator "Knowledge Team" ;
+                  dc:created "2025-01-15"^^xsd:date ;
+                  dc:modified "2026-01-23"^^xsd:date ;
+                  dc:license <https://creativecommons.org/licenses/by/4.0/> ;
+                  rdfs:comment "Ontología para modelar..."@es .
+
+      Tradeoff_Semiotic:
+        ID: ONTO-AUDIT-TRADEOFF-01
+        Def: "Perfección lógica puede degradar utilidad pragmática si el modelo es demasiado complejo para consultar."
+        Rec: "Priorizar claridad operable; si un patrón Gist simple (ej: `gist:Category`) resuelve, evitar OWL complejo por pureza."
+
+    - Quadrant: Structural
+      ID: ONTO-AUDIT-Q2-STRUCTURAL
+      Focus: "Taxonomía, arquitectura, propiedades, namespaces, patrones y reuso."
+      Dimensions:
+        - Dimension: "Higiene Taxonómica"
+          ID: ONTO-AUDIT-Q2-D1-TAXO
+          SubDimensions:
+            - SubDimension: "Análisis de Jerarquía de Clases"
+              ID: ONTO-AUDIT-Q2-D1-SD1-HIER
+              Verifications_Table: |
+                |ID|Verificación|Método|
+                |---|---|---|
+                |S1.1|Ciclos en subClassOf|Query SPARQL o razonador|
+                |S1.2|Profundidad máxima|Contar niveles (recomendado: ≤ 7)|
+                |S1.3|Anchura promedio|Subclases directas por clase (recomendado: 3-7)|
+                |S1.4|Clases huérfanas|Clases sin superclase (excepto owl:Thing)|
+                |S1.5|Herencia múltiple|Detectar y validar si es intencional|
+              SPARQL: |
+                # Detectar herencia múltiple
+                SELECT ?class (COUNT(?parent) AS ?parentCount)
+                WHERE {
+                  ?class rdfs:subClassOf ?parent .
+                  FILTER(?parent != owl:Thing)
+                }
+                GROUP BY ?class
+                HAVING (COUNT(?parent) > 1)
+
+            - SubDimension: "Distinción Class vs. Instance vs. Category"
+              ID: ONTO-AUDIT-Q2-D1-SD2-CIC
+              Patterns_Table: |
+                |Patrón|Usar Cuando|Ejemplo Correcto|Anti-patrón|
+                |---|---|---|---|
+                |owl:Class|Tipos con axiomas formales, estables|ex:Employee rdfs:subClassOf gist:Person|Crear clase por cada variante|
+                |Instance|Individuos específicos|ex:_Person_JuanPerez a gist:Person|ex:JuanPerez a owl:Class|
+                |gist:Category|Taxonomías flexibles, sin axiomas|ex:_EmployeeType_Permanent a gist:Category|Clase para tipos administrativos|
+              Questions:
+                - "¿Hay clases que deberían ser instancias? (e.g., `ChileCountry` como clase)"
+                - "¿Hay instancias que deberían ser clases? (patrón de datos maestros mal modelado)"
+                - "¿Se usa `gist:Category` para taxonomías administradas por usuarios no-técnicos?"
+
+        - Dimension: "Higiene de Propiedades"
+          ID: ONTO-AUDIT-Q2-D2-PROPS
+          SubDimensions:
+            - SubDimension: "Análisis de Object Properties"
+              ID: ONTO-AUDIT-Q2-D2-SD1-OBJPROPS
+              Verifications_Table: |
+                |ID|Verificación|Criterio|
+                |---|---|---|
+                |S2.1|Inversa declarada|¿Todas las propiedades navegables tienen inversa?|
+                |S2.2|Dominio/Rango|¿Declarados pero no excesivamente restrictivos?|
+                |S2.3|Características|¿Funcional, transitiva, simétrica correctamente aplicadas?|
+                |S2.4|Naming consistency|¿Verbos para object properties (hasX, isXOf)?|
+              SPARQL: |
+                # Propiedades sin inversa declarada
+                SELECT ?prop WHERE {
+                  ?prop a owl:ObjectProperty .
+                  FILTER NOT EXISTS { ?prop owl:inverseOf ?inv }
+                  FILTER NOT EXISTS { ?inv owl:inverseOf ?prop }
+                }
+
+            - SubDimension: "Análisis de Datatype Properties"
+              ID: ONTO-AUDIT-Q2-D2-SD2-DATAPROPS
+              Verifications_Table: |
+                |ID|Verificación|Criterio|
+                |---|---|---|
+                |S2.5|Tipo de dato explícito|¿rdfs:range con xsd: datatype?|
+                |S2.6|Magnitudes con unidad|¿Valores medibles usan gist:Magnitude pattern?|
+                |S2.7|Fechas|¿Usan xsd:date, xsd:dateTime consistentemente?|
+
+          Anti_Patterns_Table: |
+            |Anti-patrón|Ejemplo|Corrección|
+            |---|---|---|
+            |Stringly-typed|ex:employeeId \"12345\" sin tipo|Usar xsd:integer o IRI|
+            |Direct Measurement|ex:weight \"75.5\"^^xsd:decimal|gist:Magnitude con UoM|
+            |Embedded Semantics|ex:billingAddress, ex:shippingAddress como props separadas|gist:Address + gist:AddressUsageType|
+
+        - Dimension: "Higiene de Namespaces e IRIs"
+          ID: ONTO-AUDIT-Q2-D3-NS
+          Criteria_Table: |
+            |ID|Criterio|Verificación|
+            |---|---|---|
+            |S3.1|No Namespace Squatting|¿No se definen términos en gist:, foaf:, schema:?|
+            |S3.2|Consistencia de Prefijos|¿Un solo prefijo por namespace en todo el modelo?|
+            |S3.3|Dereferenciabilidad|¿IRIs resuelven a documentación o son opacos?|
+            |S3.4|Patrón de IRI|¿Consistente para clases, propiedades, instancias?|
+          IRI_Patterns_Recommended:
+            ID: ONTO-AUDIT-Q2-D3-IRI-EX-01
+            Ex: |
+              # Ontología propia
+              https://org.example/ontology/domain/         # TBox (clases, propiedades)
+              https://org.example/data/domain/             # ABox (instancias)
+
+              # Instancias con identificador opaco
+              https://org.example/data/domain/_Person_abc123   # Prefijo "_" para instancias
+              https://org.example/data/domain/_Event_def456
+
+              # Reference Data
+              https://org.example/refdata/Country_CL        # Datos de referencia
+
+        - Dimension: "Patrones de Modelado y Reuso"
+          ID: ONTO-AUDIT-Q2-D4-PATTERNS
+          SubDimensions:
+            - SubDimension: "Evaluación de Patrones Gist"
+              ID: ONTO-AUDIT-Q2-D4-SD1-GIST
+              Patterns_Table: |
+                |Patrón|Aplica Cuando|Verificar|
+                |---|---|---|
+                |TemporalRelation|Relaciones con contexto temporal|¿Se modela empleo, membresía, propiedad como relación?|
+                |Magnitude + UoM|Valores medibles|¿Peso, precio, distancia usan el patrón?|
+                |Category|Taxonomías flexibles|¿Tipos administrativos son categorías?|
+                |Address|Direcciones físicas/electrónicas|¿Se usa containedText + refersTo?|
+                |Agreement/Commitment|Contratos, obligaciones|¿Hay estructura para partes y términos?|
+
+            - SubDimension: "Métricas de Reuso"
+              ID: ONTO-AUDIT-Q2-D4-SD2-REUSE
+              SPARQL: |
+                # Calcular índice de reuso de propiedades
+                SELECT
+                  (COUNT(DISTINCT ?imported) AS ?importedProps)
+                  (COUNT(DISTINCT ?custom) AS ?customProps)
+                  (COUNT(DISTINCT ?imported) * 100.0 /
+                   (COUNT(DISTINCT ?imported) + COUNT(DISTINCT ?custom)) AS ?reusePercent)
+                WHERE {
+                  { ?imported a owl:ObjectProperty . FILTER(STRSTARTS(STR(?imported), "https://w3id.org/semanticarts/")) }
+                  UNION
+                  { ?custom a owl:ObjectProperty . FILTER(!STRSTARTS(STR(?custom), "https://w3id.org/semanticarts/")) }
+                }
+                # Objetivo L3+: reusePercent >= 40%
+
+    - Quadrant: Semantic
+      ID: ONTO-AUDIT-Q3-SEMANTIC
+      Focus: "Lógica, inferencia, restricciones, identidad, perfiles OWL."
+      Dimensions:
+        - Dimension: "Consistencia Lógica"
+          ID: ONTO-AUDIT-Q3-D1-CONSISTENCY
+          Reasoners_Table: |
+            |Herramienta|Perfil|Uso|
+            |---|---|---|
+            |HermiT|OWL 2 DL|Consistencia, clasificación|
+            |Pellet|OWL 2 DL|Consistencia, explicaciones|
+            |ELK|OWL 2 EL|Alto rendimiento, ontologías grandes|
+            |RDFox|OWL 2 RL|Materialización, consultas|
+          Checklist:
+            - "Ontología carga sin errores en Protégé"
+            - "Razonador ejecuta sin timeout (< 60s para L3)"
+            - "No hay clases insatisfacibles"
+            - "No hay inconsistencias detectadas"
+            - "Inferencias son las esperadas (spot check)"
+          Unsatisfiable_Classes:
+            ID: ONTO-AUDIT-Q3-D1-UNSAT-01
+            SPARQL: |
+              # Después de clasificación, detectar clases equivalentes a owl:Nothing
+              SELECT ?class WHERE {
+                ?class owl:equivalentClass owl:Nothing .
+              }
+            Causes_Common:
+              - "Restricciones contradictorias (e.g., `hasPart min 1` y `hasPart max 0`)"
+              - "Disjointness con superclase"
+              - "Rangos incompatibles en cadena de propiedades"
+
+        - Dimension: "Rigor en Restricciones"
+          ID: ONTO-AUDIT-Q3-D2-RESTRICTIONS
+          Domain_Range_Table: |
+            |Escenario|Recomendación|
+            |---|---|
+            |Propiedad general|No declarar domain/range (hereda de superpropiedad)|
+            |Propiedad específica|Domain/Range en clase más general aplicable|
+            |Múltiples dominios posibles|Usar owl:unionOf o no declarar|
+          Anti_Pattern_OverConstrained:
+            ID: ONTO-AUDIT-Q3-D2-ANTI-01
+            Turtle: |
+              # ❌ Demasiado restrictivo
+              ex:hasPet rdfs:domain ex:Person ;
+                        rdfs:range ex:Dog .
+              # Problema: No puedo tener gatos
+
+              # ✅ Flexible
+              ex:hasPet rdfs:domain ex:Person ;
+                        rdfs:range ex:Animal .
+              # O mejor: heredar de gist:hasMember sin restricciones adicionales
+          Disjointness:
+            ID: ONTO-AUDIT-Q3-D2-DISJOINT-01
+            Verifications_Table: |
+              |ID|Verificación|Impacto|
+              |---|---|---|
+              |L1.1|Disjointness explícita|¿Clases hermanas son disjuntas?|
+              |L1.2|Covering axioms|¿Unión de subclases = superclase?|
+              |L1.3|Completitud|¿El modelo usa CWA o OWA apropiadamente?|
+            Turtle: |
+              # Patrón recomendado: Disjoint siblings
+              ex:Employee rdfs:subClassOf ex:Person .
+              ex:Customer rdfs:subClassOf ex:Person .
+              ex:Employee owl:disjointWith ex:Customer .
+
+              # O usando DisjointUnion (OWL 2)
+              ex:Person owl:disjointUnionOf (ex:Employee ex:Customer ex:Prospect) .
+
+        - Dimension: "Manejo de Identidad"
+          ID: ONTO-AUDIT-Q3-D3-IDENTITY
+          Identification_Properties_Table: |
+            |Característica|Uso|Verificar|
+            |---|---|---|
+            |owl:FunctionalProperty|Valor único por sujeto|¿hasBirthDate es funcional?|
+            |owl:InverseFunctionalProperty|Identifica unívocamente|¿hasSSN es IFP?|
+            |owl:hasKey|Clave compuesta|¿Clases tienen claves definidas?|
+          Anti_Pattern_StringLinking:
+            ID: ONTO-AUDIT-Q3-D3-ANTI-01
+            Turtle: |
+              # ❌ Enlace por string
+              ex:_Order_123 ex:customerName "Acme Corp" .
+              ex:_Invoice_456 ex:customerName "Acme Corp" .
+              # Problema: No hay enlace semántico, typos rompen integridad
+
+              # ✅ Enlace por IRI
+              ex:_Order_123 ex:hasCustomer ex:_Organization_AcmeCorp .
+              ex:_Invoice_456 ex:hasCustomer ex:_Organization_AcmeCorp .
+
+        - Dimension: "Perfiles OWL y Complejidad Computacional"
+          ID: ONTO-AUDIT-Q3-D4-OWL-PROFILES
+          Profiles_Table: |
+            |Perfil|Complejidad|Uso Típico|Verificar|
+            |---|---|---|---|
+            |OWL 2 Full|Indecidible|Evitar|N/A|
+            |OWL 2 DL|2-NEXPTIME|Ontologías medianas|Default|
+            |OWL 2 EL|PTIME|Ontologías grandes (SNOMED)|Sin negación, uniones|
+            |OWL 2 QL|AC0|Query answering|Sin existenciales complejos|
+            |OWL 2 RL|PTIME|Reglas de inferencia|Sin existenciales en head|
+          Verification_Tool:
+            ID: ONTO-AUDIT-Q3-D4-TOOL-01
+            Ex: |
+              # Usando OWL API / Protégé
+              # Verificar perfil en: Ontology > Ontology Metrics > OWL Profile
+
+    - Quadrant: Syntactic
+      ID: ONTO-AUDIT-Q4-SYNTACTIC
+      Focus: "Calidad del artefacto: parseo, estilo, anotaciones, modularización, tests, CI."
+      Dimensions:
+        - Dimension: "Validación Sintáctica"
+          ID: ONTO-AUDIT-Q4-D1-SYNTAX
+          Parse_Serialization_Table: |
+            |Verificación|Herramienta|Comando|
+            |---|---|---|
+            |Turtle válido|rapper|rapper -i turtle -c ontology.ttl|
+            |RDF/XML válido|xmllint + rapper|Validar XML + RDF|
+            |Prefijos declarados|Parser|Sin warnings de prefijos desconocidos|
+            |IRIs válidas|Parser|Sin caracteres ilegales|
+          Style_Checklist:
+            - "Indentación consistente (2 espacios recomendado)"
+            - "Orden de triples: subject-ordered, luego predicate-ordered"
+            - "Blank lines entre entidades"
+            - "Comentarios Turtle para secciones (#=== CLASSES ===)"
+            - "Prefijos ordenados alfabéticamente"
+            - "Un archivo por módulo (para ontologías grandes)"
+
+        - Dimension: "Anotaciones y Documentación Inline"
+          ID: ONTO-AUDIT-Q4-D2-ANNOTATIONS
+          Required_By_Level_Table: |
+            |Anotación|L1|L2|L3|L4|
+            |---|---|---|---|---|
+            |rdfs:label|●|●|●|●|
+            |rdfs:comment|○|●|●|●|
+            |skos:definition|○|○|●|●|
+            |skos:example|○|○|○|●|
+            |skos:scopeNote|○|○|○|●|
+            |dc:source|○|○|○|●|
+          Completeness_Query:
+            ID: ONTO-AUDIT-Q4-D2-SPARQL-01
+            SPARQL: |
+              SELECT ?entity
+                (BOUND(?label) AS ?hasLabel)
+                (BOUND(?comment) AS ?hasComment)
+                (BOUND(?definition) AS ?hasDefinition)
+              WHERE {
+                { ?entity a owl:Class } UNION { ?entity a owl:ObjectProperty } UNION { ?entity a owl:DatatypeProperty }
+                OPTIONAL { ?entity rdfs:label ?label }
+                OPTIONAL { ?entity rdfs:comment ?comment }
+                OPTIONAL { ?entity skos:definition ?definition }
+              }
+              HAVING (!BOUND(?label) || !BOUND(?comment))
+              # Resultado: Entidades sin label o comment
+
+        - Dimension: "Modularización y Dependencias"
+          ID: ONTO-AUDIT-Q4-D3-MODULARITY
+          Criteria_Table: |
+            |ID|Criterio|Verificación|
+            |---|---|---|
+            |M1|Separación TBox/ABox|¿Ontología separada de datos de instancia?|
+            |M2|Módulos por dominio|¿Subdominios en archivos separados?|
+            |M3|Imports explícitos|¿owl:imports para dependencias?|
+            |M4|Versiones de imports|¿IRIs versionados para imports críticos?|
+          Modularization_Pattern:
+            ID: ONTO-AUDIT-Q4-D3-PATTERN-01
+            Ex: |
+              ontology/
+              ├── core.ttl                 # Clases y propiedades core
+              ├── extensions/
+              │   ├── temporal.ttl         # Extensiones temporales
+              │   └── spatial.ttl          # Extensiones espaciales
+              ├── reference-data/
+              │   ├── countries.ttl        # Datos de referencia
+              │   └── currencies.ttl
+              └── bundle.ttl               # Importa todos los módulos
+
+        - Dimension: "Testing y Validación Automatizada"
+          ID: ONTO-AUDIT-Q4-D4-TESTING
+          SHACL_Shapes_Example:
+            ID: ONTO-AUDIT-Q4-D4-SHACL-01
+            Turtle: |
+              @prefix sh: <http://www.w3.org/ns/shacl#> .
+              @prefix ex: <https://example.org/ns/> .
+
+              ex:PersonShape a sh:NodeShape ;
+                  sh:targetClass ex:Person ;
+                  sh:property [
+                      sh:path ex:hasName ;
+                      sh:minCount 1 ;
+                      sh:maxCount 1 ;
+                      sh:datatype xsd:string ;
+                      sh:message "Toda persona debe tener exactamente un nombre"@es
+                  ] ;
+                  sh:property [
+                      sh:path ex:hasBirthDate ;
+                      sh:maxCount 1 ;
+                      sh:datatype xsd:date ;
+                      sh:lessThan ex:hasDeathDate ;
+                      sh:message "Fecha de nacimiento debe ser anterior a fecha de muerte"@es
+                  ] .
+          Pipeline_CICD_Example:
+            ID: ONTO-AUDIT-Q4-D4-CICD-01
+            YAML: |
+              # Ejemplo GitHub Actions
+              ontology-validation:
+                steps:
+                  - name: Syntax Check
+                    run: rapper -i turtle -c *.ttl
+
+                  - name: Consistency Check
+                    run: java -jar HermiT.jar -c ontology.ttl
+
+                  - name: SHACL Validation
+                    run: shacl validate -s shapes.ttl -d data.ttl
+
+                  - name: Metrics Report
+                    run: python ontology_metrics.py > report.md
+
+  Checklist_Consolidated:
+    ID: ONTO-AUDIT-CHECKLIST-01
+    Phases:
+      - Phase: "Preparación"
+        ID: ONTO-AUDIT-CL-P1
+        Items:
+          - "Identificar nivel de madurez objetivo (L1-L4)"
+          - "Obtener documentación de CQs y alcance"
+          - "Identificar stakeholders y audiencia"
+          - "Configurar ambiente (Protégé, razonador, SHACL processor)"
+      - Phase: "Auditoría Pragmática (C1)"
+        ID: ONTO-AUDIT-CL-P2
+        Items:
+          - "Verificar existencia y calidad de CQs"
+          - "Validar cobertura CQ ↔ Modelo"
+          - "Evaluar minimalismo y alcance"
+          - "Revisar legibilidad de labels/definiciones"
+          - "Verificar metadatos de gobernanza"
+      - Phase: "Auditoría Estructural (C2)"
+        ID: ONTO-AUDIT-CL-P3
+        Items:
+          - "Analizar jerarquía de clases (ciclos, profundidad, anchura)"
+          - "Validar distinción Class/Instance/Category"
+          - "Revisar propiedades (inversas, características)"
+          - "Verificar higiene de namespaces"
+          - "Evaluar reuso de patrones estándar"
+      - Phase: "Auditoría Semántica (C3)"
+        ID: ONTO-AUDIT-CL-P4
+        Items:
+          - "Ejecutar razonador (consistencia)"
+          - "Verificar clases insatisfacibles"
+          - "Analizar restricciones domain/range"
+          - "Validar disjointness"
+          - "Revisar manejo de identidad"
+          - "Confirmar perfil OWL"
+      - Phase: "Auditoría Sintáctica (C4)"
+        ID: ONTO-AUDIT-CL-P5
+        Items:
+          - "Validar parsing sin errores"
+          - "Verificar estilo y formato"
+          - "Evaluar completitud de anotaciones"
+          - "Revisar modularización"
+          - "Verificar dependencias (imports)"
+          - "Evaluar existencia de tests (SHACL)"
+      - Phase: "Reporte y Recomendaciones"
+        ID: ONTO-AUDIT-CL-P6
+        Items:
+          - "Clasificar hallazgos por severidad (Critical/Major/Minor/Info)"
+          - "Proporcionar ejemplos de corrección"
+          - "Priorizar acciones correctivas"
+          - "Documentar trade-offs de diseño"
+          - "Generar métricas comparativas"
+
+  Audit_Report_Template:
+    ID: ONTO-AUDIT-REPORT-TEMPLATE-01
+    Format: "Markdown"
+    Template: |
+      # Reporte de Auditoría Ontológica
+      **Ontología**: [Nombre]
+      **Versión**: [X.Y.Z]
+      **Fecha**: [YYYY-MM-DD]
+      **Auditor**: [Nombre/Agente]
+      **Nivel Objetivo**: [L1-L4]
+
+      ## Resumen Ejecutivo
+      | Cuadrante   | Score    | Estado |
+      | ----------- | -------- | ------ |
+      | Pragmático  | X/10     | RED/YELLOW/GREEN |
+      | Estructural | X/10     | RED/YELLOW/GREEN |
+      | Semántico   | X/10     | RED/YELLOW/GREEN |
+      | Sintáctico  | X/10     | RED/YELLOW/GREEN |
+      | **Total**   | **X/40** |        |
+
+      ## Hallazgos Críticos
+      1. [Hallazgo con impacto y corrección]
+
+      ## Hallazgos Mayores
+      1. [Hallazgo con impacto y corrección]
+
+      ## Hallazgos Menores
+      1. [Hallazgo con impacto y corrección]
+
+      ## Métricas
+      - Total Clases: X
+      - Total Propiedades: X (Object: Y, Datatype: Z)
+      - Total Instancias: X
+      - Índice de Reuso: X%
+      - Densidad Axiomática: X axiomas/clase
+      - Cobertura de Anotaciones: X%
+
+      ## Recomendaciones Priorizadas
+      1. [Acción] - Urgencia: Alta/Media/Baja
