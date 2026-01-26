@@ -85,3 +85,7 @@ test-results/
 tmp/
 temp/
 *.tmp
+.claude/
+.agent/
+.antigravity/
+sources/eliminar/

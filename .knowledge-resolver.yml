@@ -111,6 +111,10 @@ resolution_rules:
   "urn:knowledge:koda:antigravity:doc-antigravity-official:*": "./knowledge/domains/google_antigravity/doc_oficial_ag_koda.yml"
   "urn:knowledge:koda:antigravity:manual-ag-fx-v2:*": "./knowledge/domains/google_antigravity/manual_ag_fx_v2_koda.yml"
 
+  # Skills (Agent Skills Open Standard)
+  # Pattern: urn:knowledge:koda:skills:{skill-name}:{version}
+  "urn:knowledge:koda:skills:*:*": "./skills/*/SKILL.md"
+
 # Directory structure conventions
 directories:
   knowledge: "./knowledge/"
@@ -118,9 +122,17 @@ directories:
   domains: "./knowledge/domains/"
   schemas: "./schemas/"
   agents: "./agents/"
+  skills: "./skills/"  # Master skills repo (symlinked to .claude/skills and .agent/skills)
   catalog: "./catalog/"
   staging: "./staging/"
   sources: "./sources/"
+
+# Skills propagation (symlinks)
+skills_propagation:
+  master: "./skills/"
+  targets:
+    claude_code: ".claude/skills"      # -> ../skills
+    antigravity: ".agent/skills"       # -> ../skills
 
 cache:
   enabled: true

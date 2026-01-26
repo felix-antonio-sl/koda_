@@ -1,0 +1,72 @@
+# KODA Skills Resolver
+# Gestión centralizada de skills con propagación federada
+# Spec: urn:knowledge:koda:core:skills-federation:1.0.0
+
+_meta:
+  resolver_version: "1.0.0"
+  koda_compatibility: ">=1.0.0"
+  last_sync: null
+
+# Configuración del repositorio maestro
+master:
+  path: "./skills/"
+  namespaces:
+    koda: "./skills/koda/"           # Skills del framework KODA
+    own: "./skills/own/"             # Skills personales
+    community: "./skills/community/" # Skills comunitarias/terceros
+
+# Destinos de propagación
+targets:
+  # Globales (usuario)
+  claude_global:
+    path: "~/.claude/skills"
+    platform: claude-code
+    scope: global
+    enabled: true
+    description: "Claude Code global skills"
+
+  antigravity_global:
+    path: "~/.gemini/antigravity/skills"
+    platform: antigravity
+    scope: global
+    enabled: true
+    description: "Antigravity global skills"
+
+  # Locales (proyecto KODA)
+  claude_local:
+    path: ".claude/skills"
+    platform: claude-code
+    scope: workspace
+    symlink: "../skills"
+    description: "Claude Code workspace skills (KODA)"
+
+  agent_local:
+    path: ".agent/skills"
+    platform: antigravity
+    scope: workspace
+    symlink: "../skills"
+    description: "Antigravity workspace skills (KODA)"
+
+# Reglas de propagación por namespace
+propagation_rules:
+  koda:
+    description: "Skills del framework KODA"
+    targets: [claude_global, antigravity_global, claude_local, agent_local]
+    auto_sync: true
+  own:
+    description: "Skills personales"
+    targets: [claude_global, antigravity_global]
+    auto_sync: true
+  community:
+    description: "Skills comunitarias y de terceros"
+    targets: [antigravity_global]
+    auto_sync: false  # Requiere sync manual
+
+# Workspaces registrados (para push/pull)
+workspaces: {}
+  # Se populan dinámicamente cuando el usuario registra workspaces
+  # Ejemplo:
+  # sanixai:
+  #   path: "~/Developer/sanixai"
+  #   last_sync: "2026-01-26T12:00:00Z"
+  #   platforms: [claude-code, antigravity]
