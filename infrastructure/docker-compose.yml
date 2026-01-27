@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  koda-federation:
+    build:
+      context: ..
+      dockerfile: infrastructure/Dockerfile
+    image: koda-federation:latest
+    container_name: koda_federation_01
+    restart: unless-stopped
+    environment:
+      # Map of Namespace=GitURL separated by semicolons
+      - KODA_REPOS_MAP=koda=https://github.com/felix-antonio-sl/koda_.git;sanixai=https://github.com/felix-antonio-sl/sanixai.git
+      - KODA_BRANCH=develop
+      - KODA_SYNC_INTERVAL=60
+    volumes:
+      # Persist the clones (avoid re-cloning on restart)
+      - koda_repos:/opt/koda/repos
+      # Data persistence (memory/logs)
+      - koda_data:/opt/koda/data
+      # Config injection
+      - ./config/resolver.prod.yml:/opt/koda/config/resolver.prod.yml
+    networks:
+      - koda_net
+
+  redis:
+    image: redis:alpine
+    container_name: koda_redis
+    restart: always
+    volumes:
+      - koda_redis_data:/data
+    networks:
+      - koda_net
+
+volumes:
+  koda_repos:
+  koda_data:
+  koda_redis_data:
+
+networks:
+  koda_net:
+    driver: bridge

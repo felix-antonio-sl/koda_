@@ -5,7 +5,7 @@
 _meta:
   resolver_version: "1.0.0"
   koda_compatibility: ">=1.0.0"
-  last_sync: "2026-01-26T21:15:03Z"
+  last_sync: "2026-01-27T04:44:23Z"
 
 # Configuración del repositorio maestro
 master:
@@ -68,5 +68,5 @@ workspaces: {}
   # Ejemplo:
   # sanixai:
   #   path: "~/Developer/sanixai"
-  #   last_sync: "2026-01-26T21:15:03Z"
+  #   last_sync: "2026-01-27T04:44:23Z"
   #   platforms: [claude-code, antigravity]

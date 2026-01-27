@@ -189,27 +189,48 @@ cmd_sync() {
     if [ "$scope" = "global" ] || [ "$scope" = "all" ]; then
         echo -e "${CYAN}Global targets:${NC}"
 
+        # Function to handle symlink creation safely
+        ensure_symlink() {
+            local target="$1"
+            local source="$2"
+            
+            # Check if it's already a correct symlink
+            if [ -L "$target" ] && [ "$(readlink "$target")" == "$source" ]; then
+                 echo -e "  ${GREEN}✓${NC} $target (already linked)"
+                 return 0
+            fi
+
+            # Check if directory exists and is NOT a symlink (dangerous to just delete)
+            if [ -d "$target" ] && [ ! -L "$target" ]; then
+                 echo -e "  ${YELLOW}⚠${NC} $target exists but is a directory (not a symlink)"
+                 echo -e "      Manual intervention required to prevent data loss."
+                 echo -e "      Run: rm -rf \"$target\" && ln -sf \"$source\" \"$target\""
+                 return 1
+            fi
+
+            # Try to create/update symlink
+            # Use a subshell to capture stderr and check for EPERM
+            local output
+            if output=$(ln -shf "$source" "$target" 2>&1); then
+                echo -e "  ${GREEN}✓${NC} $target → $source"
+            else
+                echo -e "  ${RED}✗${NC} Failed to update $target"
+                echo -e "      Error: $output"
+                if [[ "$output" == *"Operation not permitted"* ]]; then
+                     echo -e "      ${YELLOW}macOS Protection detected.${NC}"
+                     echo -e "      Try running: sudo ln -shf \"$source\" \"$target\""
+                     echo -e "      Or grant 'Full Disk Access' to your terminal."
+                fi
+                return 1
+            fi
+        }
+
         # Claude Code global
-        local claude_global=$(expand_path "~/.claude/skills")
-        if [ -e "$claude_global" ] && [ ! -L "$claude_global" ]; then
-            echo -e "  ${YELLOW}⚠${NC} ~/.claude/skills exists but is not a symlink"
-            echo -e "      Run: rm -rf ~/.claude/skills && ln -sf $SKILLS_DIR ~/.claude/skills"
-        else
-            rm -f "$claude_global" 2>/dev/null
-            ln -sf "$SKILLS_DIR" "$claude_global"
-            echo -e "  ${GREEN}✓${NC} ~/.claude/skills → $SKILLS_DIR"
-        fi
+        ensure_symlink "$(expand_path "~/.claude/skills")" "$SKILLS_DIR"
 
         # Antigravity global
-        local ag_global=$(expand_path "~/.gemini/antigravity/skills")
-        if [ -e "$ag_global" ] && [ ! -L "$ag_global" ]; then
-            echo -e "  ${YELLOW}⚠${NC} ~/.gemini/antigravity/skills exists but is not a symlink"
-            echo -e "      Run: rm -rf ~/.gemini/antigravity/skills && ln -sf $SKILLS_DIR ~/.gemini/antigravity/skills"
-        else
-            rm -f "$ag_global" 2>/dev/null
-            ln -sf "$SKILLS_DIR" "$ag_global"
-            echo -e "  ${GREEN}✓${NC} ~/.gemini/antigravity/skills → $SKILLS_DIR"
-        fi
+        ensure_symlink "$(expand_path "~/.gemini/antigravity/skills")" "$SKILLS_DIR"
+        
         echo ""
     fi
 
@@ -238,7 +259,42 @@ cmd_sync() {
         sed -i "s/last_sync:.*/last_sync: \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"/" "$RESOLVER"
     fi
 
+    # Create bridge symlinks to flatten structure for global visibility
+    create_bridge_symlinks
+
     echo -e "${GREEN}Sync complete!${NC}"
+}
+
+create_bridge_symlinks() {
+    echo -e "${CYAN}Creating bridge symlinks (flattening structure)...${NC}"
+    
+    # Priority: own > koda > community
+    local namespaces=("community" "koda" "own")
+    
+    for ns in "${namespaces[@]}"; do
+        local ns_path="$SKILLS_DIR/$ns"
+        if [ -d "$ns_path" ]; then
+            for skill_dir in "$ns_path"/*; do
+                if [ -d "$skill_dir" ]; then
+                    local skill_name=$(basename "$skill_dir")
+                    local target="$ns/$skill_name"
+                    local link="$SKILLS_DIR/$skill_name"
+                    
+                    # Create/Overwrite symlink in root skills dir
+                    # This allows ~/.claude/skills/skill-name to resolve
+                    if [ -L "$link" ] || [ ! -e "$link" ]; then
+                        rm -f "$link" 2>/dev/null
+                        ln -s "$target" "$link"
+                        # echo -e "  ${GREEN}✓${NC} $skill_name → $target"
+                    elif [ -d "$link" ]; then
+                        echo -e "  ${YELLOW}⚠${NC} $skill_name is a real directory, skipping bridge link"
+                    fi
+                fi
+            done
+        fi
+    done
+    echo -e "  ${GREEN}✓${NC} Bridge links updated"
+    echo ""
 }
 
 cmd_push() {

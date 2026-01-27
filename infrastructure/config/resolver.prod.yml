@@ -1,0 +1,32 @@
+# Production Federation Resolver
+# Maps ALL namespaces to the standard container path /opt/koda/repos/{namespace}
+
+_meta:
+  environment: "production_federated"
+  injected_at: "runtime"
+
+namespaces:
+  # Base Framework
+  koda:
+    type: local
+    base_path: "/opt/koda/repos/koda"
+    priority: 1
+    required: true
+
+resolution_rules:
+  # Universal mapping for ANY namespace deployed in /opt/koda/repos/
+  # Pattern: urn:knowledge:{namespace}:... -> /opt/koda/repos/{namespace}/...
+
+  "urn:knowledge:*:*:*:*": "/opt/koda/repos/$1/knowledge/*"
+  "urn:knowledge:*:skills:*:*": "/opt/koda/repos/$1/skills/*/SKILL.md"
+
+directories:
+  # Standard layout per repo
+  knowledge: "knowledge/"
+  agents: "agents/"
+  skills: "skills/"
+
+cache:
+  enabled: true
+  ttl_seconds: 3600
+  backend: "redis"
