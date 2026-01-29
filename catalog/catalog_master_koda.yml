@@ -9,12 +9,12 @@ _manifest:
   provenance:
     created_by: "FS"
     created_at: "2025-11-25"
-    last_modified_at: "2026-01-22"
+    last_modified_at: "2026-01-29"
 
 ID: KODA-CATALOG-MASTER-01
-Version: 1.1.0
+Version: 1.2.0
 Status: Published
-Version-Notes: "v1.1.0 - Token-optimized all 10 agents for LLM consumption (-33% reduction)"
+Version-Notes: "v1.2.0 - Restored full content in life-master, agent-spec, agent-construct (organic restoration preserving modernizations)"
 
 Catalog:
   Core_Guides:

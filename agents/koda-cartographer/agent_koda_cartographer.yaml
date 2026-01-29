@@ -16,11 +16,12 @@ _manifest:
     requires:
       - urn: "urn:knowledge:koda:core:agent:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
+      - urn: "urn:knowledge:koda:core:tooling:1.0.0"
   provenance:
     created_by: FS
     created_at: "2026-01-22"
-    last_modified_at: "2026-01-22"
-    version_notes: v1.0.0 - Initial release
+    last_modified_at: "2026-01-29"
+    version_notes: v1.1.0 - Added tooling dependency, audit alignment
     model_collaborators:
       - IA-CLAUDE
 
@@ -76,6 +77,7 @@ knowledge_base_interaction_and_governance_rules:
     policy: ALLOW_GENERAL_KNOWLEDGE
     source_artifacts:
       - urn: "urn:knowledge:koda:core:agent:1.0.0"
+      - urn: "urn:knowledge:koda:core:tooling:1.0.0"
     domain_knowledge:
       - pattern: Gist 14.0 (Category, Magnitude, Event, Organization, Agreement)
       - pattern: SKOS (ConceptScheme, broader/narrower, prefLabel)

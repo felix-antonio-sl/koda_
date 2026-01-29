@@ -54,7 +54,7 @@ LLM_Parsing_Instructions:
 
 Purp: Guide for transforming verbose human documents into token-efficient, structured KODA artifacts with zero information loss.
 
-Obj: Achieve 30-50% token reduction through telegrafization and intensive internal referencing.
+Obj: Achieve FS=100% fidelity and CR>1.0 compression through telegrafization and intensive internal referencing.
 
 # 1. Transformation Overview
 
@@ -66,7 +66,7 @@ Transformation:
   Output: KODA artifact (telegraphic, structured, deduplicated)
 
   Key_Metrics:
-    - Token_Reduction: 30-50% fewer tokens
+    - Compression_Ratio: >1.0 (caracteres_origen/caracteres_koda)
     - Information_Preservation: 100% fidelity (zero loss)
     - Structure_Enhancement: YAML-compliant, keyword-marked, cross-referenced
 
@@ -313,11 +313,11 @@ Phase4_Validation:
         - Verify all repetitions use Ref
       Pass_Criteria: No duplicate content (except where semantically distinct)
 
-    - Check: Token efficiency
-      Test: Count tokens (source vs artifact)
-      Tool: LLM tokenizer (e.g., tiktoken for GPT)
-      Pass_Criteria: 30-50% token reduction
-      Formula: (1 - artifact_tokens/source_tokens) * 100 >= 30%
+    - Check: Compression efficiency
+      Test: Count characters (source vs artifact)
+      Tool: wc -c or equivalent character counter
+      Pass_Criteria: CR > 1.0
+      Formula: CR = source_chars / artifact_chars
 
     - Check: Structure preserved
       Test: Verify hierarchies, tables, lists maintained
@@ -454,20 +454,16 @@ Token_Optimization:
 # 6. Quality Metrics
 
 Quality_Metrics:
-  - Metric: Token Efficiency Ratio (TER)
-    Formula: TER = (source_tokens - artifact_tokens) / source_tokens
-    Target: TER >= 0.30 (30% reduction)
-    Excellent: TER >= 0.50 (50% reduction)
-
   - Metric: Fidelity Score (FS)
     Formula: FS = (preserved_facts / source_facts) * 100
     Target: FS = 100% (zero information loss)
     Prohib: FS < 100%
 
-  - Metric: Reference Density (RD)
-    Formula: RD = (Ref_usages / total_definitions)
-    Target: RD >= 2.0 (each definition referenced at least twice)
-    Note: Higher RD indicates better deduplication
+  - Metric: Compression Ratio (CR)
+    Formula: CR = source_chars / artifact_chars
+    Target: CR > 1.0 (artifact smaller than source)
+    Note: Higher CR indicates better compression
+    Prohib: CR <= 1.0 (artifact larger than source)
 
   - Metric: Structural Integrity (SI)
     Assessment: Manual verification
@@ -496,7 +492,7 @@ Examples:
           - Two-factor authentication
 
     Artifact_Tokens: 28
-    TER: 46% reduction
+    CR: 1.86
     FS: 100%
 
   - Example: Repeated concept deduplication
@@ -525,9 +521,8 @@ Examples:
           Timing: Before processing
 
     Artifact_Tokens: 24
-    TER: 33% reduction
+    CR: 1.5
     FS: 100%
-    RD: 3.0
 
 # 8. Workflow Summary
 
@@ -539,7 +534,6 @@ Workflow:
     - "Validate: Checklist verification before delivery"
 
   Critical_Success_Factors:
-    - Zero information loss (100% fidelity)
-    - Aggressive deduplication (high Ref density)
+    - Zero information loss (FS = 100%)
+    - Compression achieved (CR > 1.0)
     - Preserve structure (hierarchy, tables, lists)
-    - Achieve token target (30-50% reduction)

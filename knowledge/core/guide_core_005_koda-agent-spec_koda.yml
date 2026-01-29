@@ -1,5 +1,6 @@
 # KODA Agent Protocol (ADP) Specification v1.0
 # KODA/Spec YAML Format
+# Formal specification of KODA/Agent schema and semantics
 
 _manifest:
   urn: "urn:knowledge:koda:core:agent:1.0.0"
@@ -8,15 +9,19 @@ _manifest:
     license: "CC-BY-4.0"
   compatibility:
     min_consumer_version: "1.0.0"
+    breaking_changes_from: null
   resolution:
     canonical_url: "file://knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
+    mirrors: []
   dependencies:
     requires:
       - urn: "urn:knowledge:koda:core:spec:1.0.0"
+        reason: "Structural format specification"
       - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
+        reason: "Knowledge federation model"
   provenance:
     created_by: "FS"
-    created_at: "2025-11-25"
+    created_at: "2025-06-29"
     last_modified_by: "FS"
     last_modified_at: "2025-12-08"
     signature: null
@@ -24,9 +29,13 @@ _manifest:
 ID: KODA-AGENT-SPEC-01
 Version: 1.1.0
 Status: Published
+Human-Creator: FS
+Human-Editor: FS
+Model-Collaborator: IA-CLAUDE
+Creation-Date: 2025-06-29
+Modification-Date: 2025-11-25
+Version-Notes: "v1.1.0 - Adds mandatory Knowledge Base Initialization step for KB-based agents"
 Source: GUIDE-KODA-MASTER-03
-Creation-Date: 2025-11-25
-Modification-Date: 2025-12-08
 Ctx: Technical specification of KODA as YAML schema for declarative agent definition
 
 LLM_Parsing_Instructions:
@@ -46,150 +55,917 @@ LLM_Parsing_Instructions:
     LANGUAGE POLICY: Keywords in English, content in original language. Never translate content.
     END_LLM_INSTRUCTIONS
 
-Purp: Define KODA/Agent as formal YAML schema.
-Obj: Transform requirements -> unambiguous definition.
+Purp: Define KODA/Agent ( Agent Protocol) as formal YAML schema for declarative AI agent specification.
 
-ADP_Definition:
-  Def: YAML schema for declarative AI agent specification.
-  Principles:
-    - P1_Source_Code: YAML is code, LLM is interpreter.
-    - P2_Structure_Meaning: Hierarchy conveys context.
-    - P3_Separation: Keys=English, Values=Content_Lang.
-    - P4_Cartography: Explicit KB pathing (No implicit semantic search).
-    - P5_Abstraction: No internal jargon exposed.
-    - P6_Category: Agent=Category, State=Object, Transition=Morphism.
-    - P7_Federation: KB composed via URN references.
+ADP:
+  ID: KODA-DEFINITION-01
+  Def: YAML-compliant schema for declarative conversational AI agent specification.
+  Obj: Transform agent behavior requirements into unambiguous, machine-interpretable definitions.
+  Key_Characteristics:
+    - Declarative programming paradigm
+    - LLM as interpreter/runtime
+    - Maximum behavioral fidelity
+    - Zero ambiguity in agent behavior
+    - Federated knowledge composition
+
+Principles:
+  ID: KODA-PRINCIPLES-01
+  Mssn: Declarative agent programming with maximum behavioral fidelity.
+  Dest: Large Language Models (LLMs) as interpreters.
+
+  Principle_List:
+    - Principle: YAML is Source Code
+      ID: KODA-PRINCIPLE-SOURCE-CODE
+      Def: The agent.yaml file is source code; the LLM acts as its interpreter.
+      Req: Syntax must be unambiguous, machine-parsable YAML.
+      Res: Agent behavior is deterministic and reproducible.
+
+    - Principle: Structure is Meaning
+      ID: KODA-PRINCIPLE-STRUCTURE
+      Def: YAML hierarchy and nesting convey context and scope, not just values.
+      Mech: Indentation levels carry semantic weight.
+      Res: Parent-child relationships define behavioral boundaries.
+
+    - Principle: Protocol/Content Separation
+      ID: KODA-PRINCIPLE-SEPARATION
+      Def: Protocol language (ADP keys) always in English; content language in agent's operating language.
+      Mech: Keys are fixed vocabulary; values are domain-specific.
+      Ex: Key is `role`, value is "Asesor experto en IPR" (es-CL).
+
+    - Principle: Explicit Knowledge Cartography
+      ID: KODA-PRINCIPLE-CARTOGRAPHY
+      Def: Agent reasoning path from query to knowledge artifact MUST be explicit and deterministic.
+      Mech: KB Guidance Pattern with explicit mapping.
+      Prohib: Implicit retrieval via semantic similarity.
+      Res: Transforms knowledge lookup from unreliable search into high-fidelity operation.
+
+    - Principle: Semantic Abstraction
+      ID: KODA-PRINCIPLE-ABSTRACTION
+      Def: Never expose internals (filenames, model IDs, states) to users.
+      Req: Communicate only in functional, user-centric terms.
+      Mech: forbid_internal_jargon guardrail.
+
+    - Principle: Agent as Formal Category
+      ID: KODA-PRINCIPLE-CATEGORY
+      Def: |
+        Cat_Agent formalization:
+        - Objects: States under defined_states
+        - Morphisms: Transitions between states
+        - Composition: Workflows demonstrate associative composition
+        - Identity: Each state has identity morphism (self-loop)
+      Ctx: Category-theoretic foundation for agent behavior.
+      Res: Enables formal verification of agent behavior.
+
+    - Principle: Federated Knowledge Composition
+      ID: KODA-PRINCIPLE-FEDERATION
+      Def: Agent knowledge bases composed via URN references.
+      Mech: source_artifacts with URN identifiers.
+      Res: Cross-repository sharing without duplication.
+      Ctx: "urn:knowledge:koda:core:hub-federation:1.0.0"
 
 Schema:
-  Base: YAML 1.2
-  Runtime_Directive:
-    Req: First block.
+  ID: KODA-SCHEMA-01
+  Base: YAML 1.2 specification
+  Constraint: All KODA documents must be valid YAML.
+  Extension: KODA keys used as YAML keys for semantic markup.
+
+  Key_Value_Structure:
+    ID: KODA-SCHEMA-KV-01
+    Def: KODA is a YAML schema where directives are nested key-value pairs.
+    Components:
+      - Component: top_level_key
+        Def: High-level module (namespace).
+        Ex: agent_identity_and_global_configuration
+      - Component: nested_key
+        Def: Functional sub-module or specific directive.
+        Ex: primary_role_objective_and_audience.role
+
+  Block_Definition:
+    ID: KODA-SCHEMA-BLOCK-01
+    Def: Logical blocks (Workflows, States, Cognitive Models) are YAML maps keyed by unique block ID.
+    Components:
+      - Component: BLOCK_CONTAINER_KEY
+        Def: Parent key grouping blocks.
+        Ex: defined_states, private_internal_reasoning_processes
+      - Component: BLOCK_ID
+        Def: Unique identifier inside container.
+        Format: UPPERCASE-KEBAB-CASE with semantic prefix.
+        Ex: S-DISPATCHER, CM-KB-GUIDANCE, WF-ADVISORY
+      - Component: _meta
+        Def: "Modifier for visibility control. Only { expose: false } allowed."
+        Use: Hide internal logic from output.
+      - Component: apply_on_trigger
+        Def: Optional documentation indicating invoking state.
+
+  Agent_Runtime_Directive:
+    ID: KODA-SCHEMA-RUNTIME-01
+    Purp: Standard, machine-readable preamble for all agent.yaml files.
+    Req: MUST be first content in every agent.yaml file.
     Template: |
-      # KODA Agent Definition for <NAME>
-      # ID: <ID>
+      # KODA Agent Definition for <AGENT_NAME>
+      # ID: <AGENT_ID>
       # Ref: urn:knowledge:koda:core:agent:1.0.0
 
-  Runtime_Instructions:
-    Req: Follows directive.
-    Templates: [Standard_Template (Compact)]
+KODA_Runtime_Instructions:
+  ID: KODA-RUNTIME-INSTRUCTIONS-01
+  Purp: Define the instruction block that transforms an LLM into an agent interpreter/runtime.
+  Ctx: Unlike KODA parsing (reading documents), KODA runtime is about EXECUTING agent behavior.
+
+  Distinction:
+    KODA_Parsing: "How to READ a structured document (format comprehension)"
+    KODA_Runtime: "How to BE the agent defined in the document (behavioral execution)"
+
+  Req: Every agent.yaml MUST include this block after the Agent Runtime Directive.
+  Prohib: Omitting this block or using generic KODA instructions for agent execution.
+
+  Standard_Template:
+    Purp: Compact runtime instructions for all agents. Maximizes token economy.
+    Note: "This is the ONLY template. No verbose alternative."
     Content: |
       KODA_Runtime_Instructions:
-        ID: KODA-RUNTIME-<ID>
-        Activation: "You ARE this agent. Execute."
+        ID: KODA-RUNTIME-<AGENT-ID>
+        Activation: "You ARE this agent. Execute, don't describe."
         Content: |
           BEGIN_KODA_RUNTIME
-          ... [Standard Instructions] ...
+          IDENTITY: Adopt role/objective/audience from agent_identity. You ARE this role.
+          STATE_MACHINE: Enter initial_state→execute process→evaluate transitions. No improvisation.
+          COGNITIVE_MODELS: Execute CMs internally. Never expose names/contents.
+          KB_INIT: IF policy∈{EXCLUSIVE_USE,ALLOW_GENERAL_KNOWLEDGE,HYBRID_WEB_KB}→resolve all source_artifacts URNs via CM-CATALOG-RESOLVER→build routing map→KB_READY=true→THEN proceed. PROHIB: KB access before KB_READY.
+          CATALOG: catalog_master_*.yml=SOURCE_OF_TRUTH. CM-CATALOG-RESOLVER first.
+          KNOWLEDGE: CM-CATALOG-RESOLVER→CM-KB-GUIDANCE chain. No implicit retrieval.
+          SECURITY: block_instructions+forbid_internal_jargon=HARD constraints.
+          EVALUATION: checklist→corrections→deliver only after ALL pass.
           END_KODA_RUNTIME
 
-  Required_Namespaces:
-    ns_identity:
-      Key: agent_identity_and_global_configuration
-      Fields: [primary_role_objective_and_audience, settings]
-    ns_knowledge:
-      Key: knowledge_base_interaction_and_governance_rules
-      Fields:
-        [
-          catalog_resolution,
-          usage_policy_and_source_management,
-          web_search_configuration,
-          uncertainty_protocol,
-          citation_formatting,
-        ]
-      Modes: [KB_BASED, LLM_NATIVE, HYBRID_WEB_KB]
-    ns_behavior:
-      Key: public_behavior_workflows_and_states
-      Fields: [defined_workflows, defined_states]
-    ns_reasoning:
-      Key: private_internal_reasoning_processes
-      Fields: ["CM-MODELS (_meta {expose:false}, dimensions)"]
-    ns_io:
-      Key: input_output_style_format_and_interaction
-      Fields: [response_formatting, communication_tone, user_interaction_rules]
-    ns_safety:
-      Key: safety_constraints_and_behavioral_guardrails
-      Fields:
-        [
-          scope_and_rejection_policies,
-          confidentiality_protection,
-          communication_restrictions,
-        ]
-    ns_meta:
-      Key: self_evaluation_and_correction_mechanisms
-      Fields: [evaluation_process, correction_protocol]
+  Integration_With_KODA_Spec:
+    Def: KODA Runtime Instructions complement, not replace, KODA Parsing Instructions.
+    Structure:
+      - Layer_1: KODA Parsing (for artifacts the agent consumes as knowledge)
+      - Layer_2: KODA Runtime (for the agent.yaml that defines the agent itself)
+    Note: An agent uses KODA parsing to read KB artifacts, but KODA runtime to execute its own definition.
 
-  Optional_Namespaces:
-    ns_orchestration:
-      Key: orchestration_fleet_and_protocol
-      Ctx: HOA only.
-      Fields: [fleet_definition, orchestration_protocol]
-    ns_tools:
-      Key: external_tools_and_functions
-    ns_examples:
-      Key: few_shot_behavior_examples
+Namespaces:
+  ID: KODA-NAMESPACES-01
+  Purp: Define canonical top-level keys for agent.yaml structure.
+
+  Required_Keys:
+    - Key: agent_identity_and_global_configuration
+      ID: NS-IDENTITY
+      Purp: Fundamental identity and global configuration.
+      Contains:
+        - primary_role_objective_and_audience (role, objective, audience)
+        - settings (content_lang, etc.)
+
+    - Key: knowledge_base_interaction_and_governance_rules
+      ID: NS-KNOWLEDGE
+      Purp: Rules for KB interaction, web search, and source governance.
+      Contains:
+        - catalog_resolution (catalog_urn, resolution_strategy, fallback, instructions) - optional for KB-less agents
+        - usage_policy_and_source_management (policy, source_artifacts)
+        - web_search_configuration (enabled, provider, scope, freshness, domains) - for WEB_AUGMENTED/HYBRID
+        - uncertainty_protocol
+        - citation_formatting
+      Knowledge_Modes:
+        - KB_BASED: Uses catalog + source_artifacts (EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE)
+        - KB_LESS: No artifacts, uses LLM or web (LLM_NATIVE, WEB_AUGMENTED)
+        - HYBRID: Combines KB + web search (HYBRID_WEB_KB)
+
+    - Key: public_behavior_workflows_and_states
+      ID: NS-BEHAVIOR
+      Purp: Public interface—observable workflows and states.
+      Contains:
+        - defined_workflows (workflow definitions with initial_state)
+        - defined_states (state definitions with role, process, transitions)
+
+    - Key: private_internal_reasoning_processes
+      ID: NS-REASONING
+      Purp: Private implementation—internal reasoning models.
+      Contains:
+        - Cognitive models with _meta, dimensions, apply_on_trigger
+      Standard_Models:
+        - CM-CATALOG-RESOLVER: For KB-based agents (resolves URNs via catalog)
+        - CM-KB-GUIDANCE: For KB-based agents (routes queries to artifacts)
+        - CM-WEB-SEARCH: For web-augmented agents (executes web searches)
+        - CM-CONTEXT-MANAGER: For all agents (detects context shifts)
+
+    - Key: input_output_style_format_and_interaction
+      ID: NS-IO
+      Purp: Input/output directives (style, format).
+      Contains:
+        - response_formatting
+        - communication_tone
+        - user_interaction_rules
+
+    - Key: safety_constraints_and_behavioral_guardrails
+      ID: NS-SAFETY
+      Purp: Safety guardrails and scope limits.
+      Contains:
+        - scope_and_rejection_policies
+        - confidentiality_protection
+        - communication_restrictions
+
+    - Key: self_evaluation_and_correction_mechanisms
+      ID: NS-META
+      Purp: Metaprogramming and self-evaluation.
+      Contains:
+        - evaluation_process (pre_response_hook, checklist)
+        - correction_protocol
+
+  Optional_Keys:
+    - Key: orchestration_fleet_and_protocol
+      ID: NS-ORCHESTRATION
+      Purp: Sub-agent fleet and orchestration rules.
+      Ctx: Higher-Order Agents only.
+      Contains:
+        - fleet_definition (sub_agents list)
+        - orchestration_protocol (objective, workflow, synthesis_rules)
+
+    - Key: external_tools_and_functions
+      ID: NS-TOOLS
+      Purp: Tool/function-calling declarations.
+      Contains:
+        - Tool definitions with OpenAPI schema or equivalent.
+
+    - Key: few_shot_behavior_examples
+      ID: NS-EXAMPLES
+      Purp: Few-shot examples for specific behaviors.
+      Contains:
+        - Example interactions demonstrating expected behavior.
 
 Lexicon:
-  Identity:
-    role: "Primary role desc (Req)"
-    objective: "Ultimate goal (Req)"
-    audience: "Target user (Req)"
-    content_lang: "BCP-47 code (Req)"
+  ID: KODA-LEXICON-01
+  Purp: Consolidated YAML paths and their semantics.
 
-  Knowledge:
-    catalog_resolution:
-      {
-        catalog_urn: null,
-        strategy: [CATALOG_FIRST],
-        fallback: [STATIC_ROUTING],
-      }
-    usage_policy:
-      [EXCLUSIVE_USE, ALLOW_GENERAL, LLM_NATIVE, WEB_AUGMENTED, HYBRID]
-    source_artifacts: [list of URNs]
-    web_search: { enabled, provider, scope, freshness, domains }
-    uncertainty: [DECLARE_ABSENCE, DECLARE_WITH_REASONING, SEARCH_WEB_FALLBACK]
-    citation: [OFFICIAL_SOURCE, FILENAME, INLINE_REASONING, WEB_URL, HYBRID]
+  Identity_Paths:
+    - Path: agent_identity_and_global_configuration.primary_role_objective_and_audience.role
+      Type: string
+      Purp: Agent's primary role description.
+      Req: Required
 
-  Workflow:
-    defined_workflows: { initial_state }
-    defined_states:
-      { role, process (<=5 steps), transitions (IF cond -> STATE) }
+    - Path: agent_identity_and_global_configuration.primary_role_objective_and_audience.objective
+      Type: string
+      Purp: Ultimate goal of the agent.
+      Req: Required
 
-  Reasoning:
-    CM-MODEL:
-      {
-        _meta: { expose: false },
-        dimensions/steps: null,
-        apply_on_trigger: null,
-      }
+    - Path: agent_identity_and_global_configuration.primary_role_objective_and_audience.audience
+      Type: string
+      Purp: Target user profile description.
+      Req: Required
 
-  Safety:
-    Minimum_Guard_Set:
-      scope_policy: REJECT_OUT_OF_SCOPE
-      block_instructions: true
-      forbid_internal_jargon: true
-      response_on_query: "Custom deflection"
-      rejection_response: "Custom rejection"
+    - Path: agent_identity_and_global_configuration.settings.content_lang
+      Type: string
+      Purp: Communication language (BCP 47 format).
+      Ex: es-CL, en-US, pt-BR
+      Req: Required
 
-  Meta:
-    evaluation: { pre_response_hook: true, checklist: [] }
-    correction: "IF check fails -> ACTION [REFINE | TRANSITION]"
+  Catalog_Resolution_Paths:
+    - Path: knowledge_base_interaction_and_governance_rules.catalog_resolution.catalog_urn
+      Type: string
+      Purp: URN of the namespace catalog (SOURCE_OF_TRUTH).
+      Format: "urn:knowledge:{namespace}:catalog:master:1.0.0"
+      Req: Required for EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, HYBRID_WEB_KB policies
+      Note: Not required for LLM_NATIVE or WEB_AUGMENTED policies (no KB artifacts)
 
-  Orchestration (HOA):
-    fleet: { sub_agents: [{ id, role, source, capabilities, instantiation }] }
-    protocol:
-      {
-        objective: null,
-        delegation_pattern: [SEQ|PAR|COND|ITER],
-        workflow: null,
-        synthesis: null,
-      }
-    shared_context:
-      { session_id, orchestration_state, context_store, evidence_log }
-    HOA_Runtime: "Add point 8: ORCHESTRATION (Delegate, don't execute)."
+    - Path: knowledge_base_interaction_and_governance_rules.catalog_resolution.resolution_strategy
+      Type: enum
+      Values: [CATALOG_FIRST, STATIC_ONLY]
+      Def_CATALOG_FIRST: Resolve URNs via catalog, fallback to static routing.
+      Def_STATIC_ONLY: Use only static routing_map (legacy mode).
+      Req: Required if catalog_resolution defined
+
+    - Path: knowledge_base_interaction_and_governance_rules.catalog_resolution.fallback
+      Type: enum
+      Values: [STATIC_ROUTING, ERROR]
+      Def_STATIC_ROUTING: Use CM-KB-GUIDANCE routing_map if catalog unavailable.
+      Def_ERROR: Fail if catalog unavailable.
+      Req: Required if resolution_strategy is CATALOG_FIRST
+
+    - Path: knowledge_base_interaction_and_governance_rules.catalog_resolution.instructions
+      Type: string
+      Purp: Human-readable instructions for catalog resolution behavior.
+      Req: Recommended
+
+  Knowledge_Paths:
+    - Path: knowledge_base_interaction_and_governance_rules.usage_policy_and_source_management.policy
+      Type: enum
+      Values:
+        [
+          EXCLUSIVE_USE,
+          ALLOW_GENERAL_KNOWLEDGE,
+          LLM_NATIVE,
+          WEB_AUGMENTED,
+          HYBRID_WEB_KB,
+        ]
+      Def_EXCLUSIVE_USE: Only use specified source_artifacts. Requires catalog.
+      Def_ALLOW_GENERAL: May use general LLM knowledge when KB insufficient.
+      Def_LLM_NATIVE: No KB artifacts. Agent uses only LLM base knowledge. No catalog required.
+      Def_WEB_AUGMENTED: No KB artifacts. Agent uses LLM + web search. No catalog required.
+      Def_HYBRID_WEB_KB: Uses KB artifacts + web search for real-time data. Requires catalog.
+      Req: Required
+
+    - Path: knowledge_base_interaction_and_governance_rules.usage_policy_and_source_management.source_artifacts
+      Type: list
+      Item_Schema:
+        - urn: URN reference to knowledge artifact
+        - path: Local file path (legacy, deprecated)
+      Purp: Knowledge sources for agent.
+      Req: Required if policy is EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, or HYBRID_WEB_KB
+      Note: Not required for LLM_NATIVE or WEB_AUGMENTED policies
+      Note_KB_Initialization: "For KB-based policies, runtime MUST treat this list as input to a Knowledge Base Initialization step immediately after agent instantiation and before the first user-facing response, resolving all URNs via the catalog as SOURCE_OF_TRUTH."
+
+    - Path: knowledge_base_interaction_and_governance_rules.web_search_configuration
+      Type: object
+      Purp: Configuration for web search augmentation.
+      Req: Required if policy is WEB_AUGMENTED or HYBRID_WEB_KB
+      Schema:
+        enabled: boolean (must be true for web policies)
+        provider: enum [native, tavily, serper, brave, bing]
+        search_scope: enum [general, academic, news, domain_specific]
+        max_results: integer (1-10, default 5)
+        freshness: enum [any, day, week, month, year]
+        domain_whitelist: list[string] (optional, restrict to specific domains)
+        domain_blacklist: list[string] (optional, exclude specific domains)
+        citation_required: boolean (default true)
+
+    - Path: knowledge_base_interaction_and_governance_rules.uncertainty_protocol
+      Type: enum
+      Values:
+        [
+          DECLARE_ABSENCE,
+          DECLARE_UNCERTAINTY_WITH_REASONING,
+          SEARCH_WEB_FALLBACK,
+        ]
+      Def_DECLARE_ABSENCE: State information is not available.
+      Def_DECLARE_UNCERTAINTY: Explain reasoning for uncertainty.
+      Def_SEARCH_WEB_FALLBACK: Attempt web search before declaring uncertainty (requires web_search enabled).
+      Purp: Behavior when information not found.
+      Req: Required
+
+    - Path: knowledge_base_interaction_and_governance_rules.citation_formatting.style
+      Type: enum
+      Values:
+        [
+          OFFICIAL_SOURCE_NAME,
+          FILENAME,
+          INLINE_REASONING_TRACE,
+          WEB_URL,
+          HYBRID_SOURCE,
+        ]
+      Def_WEB_URL: Cite web sources with full URL.
+      Def_HYBRID_SOURCE: Cite KB sources by name, web sources by URL.
+      Purp: How to cite sources in responses.
+      Req: Required
+
+  Workflow_Paths:
+    - Path: public_behavior_workflows_and_states.defined_workflows.<WF-ID>.initial_state
+      Type: string
+      Purp: Entry state ID for workflow.
+      Req: Must reference existing state in defined_states.
+
+    - Path: public_behavior_workflows_and_states.defined_states.<STATE-ID>.role
+      Type: string
+      Purp: Functional role description of state.
+      Req: Required
+
+    - Path: public_behavior_workflows_and_states.defined_states.<STATE-ID>.process
+      Type: list[string]
+      Purp: High-level orchestration steps.
+      Constraint: MUST NOT exceed 5 steps.
+      Req: Required
+
+    - Path: public_behavior_workflows_and_states.defined_states.<STATE-ID>.transitions
+      Type: list[string]
+      Format: "IF <condition> -> <TARGET-STATE-ID>"
+      Purp: Transition conditions to other states.
+      Req: Required (empty list for terminal states)
+
+  Reasoning_Paths:
+    - Path: private_internal_reasoning_processes.<CM-ID>._meta
+      Type: object
+      Format: "{ expose: false }"
+      Purp: Hide internal logic from output.
+      Req: Required for all cognitive models.
+
+    - Path: private_internal_reasoning_processes.<CM-ID>.dimensions
+      Type: list[string]
+      Purp: Steps or dimensions of analysis.
+      Req: Required
+
+    - Path: private_internal_reasoning_processes.<CM-ID>.apply_on_trigger
+      Type: string
+      Purp: Documentation of invoking state.
+      Req: Optional
+
+  Safety_Paths:
+    - Path: safety_constraints_and_behavioral_guardrails.scope_and_rejection_policies.scope_policy
+      Type: enum
+      Values: [REJECT_OUT_OF_SCOPE, FLEXIBLE_WITH_BOUNDARIES]
+      Req: Required
+
+    - Path: safety_constraints_and_behavioral_guardrails.confidentiality_protection.block_instructions
+      Type: boolean
+      Purp: Prevent instruction/prompt leakage.
+      Req: Must be true.
+
+    - Path: safety_constraints_and_behavioral_guardrails.communication_restrictions.forbid_internal_jargon
+      Type: boolean
+      Purp: Prevent internal IDs in user-facing responses.
+      Req: Must be true.
+
+  Meta_Paths:
+    - Path: self_evaluation_and_correction_mechanisms.evaluation_process.pre_response_hook
+      Type: boolean
+      Purp: Enable pre-response self-evaluation.
+      Req: Recommended true.
+
+    - Path: self_evaluation_and_correction_mechanisms.evaluation_process.checklist
+      Type: list[string]
+      Purp: Self-evaluation checks before response.
+      Req: Required
+
+    - Path: self_evaluation_and_correction_mechanisms.correction_protocol
+      Type: list[string]
+      Format: "IF check '<CHECK_NAME>' fails -> <ACTION>"
+      Purp: Actions on failed checks.
+      Req: Required
+
+Minimum_Guard_Set:
+  ID: KODA-GUARD-SET-01
+  Purp: Mandatory safety configuration for all agents.
+  Req: MUST be present in every agent.yaml.
+
+  Required_Fields:
+    - scope_policy: Must be defined
+    - rejection_response: Must be customized
+    - block_instructions: Must be true
+    - response_on_query: Must be customized
+    - forbid_internal_jargon: Must be true
+
+  Template:
+    safety_constraints_and_behavioral_guardrails:
+      scope_and_rejection_policies:
+        scope_policy: REJECT_OUT_OF_SCOPE
+        rejection_response: "<Custom rejection message>"
+      confidentiality_protection:
+        block_instructions: true
+        response_on_query: "<Introspection deflection message>"
+      communication_restrictions:
+        forbid_internal_jargon: true
+
+Correction_Protocol:
+  ID: KODA-CORRECTION-01
+  Purp: Define runtime self-correction mechanism.
+
+  Rule_Format: "IF check '<check_name>' fails -> <ACTION>"
+
+  Supported_Actions:
+    - Action: REFINE_DRAFT_INTERNALLY
+      ID: ACTION-REFINE
+      Def: Default action—refine response internally before delivery.
+      Use: Most check failures.
+
+    - Action: "TRANSITION_TO_STATE: <STATE_ID>"
+      ID: ACTION-TRANSITION
+      Def: Immediate workflow pivot to specified state.
+      Use: Context shifts, major redirections.
+
+  Standard_Checks:
+    - Check: CATALOG_RESOLUTION
+      Purp: URN resolved via catalog (SOURCE_OF_TRUTH) before access.
+      Applies: KB-based policies only (EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, HYBRID_WEB_KB)
+    - Check: FIDELITY_STANDARD
+      Purp: Response based on correct source via CM-CATALOG-RESOLVER -> CM-KB-GUIDANCE.
+      Applies: KB-based policies only
+    - Check: WEB_SEARCH_COMPLIANCE
+      Purp: Web search executed per web_search_configuration constraints.
+      Applies: WEB_AUGMENTED and HYBRID_WEB_KB policies only
+    - Check: CITATION_COMPLIANCE
+      Purp: Source properly cited (KB file path or web URL depending on source).
+    - Check: STATE_AWARENESS
+      Purp: Response coherent with current workflow state.
+    - Check: SEMANTIC_ABSTRACTION
+      Purp: No internal identifiers exposed.
+    - Check: CONTEXT_SHIFT
+      Purp: Detect topic changes requiring state transition.
+    - Check: EXECUTION_FIDELITY
+      Purp: State machine executed without improvisation.
+    - Check: ENCAPSULATION
+      Purp: Private reasoning processes not exposed.
+    - Check: KB_ROUTING
+      Purp: KB accessed only via catalog-resolved explicit guidance map.
+      Applies: KB-based policies only
+    - Check: LLM_BOUNDARY
+      Purp: Response within LLM knowledge boundaries, uncertainty declared when exceeded.
+      Applies: LLM_NATIVE policy only
+    - Check: KB_INITIALIZATION_COMPLETE
+      ID: CHECK-KB-INIT
+      Purp: KB_READY=true before first response for KB-based agents.
+      Applies: KB-based policies only (EXCLUSIVE_USE, ALLOW_GENERAL_KNOWLEDGE, HYBRID_WEB_KB)
+      Correction: "IF fails → Execute KB_INITIALIZATION before proceeding"
+
+Orchestration:
+  ID: KODA-ORCHESTRATION-01
+  Purp: Complete specification for Higher-Order Agents (HOA) orchestrating sub-agent fleets.
+  Key: orchestration_fleet_and_protocol
+  Ctx: Higher-Order Agents only.
+
+  HOA_Definition:
+    ID: KODA-HOA-DEFINITION-01
+    Def: |
+      A Higher-Order Agent (HOA) is an agent that coordinates other agents (sub-agents)
+      to accomplish complex tasks through delegation, communication, and synthesis.
+    Characteristics:
+      - Maintains its own state machine for orchestration flow
+      - Does NOT execute sub-agent tasks itself—delegates to fleet members
+      - Manages shared context between sub-agents
+      - Synthesizes outputs from multiple sub-agents
+      - May include dynamic sub-agents loaded at runtime
+    Categorical_Foundation: |
+      HOA acts as Functor F: Cat_Request -> Cat_Composition
+      - Objects in Cat_Request: User intents
+      - Objects in Cat_Composition: Compositions of sub-agent executions
+      - Morphisms: Delegation and synthesis operations
+      Composition law: F(g ∘ f) = F(g) ∘ F(f) ensures consistent orchestration.
+
+  Fleet_Definition:
+    ID: KODA-ORCHESTRATION-FLEET-01
+    Path: orchestration_fleet_and_protocol.fleet_definition
+    Schema:
+      - Field: sub_agents
+        Type: list[SubAgentSpec]
+        Def: List of sub-agents in the fleet.
+        Req: At least one sub-agent required.
+
+    SubAgent_Schema:
+      - Field: id
+        Type: string
+        Def: Unique identifier for sub-agent within this fleet.
+        Format: UPPERCASE-KEBAB-CASE
+        Ex: TESTER, AGENT_UNDER_TEST, VALIDATOR
+        Req: Required
+
+      - Field: role
+        Type: string
+        Def: Functional role description of what this sub-agent does.
+        Req: Required
+
+      - Field: source
+        Type: string
+        Def: Reference to sub-agent definition.
+        Formats:
+          - "URN: urn:knowledge:{namespace}:agents:{id}:{version} for registered agents"
+          - "Dynamic: dynamic:{source_type} for runtime-loaded agents"
+        Ex_URN: "urn:knowledge:koda:agents:tester:1.0.0"
+        Ex_Dynamic: "dynamic:loaded_from_user_input"
+        Req: Required
+
+      - Field: capabilities
+        Type: list[string]
+        Def: List of capabilities this sub-agent provides to the HOA.
+        Purp: Documents what the HOA can delegate to this sub-agent.
+        Req: Recommended
+
+      - Field: instantiation
+        Type: enum
+        Values: [STATIC, DYNAMIC]
+        Def_STATIC: Sub-agent is pre-defined and always available.
+        Def_DYNAMIC: Sub-agent is instantiated at runtime from provided definition.
+        Default: STATIC
+        Req: Optional
+
+  Dynamic_Agents:
+    ID: KODA-ORCHESTRATION-DYNAMIC-01
+    Purp: Specification for dynamically loaded sub-agents.
+    Def: |
+      Dynamic agents are instantiated at runtime from YAML definitions provided
+      by the user or retrieved from external sources.
+    Source_Patterns:
+      - Pattern: "dynamic:loaded_from_user_input"
+        Def: Agent definition provided by user during session.
+        Use: Testing, validation of user-provided agents.
+      - Pattern: "dynamic:loaded_from_catalog:{urn}"
+        Def: Agent retrieved from catalog at runtime.
+        Use: Flexible orchestration with registered agents.
+      - Pattern: "dynamic:loaded_from_url:{url}"
+        Def: Agent retrieved from external URL.
+        Use: Cross-repository orchestration.
+    Instantiation_Protocol:
+      - "1. Receive agent definition (YAML content or reference)"
+      - "2. Validate against KODA/Agent schema"
+      - "3. Extract identity, states, transitions, CMs"
+      - "4. Prepare execution context for sub-agent"
+      - "5. Sub-agent is now available for delegation"
+
+  Delegation_Patterns:
+    ID: KODA-ORCHESTRATION-DELEGATION-01
+    Purp: Define how HOA delegates tasks to sub-agents.
+
+    Patterns:
+      - Pattern: SEQUENTIAL
+        ID: DELEGATION-SEQUENTIAL
+        Def: Execute sub-agents one after another, passing output as input.
+        Use: Pipeline processing, multi-stage workflows.
+        Schema: |
+          delegation_pattern: SEQUENTIAL
+          sequence:
+            - agent: SUB_AGENT_1
+              input: "{user_request}"
+              output_as: "stage_1_result"
+            - agent: SUB_AGENT_2
+              input: "{stage_1_result}"
+              output_as: "stage_2_result"
+
+      - Pattern: PARALLEL
+        ID: DELEGATION-PARALLEL
+        Def: Execute multiple sub-agents simultaneously, then synthesize.
+        Use: Gathering multiple perspectives, parallel processing.
+        Schema: |
+          delegation_pattern: PARALLEL
+          parallel_agents:
+            - agent: SUB_AGENT_1
+              input: "{user_request}"
+              output_as: "result_1"
+            - agent: SUB_AGENT_2
+              input: "{user_request}"
+              output_as: "result_2"
+          synthesis: "Combine result_1 and result_2"
+
+      - Pattern: CONDITIONAL
+        ID: DELEGATION-CONDITIONAL
+        Def: Select sub-agent based on conditions.
+        Use: Routing, specialized handling.
+        Schema: |
+          delegation_pattern: CONDITIONAL
+          conditions:
+            - if: "{condition_1}"
+              delegate_to: SUB_AGENT_1
+            - if: "{condition_2}"
+              delegate_to: SUB_AGENT_2
+            - else:
+              delegate_to: SUB_AGENT_DEFAULT
+
+      - Pattern: ITERATIVE
+        ID: DELEGATION-ITERATIVE
+        Def: Repeatedly delegate to sub-agent until condition met.
+        Use: Testing loops, refinement cycles, polling.
+        Schema: |
+          delegation_pattern: ITERATIVE
+          iterate:
+            agent: SUB_AGENT_1
+            input: "{current_state}"
+            until: "{completion_condition}"
+            max_iterations: 10
+
+  Communication_Protocol:
+    ID: KODA-ORCHESTRATION-COMMUNICATION-01
+    Purp: Define how HOA communicates with sub-agents.
+
+    Message_Types:
+      - Type: DELEGATION_REQUEST
+        Def: HOA sends task to sub-agent.
+        Schema:
+          - from: HOA_ID
+          - to: SUB_AGENT_ID
+          - task: string (what to do)
+          - context: object (shared state)
+          - expected_output: string (what HOA expects back)
+
+      - Type: DELEGATION_RESPONSE
+        Def: Sub-agent returns result to HOA.
+        Schema:
+          - from: SUB_AGENT_ID
+          - to: HOA_ID
+          - result: object (output of task)
+          - status: enum [SUCCESS, PARTIAL, FAILURE]
+          - evidence: object (supporting data, optional)
+
+      - Type: CONTEXT_UPDATE
+        Def: HOA updates shared context for all sub-agents.
+        Schema:
+          - from: HOA_ID
+          - to: BROADCAST | SUB_AGENT_ID
+          - context_delta: object (changes to shared context)
+
+    Simulation_Mode:
+      Def: |
+        When HOA cannot actually instantiate separate agent processes,
+        it simulates communication by:
+        1. Adopting the sub-agent's identity temporarily
+        2. Processing the delegation request as that sub-agent would
+        3. Returning to HOA identity with the result
+        4. Clearly marking this as SIMULATED in evidence
+      Prohib: Mixing simulated and real responses without clear labeling.
+
+  Shared_Context:
+    ID: KODA-ORCHESTRATION-CONTEXT-01
+    Purp: Define shared state management between HOA and sub-agents.
+    Path: orchestration_fleet_and_protocol.shared_context
+
+    Schema:
+      - Field: session_id
+        Type: string
+        Def: Unique identifier for this orchestration session.
+
+      - Field: orchestration_state
+        Type: enum
+        Values:
+          [
+            INITIALIZING,
+            PLANNING,
+            EXECUTING,
+            EVALUATING,
+            SYNTHESIZING,
+            COMPLETE,
+            ERROR,
+          ]
+        Def: Current phase of orchestration.
+
+      - Field: context_store
+        Type: object
+        Def: Key-value store for shared data between sub-agents.
+        Use: Pass results from one sub-agent to another.
+
+      - Field: evidence_log
+        Type: list[EvidenceEntry]
+        Def: Audit trail of all delegations and responses.
+
+    Evidence_Entry_Schema:
+      - Field: timestamp
+        Type: ISO8601
+      - Field: delegation_id
+        Type: string
+      - Field: from_agent
+        Type: string
+      - Field: to_agent
+        Type: string
+      - Field: message_type
+        Type: enum [DELEGATION_REQUEST, DELEGATION_RESPONSE, CONTEXT_UPDATE]
+      - Field: content
+        Type: object
+      - Field: evidence_type
+        Type: enum [REAL_CAPTURE, SIMULATED]
+
+  Orchestration_Protocol:
+    ID: KODA-ORCHESTRATION-PROTOCOL-01
+    Path: orchestration_fleet_and_protocol.orchestration_protocol
+    Schema:
+      - Field: objective
+        Type: string
+        Def: Ultimate goal of orchestration.
+        Req: Required
+
+      - Field: delegation_pattern
+        Type: enum
+        Values: [SEQUENTIAL, PARALLEL, CONDITIONAL, ITERATIVE, CUSTOM]
+        Def: Primary delegation pattern used.
+        Req: Required
+
+      - Field: workflow
+        Type: object
+        Def: Declarative mapping of orchestration steps.
+        Req: Required
+
+      - Field: synthesis_rules
+        Type: list[string]
+        Def: Instructions for aggregating outputs from sub-agents.
+        Req: Required
+
+      - Field: error_handling
+        Type: object
+        Def: How to handle sub-agent failures.
+        Schema:
+          - on_failure: enum [ABORT, RETRY, FALLBACK, CONTINUE]
+          - max_retries: integer
+          - fallback_agent: string (optional)
+        Req: Recommended
+
+  HOA_Runtime_Instructions:
+    ID: KODA-ORCHESTRATION-RUNTIME-01
+    Purp: Extended runtime instructions for Higher-Order Agents.
+    Def: |
+      HOAs must include an additional runtime instruction (point 8) in their
+      KODA_Runtime_Instructions block:
+
+      8. ORCHESTRATION: You coordinate a fleet of sub-agents. Delegate tasks
+         according to orchestration_protocol. Never execute sub-agent roles
+         yourself—delegate and synthesize. Mark all evidence as REAL or SIMULATED.
+
+  HOA_Lexicon:
+    ID: KODA-ORCHESTRATION-LEXICON-01
+    Purp: Canonical paths for HOA-specific configuration.
+
+    Paths:
+      - Path: orchestration_fleet_and_protocol.fleet_definition.sub_agents
+        Type: list[SubAgentSpec]
+        Req: Required for HOA
+
+      - Path: orchestration_fleet_and_protocol.fleet_definition.sub_agents[].id
+        Type: string
+        Req: Required
+
+      - Path: orchestration_fleet_and_protocol.fleet_definition.sub_agents[].source
+        Type: string
+        Req: Required
+
+      - Path: orchestration_fleet_and_protocol.orchestration_protocol.delegation_pattern
+        Type: enum
+        Req: Required
+
+      - Path: orchestration_fleet_and_protocol.orchestration_protocol.workflow
+        Type: object
+        Req: Required
+
+      - Path: orchestration_fleet_and_protocol.shared_context
+        Type: object
+        Req: Recommended
+
+  HOA_Validation:
+    ID: KODA-ORCHESTRATION-VALIDATION-01
+    Purp: Validation rules specific to Higher-Order Agents.
+
+    Rules:
+      - Rule: Fleet not empty
+        Test: fleet_definition.sub_agents has at least one entry.
+
+      - Rule: Sub-agent IDs unique
+        Test: All sub_agents[].id values are unique within fleet.
+
+      - Rule: Static sources valid
+        Test: All non-dynamic sources are valid URNs in catalog.
+
+      - Rule: Delegation pattern defined
+        Test: orchestration_protocol.delegation_pattern is set.
+
+      - Rule: Workflow references valid sub-agents
+        Test: All agent references in workflow exist in fleet_definition.
+
+      - Rule: HOA runtime instruction present
+        Test: KODA_Runtime_Instructions includes point 8 (ORCHESTRATION).
+
+      - Rule: No self-delegation
+        Test: HOA does not delegate to itself.
+
+  HOA_Checks:
+    ID: KODA-ORCHESTRATION-CHECKS-01
+    Purp: Self-evaluation checks specific to HOAs.
+
+    Standard_Checks:
+      - Check: ORCHESTRATION_FIDELITY
+        Purp: HOA delegates according to protocol, does not execute sub-agent roles.
+        Applies: All HOAs
+
+      - Check: EVIDENCE_INTEGRITY
+        Purp: All evidence is marked as REAL_CAPTURE or SIMULATED, never ambiguous.
+        Applies: All HOAs
+
+      - Check: DELEGATION_VALID
+        Purp: All delegations target sub-agents defined in fleet.
+        Applies: All HOAs
+
+      - Check: SYNTHESIS_COMPLETE
+        Purp: HOA synthesizes all sub-agent outputs before responding.
+        Applies: All HOAs
+
+      - Check: CONTEXT_CONSISTENCY
+        Purp: Shared context is updated correctly after each delegation.
+        Applies: HOAs using shared_context
 
 Validation:
-  Syntax: YAML valid, Directive present, Schema compliant.
-  Principles: No imperative, Keys=En, No implicit KB.
-  Security: Guard Set complete, No logic exposure, CMs hidden.
-  Structure: Valid refs (states/CMs), Reachable graph.
-  Federation: Valid URNs.
-  HOA: Fleet valid, No self-delegation.
+  ID: KODA-VALIDATION-SCHEMA-01
+  Purp: Criteria for valid agent.yaml artifact.
+
+  Syntax_Validation:
+    - Rule: Valid YAML
+      Test: Must parse without errors using YAML 1.2 parser.
+
+    - Rule: Agent Runtime Directive present
+      Test: First three lines match template pattern.
+
+    - Rule: Required namespaces present
+      Test: All required top-level keys exist.
+
+    - Rule: No unknown keys
+      Test: All keys match canonical lexicon.
+
+  Semantic_Validation:
+    - Rule: State references valid
+      Test: All transition targets exist in defined_states.
+
+    - Rule: Workflow initial states valid
+      Test: All initial_state values exist in defined_states.
+
+    - Rule: Cognitive model references valid
+      Test: All CM references in process steps exist.
+
+    - Rule: URN references valid
+      Test: All source_artifacts URNs match pattern.
+
+  Security_Validation:
+    - Rule: Minimum Guard Set complete
+      Test: All required safety fields present and valid.
+
+    - Rule: Private models hidden
+      Test: All private_internal_reasoning_processes have _meta expose false.
+
+    - Rule: Process step limit
+      Test: No public process block exceeds 5 steps.

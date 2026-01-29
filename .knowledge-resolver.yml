@@ -13,7 +13,7 @@
 _meta:
   resolver_version: "1.0.0"
   koda_compatibility: ">=1.0.0 <2.0.0"
-  last_sync: "2026-01-19T16:26:17Z"
+  last_sync: "2026-01-29T15:04:00Z"
   health_check_interval: weekly
 
 # =============================================================================
@@ -68,6 +68,22 @@ namespaces:
     fallback: "https://raw.githubusercontent.com/felix-antonio-sl/fxsl/main/"
     required: false
     description: "FXSL - Proyectos personales y experimentación"
+
+  # KORVO - Personal/Private (peer)
+  korvo:
+    type: peer
+    base_path: "../korvo/"
+    fallback: "https://raw.githubusercontent.com/felix-antonio-sl/korvo/main/"
+    required: false
+    description: "Korvo - Espacio personal de gestión de vida"
+
+  # GOREOS - Sistema Operativo de Gobernanza Regional (peer)
+  goreos:
+    type: peer
+    base_path: "../gore_os/"
+    fallback: null
+    required: false
+    description: "GORE OS - Sistema Operativo de Gobernanza Regional (Turbo Monorepo)"
 
   # ORKO - Organizational Knowledge Ontology (peer)
   orko:

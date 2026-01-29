@@ -19,8 +19,8 @@ _manifest:
   provenance:
     created_by: KODA-SMITH
     created_at: "2025-12-03"
-    last_modified_at: "2025-12-08"
-    version_notes: v1.1.0 - Token optimized
+    last_modified_at: "2026-01-29"
+    version_notes: v1.2.0 - Audit alignment, timestamp update
     model_collaborators:
       - IA-CLAUDE
 KODA_Runtime_Instructions:

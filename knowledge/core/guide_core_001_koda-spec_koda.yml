@@ -19,7 +19,7 @@ _manifest:
     created_by: "FS"
     created_at: "2025-11-21"
     last_modified_by: "FS"
-    last_modified_at: "2025-12-08"
+    last_modified_at: "2026-01-29"
     signature: null
 
 ID: KODA-SPEC-01
@@ -29,7 +29,7 @@ Human-Creator: FS
 Human-Editor: FS
 Model-Collaborator: IA-CLAUDE
 Creation-Date: 2025-11-21
-Modification-Date: 2025-12-08
+Modification-Date: 2026-01-29
 Version-Notes: "v1.1.0 - Added XRef/XRef_Required keywords for cross-artifact referencing, consolidated Cross_Artifact_Referencing section, anti-cycle validation rule"
 Source: GUIDE-KODA-MASTER-01
 Ctx: Technical specification of KODA as YAML extension
@@ -345,7 +345,7 @@ Principles:
     ID: KODA-PRINCIPLE-DENSITY
     Def: Maximum informational meat per token.
     Mech: Telegraphic brevity, keyword-based markup, reference-based deduplication.
-    Target: 30-50% token reduction vs original human document.
+    Target: CR > 1.0 (artifact smaller than source in characters)
 
   - Principle: Token Economy (LLM-First Design)
     ID: KODA-PRINCIPLE-TOKEN-ECONOMY
@@ -355,7 +355,7 @@ Principles:
       - Use lexicon abbreviations aggressively
       - No duplication (use Ref/XRef)
       - Prefer telegraphic structures over prose
-    Target: Minimum 40% token reduction vs source.
+    Target: CR > 1.0 (artifact smaller than source in characters)
     Prohib: Human-oriented explanations, redundancy, narrative prose.
 
   - Principle: Structural Semantics
@@ -402,8 +402,8 @@ Validation:
     - Rule: No redundancy
       Test: Concepts defined once, referenced via Ref elsewhere.
 
-    - Rule: Token efficiency
-      Test: "Artifact uses fewer tokens than source (target: 30-50% reduction)."
+    - Rule: Compression efficiency
+      Test: "Artifact uses fewer characters than source (CR > 1.0)."
 
     - Rule: XRef resolvable
       Test: All XRef and XRef_Required URNs resolve via catalog/resolver chain.

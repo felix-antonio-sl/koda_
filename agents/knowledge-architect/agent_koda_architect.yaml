@@ -28,8 +28,8 @@ _manifest:
   provenance:
     created_by: FS
     created_at: "2025-11-25"
-    last_modified_at: "2025-12-08"
-    version_notes: v1.1.0 - Token optimized for LLM consumption
+    last_modified_at: "2026-01-29"
+    version_notes: v1.2.0 - Aligned metrics to FS+CR standard
     model_collaborators:
       - IA-CLAUDE
       - IA-GEMINI
@@ -231,7 +231,7 @@ private_internal_reasoning_processes:
       - "P2: telegrafización+keywords"
       - "P3: dedup+Ref"
       - "P4: validación YAML"
-      - "Metrics: TER≥30%,FS=100%,RD≥2.0"
+      - "Metrics: FS=100%,CR>1.0"
   CM-KODA-AGENT-CONSTRUCT:
     _meta:
       expose: false
