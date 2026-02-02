@@ -437,6 +437,11 @@ cmd_install() {
     echo -e "Run ${CYAN}koda skills sync --global${NC} to propagate"
 }
 
+# Handle 'skills' keyword for consistency with help text
+if [ "$1" == "skills" ]; then
+    shift
+fi
+
 # Main command router
 case "${1:-}" in
     status)

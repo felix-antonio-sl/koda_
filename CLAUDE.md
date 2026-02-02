@@ -4,47 +4,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-KODA (Knowledge-Oriented Declarative Agents) is a framework for declarative AI agent engineering using YAML-based specifications. The framework is 100% declarative—no compiled code, no package managers, no build systems. All artifacts are YAML files designed for LLM consumption.
+KODA (Knowledge-Oriented Declarative Agents) is a 100% declarative framework for AI agent engineering. No compiled code, no package managers, no build systems—all artifacts are YAML files designed for LLM consumption.
 
-**Key Components:**
-- **KODA/Spec** — RAG-optimized YAML knowledge format
-- **KODA/Agent** — Declarative agent definition protocol
-- **KODA/Hub** — Federated knowledge management with URN addressing
-- **KODA/Life** — 5-phase agent lifecycle (Conception → KB Curation → Agent Programming → Testing → Maintenance)
+**Core Components:**
+- **KODA/Spec** — RAG-optimized YAML knowledge format (20 Tier-1 keywords)
+- **KODA/Agent** — Declarative agent definition protocol (7 namespaces)
+- **KODA/Hub** — Federated knowledge with URN addressing
+- **KODA/Life** — 5-phase lifecycle (Conception → KB Curation → Agent Programming → Testing → Maintenance)
+- **KODA/Skills** — Write Once, Run Everywhere skills federation
 - **KODA/Test** — Agent testing framework
-- **KODA/Skills** — Agent Skills repository (propagates to Claude Code & Antigravity via symlinks)
 
 ## Common Commands
 
 ```bash
 # Validate repository structure
 ./scripts/koda validate
-
-# Validate with JSON Schema checks
-./scripts/koda validate --strict
-
-# Create artifacts via Agent Skills
-"Create a new agent named [name]"
-"Create a new guide for [domain]"
+./scripts/koda validate --strict    # Include JSON Schema checks
 
 # Check federation health
 ./scripts/koda health
-./scripts/koda health --full
+./scripts/koda health --full        # Include remote checks
 
 # Sync with federation registry
 ./scripts/koda sync
 
 # Initialize new KODA repository
 ./scripts/koda init <namespace>
+
+# Skills management
+./scripts/koda-skills.sh list
+./scripts/koda-skills.sh sync --global
+./scripts/koda-skills.sh push <namespace/skill> --target ws:<path>
 ```
 
-**Manual YAML validation:**
+**Manual validation:**
 ```bash
+# YAML syntax check
 python -c "import yaml; yaml.safe_load(open('path/to/file.yml'))"
-```
 
-**Agent schema validation (requires ajv-cli):**
-```bash
+# Agent schema validation (requires ajv-cli)
 ajv validate -s schemas/koda-agent-schema-1.0.0.json -d agents/*/agent*.yaml
 ```
 
@@ -55,40 +53,45 @@ ajv validate -s schemas/koda-agent-schema-1.0.0.json -d agents/*/agent*.yaml
 ```
 knowledge/core/          # 10 core framework guides (start with guide_core_000_quickstart_koda.yml)
 knowledge/domains/       # Domain-specific knowledge artifacts
-agents/                  # Reference agent definitions (10 agents)
-skills/                  # MASTER: Agent Skills repository (symlinked to .claude/ and .agent/)
-schemas/                 # JSON Schema for validation (koda-agent-schema-1.0.0.json)
+agents/                  # Reference agent definitions
+skills/                  # MASTER: Skills repository (symlinked to .claude/ and .agent/)
+  ├── koda/              # Framework skills
+  ├── own/               # Personal skills
+  └── community/         # Third-party skills
+schemas/                 # JSON Schema (koda-agent-schema-1.0.0.json)
 catalog/                 # Master registry (catalog_master_koda.yml)
 scripts/                 # Bash CLI tools
 registry/                # Federation namespace registry
 staging/                 # Work-in-progress (not committed)
-tooling/                 # Workflows, rules, and profiles
-
-# Symlinks for skill propagation:
-.claude/skills → ../skills    # Claude Code
-.agent/skills → ../skills     # Antigravity
 ```
 
-### URN-Based Federation
+### Skills Federation
 
-All artifacts use URN addressing: `urn:knowledge:{namespace}:{domain}:{artifact-id}:{version}`
+Skills propagate via symlinks:
+- `.claude/skills → ../skills` (Claude Code)
+- `.agent/skills → ../skills` (Antigravity)
 
-Resolution is configured in `.knowledge-resolver.yml`. The resolver is **speculative** (documents resolution) not **operative** (LLMs need physical file paths).
+Configuration in `skills/.skills-resolver.yml` defines propagation targets (global and workspace).
 
-**Active Namespaces:** koda (framework), sanixai, gorenuble, tde, fxsl, orko
+### URN Addressing
 
-### KODA/Spec Keywords (Tier-1)
+All artifacts use: `urn:knowledge:{namespace}:{domain}:{artifact-id}:{version}`
 
-The framework uses a 20-keyword lexicon. Key abbreviations:
+Resolution configured in `.knowledge-resolver.yml` (local override: `.knowledge-resolver.local.yml`).
+
+**Active Namespaces:** koda, sanixai, gorenuble, tde, fxsl, orko
+
+### KODA/Spec Lexicon (Tier-1)
+
+Key abbreviations for knowledge artifacts:
 - `Act` → Action, `Cond` → Condition, `Ctx` → Context
 - `Ctx_Required` → Required External Reference, `Ctx_Optional` → Optional External Reference
-- `Def` → Definition, `Ex` → Example, `Mssn` → Mission
-- `Ref` → Internal Reference (internal only), `Req` → Requirement
-- `Prohib` → Prohibition, `Warn` → Warning, `Rec` → Recommendation
+- `Def` → Definition, `Ex` → Example, `Ref` → Internal Reference (internal only)
+- `Req` → Requirement, `Prohib` → Prohibition, `Warn` → Warning, `Rec` → Recommendation
 
 ### Artifact Structure
 
-Every YAML artifact follows this structure:
+Every YAML artifact follows:
 ```yaml
 _manifest:
   urn: "urn:knowledge:..."
@@ -108,15 +111,6 @@ LLM_Parsing_Instructions:
 
 # Content sections...
 ```
-
-### Agent Structure
-
-Agents are YAML specifications with 7 namespaces:
-- Identity binding (role/objective/audience)
-- State machine (initial_state → transitions)
-- Knowledge base governance
-- Security boundaries (block_instructions, forbid_jargon)
-- Cognitive models (internal, never exposed)
 
 ## Commit Convention
 
@@ -152,31 +146,13 @@ namespace: koda | sanixai | etc.
 5. Move to appropriate directory
 6. Register in `catalog/catalog_master_koda.yml`
 
-## Skills Architecture
-
-KODA serves as the **canonical repository** for Agent Skills, propagating to Claude Code and Antigravity via symlinks.
-
-```
-skills/                          ← SINGLE SOURCE OF TRUTH
-├── skill-name/
-│   ├── SKILL.md                 ← Required: skill definition
-│   ├── scripts/                 ← Optional: executable scripts
-│   ├── examples/                ← Optional: usage examples
-│   └── resources/               ← Optional: supporting files
-│
-.claude/skills → ../skills       ← Symlink (Claude Code)
-.agent/skills → ../skills        ← Symlink (Antigravity)
-```
-
-**Adding a skill:**
-1. Create `skills/my-skill/SKILL.md` with front-matter (name, description)
-2. Add optional scripts/examples/resources
-3. Skill auto-propagates via symlinks
-
-**URN format:** `urn:knowledge:koda:skills:{skill-name}:{version}`
+**Creating agents and artifacts:** Use Agent Skills via conversation:
+- "Create a new agent named [name]"
+- "Create a new guide for [domain]"
 
 ## CI/CD Workflows
 
+Located in `.github/workflows/`:
 - **koda-validate.yml** — Runs on PR (validates structure + JSON schemas)
 - **koda-audit.yml** — Weekly Monday audit, creates drift issues
 - **koda-sync.yml** — Weekly federation sync + registry health check

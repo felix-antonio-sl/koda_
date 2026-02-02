@@ -49,16 +49,16 @@ Philosophy:
     - Symlinks (KODA): Instant updates, zero friction, fragile if Hub moves.
 
   Topology:
-    Hub: `~/Developer/koda/skills` (The Source of Truth)
-    Global_Target_A: `~/.claude/skills` (Claude Code)
-    Global_Target_B: `~/.gemini/antigravity/skills` (Google Antigravity)
-    Local_Target: `.claude/skills` or `.agent/skills` (Per-workspace override)
+    Hub: "`~/Developer/koda/skills` (The Source of Truth)"
+    Global_Target_A: "`~/.claude/skills` (Claude Code)"
+    Global_Target_B: "`~/.gemini/antigravity/skills` (Google Antigravity)"
+    Local_Target: "`.claude/skills` or `.agent/skills` (Per-workspace override)"
 
 # 2. The Resolver
 
 Resolver_Config:
   ID: SKILLS-RESOLVER-SPEC
-  File: `skills/.skills-resolver.yml`
+  File: "skills/.skills-resolver.yml"
   Purp: Configuration registry for propagation rules.
   Structure:
     - Master: Path to source `skills/` directory.
@@ -72,34 +72,34 @@ Resolver_Config:
 
 CLI_Reference:
   ID: SKILLS-CLI-OPS
-  Script: `scripts/koda-skills.sh`
-  
+  Script: "scripts/koda-skills.sh"
+
   Commands:
-    - `sync --global`:
-        Desc: "The Broadcast". Creates symlinks from Hub to Global Targets.
+    - "`sync --global`":
+        Desc: '"The Broadcast". Creates symlinks from Hub to Global Targets.'
         Use: After adding a new skill to Koda that you want everywhere.
-    
-    - `sync --local`:
-        Desc: "The Workspace Link". Links `./.claude/skills` -> `../skills`.
+
+    - "`sync --local`":
+        Desc: '"The Workspace Link". Links `./.claude/skills` -> `../skills`.'
         Use: When initializing a Koda workspace inside the Koda repo structure.
 
-    - `push <skill> --target ws:<path>`:
-        Desc: "The Injection". Injects a specific skill into an external workspace.
+    - "`push <skill> --target ws:<path>`":
+        Desc: '"The Injection". Injects a specific skill into an external workspace.'
         Use: "I need `context-manager` in my client project `sanixai`."
-        Effect: `ln -s ~/Dev/koda/skills/own/context-manager ~/Dev/sanixai/.claude/skills/context-manager`
+        Effect: "`ln -s ~/Dev/koda/skills/own/context-manager ~/Dev/sanixai/.claude/skills/context-manager`"
 
-    - `pull <skill>`:
-        Desc: "The Import". Links a Hub skill to current directory.
+    - "`pull <skill>`":
+        Desc: '"The Import". Links a Hub skill to current directory.'
 
 # 4. Agentic Workflow
 
 Workflow_Integration:
   ID: SKILLS-WF-INTEGRATION
-  
+
   Discovery:
     - Agent reads `catalog_master_koda.yml` -> sees `urn:knowledge:koda:skills:*`.
     - Agent reads `.skills-resolver.yml` -> understands propagation topology.
-  
+
   Management:
     - To Create: Use `koda-artifact-helper` (which is itself a skill).
     - To Distribute: Run `koda skills sync`.

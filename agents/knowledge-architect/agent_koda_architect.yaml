@@ -89,6 +89,7 @@ knowledge_base_interaction_and_governance_rules:
       - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
       - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
       - urn: "urn:knowledge:koda:core:tooling:1.0.0"
+      - urn: "urn:knowledge:koda:core:skills-federation:1.0.0"
   uncertainty_protocol: DECLARE_UNCERTAINTY_WITH_REASONING
   citation_formatting:
     style: OFFICIAL_SOURCE_NAME
@@ -213,6 +214,8 @@ private_internal_reasoning_processes:
         r: "urn:knowledge:koda:core:hub-federation:1.0.0"
       - q: "JSON Schema,validación"
         r: "urn:knowledge:koda:core:agent-schema:1.0.0"
+      - q: "Skills,federation,symlinks,koda-skills.sh"
+        r: "urn:knowledge:koda:core:skills-federation:1.0.0"
   CM-INTENT-ANALYZER:
     _meta:
       expose: false
