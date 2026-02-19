@@ -166,6 +166,36 @@ Catalog:
       file: "skills/own/crear-skill/SKILL.md"
       status: published
 
+    - urn: "urn:knowledge:koda:skills:crear-artefacto:1.0.0"
+      title: "Skill: Crear Artefacto KODA"
+      description: "Genera nuevos artefactos de conocimiento (Guides, KB Articles) estándar KODA/Spec."
+      file: "skills/koda/crear-artefacto/SKILL.md"
+      status: published
+
+    - urn: "urn:knowledge:koda:skills:crear-agente:1.0.0"
+      title: "Skill: Crear Agente KODA"
+      description: "Automatiza la creación de nuevos agentes siguiendo el estándar KODA/Agent"
+      file: "skills/koda/crear-agente/SKILL.md"
+      status: published
+
+    - urn: "urn:knowledge:koda:skills:arquitecto-gore:1.0.0"
+      title: "Skill: Arquitecto GORE (Light)"
+      description: "Capacidades de modelado institucional GORE y análisis de tensiones ontológicas (Light)"
+      file: "skills/own/arquitecto-gore/SKILL.md"
+      status: published
+
+    - urn: "urn:knowledge:koda:skills:data-modeling:1.0.0"
+      title: "Skill: Data Modeling"
+      description: "ERDs, data dictionaries, and structured data models (Conceptual/Logical/Physical)"
+      file: "skills/own/data-modeling/SKILL.md"
+      status: published
+
+    - urn: "urn:knowledge:koda:skills:database-design:1.0.0"
+      title: "Skill: Database Design"
+      description: "Community skill for database selection, ORM choice, and schema design principles"
+      file: "skills/community/database-design/SKILL.md"
+      status: published
+
   IDE_Tools:
     - urn: "urn:knowledge:koda:claude:use-claude-code-vscode:1.0.0"
       title: "Use Claude Code in VS Code"
