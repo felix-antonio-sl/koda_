@@ -700,7 +700,7 @@ Patterns:
         - Leverage resolver for local overrides
       Example: |
         source_artifacts:
-          - urn: "urn:knowledge:koda:core:guide:1.0.0"
+          - urn: "urn:knowledge:koda:core:spec:1.0.0"
           - urn: "urn:knowledge:external:legal:compliance:latest"
       Res: No duplication, version control, federation.
 

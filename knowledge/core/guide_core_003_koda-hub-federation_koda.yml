@@ -219,11 +219,11 @@ URN_Scheme:
         Type: Personal
         Domains: [medicina, inteligencia, agents]
   Examples:
-    - urn:knowledge:koda:core:hub:2.0.0
+    - urn:knowledge:koda:core:hub-federation:1.0.0
     - urn:knowledge:gorenuble:normativa:circular-33:1.0.0
     - urn:knowledge:fxsl:experiments:llm-testing:0.1.0
     - urn:knowledge:orko:core:fundamentos:1.0.0#ORKO-AX-A1
-    - urn:knowledge:koda:core:spec:1.1.0#KODA-PRINCIPLE-SSOT
+    - urn:knowledge:koda:core:spec:1.0.0#KODA-PRINCIPLE-SSOT
   Validation_Pattern: "^urn:knowledge:[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*:[a-z][a-z0-9-]+:(\\d+\\.\\d+\\.\\d+|latest|stable)(#[A-Z][A-Z0-9-]+)?$"
 Naming_Conventions:
   ID: GUIDE-KODA-HUB-NAMING-01
@@ -1242,7 +1242,7 @@ Agent_Composition:
         RESOLUTION_MODE: graceful
         SOURCE_ARTIFACTS:
           - path: knowledge/domains/gn/kb_gn_001.yml
-          - urn: urn:knowledge:koda:core:life:latest
+          - urn: urn:knowledge:koda:core:life:1.0.0
             required: true
           - urn: urn:knowledge:external:legal:gdpr:2.0.0
             cache_ttl: 604800

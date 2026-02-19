@@ -147,6 +147,20 @@ Catalog:
       file: "agents/koda-cartographer/agent_koda_cartographer.yaml"
       status: published
 
+  Registry:
+    - urn: "urn:knowledge:koda:registry:namespaces:latest"
+      title: "KODA Registry Namespaces"
+      description: "Federation registry of namespaces"
+      file: "registry/namespaces.yml"
+      status: published
+
+  Tooling_Workflows:
+    - urn: "urn:knowledge:koda:tooling:workflows:agent-audit:latest"
+      title: "KODA Agent Audit Workflow"
+      description: "Agent audit workflow implementation"
+      file: "scripts/audit_agents.py"
+      status: published
+
   Skills:
     - urn: "urn:knowledge:koda:skills:koda-artifact-helper:1.0.0"
       title: "Skill: KODA Artifact Helper"
@@ -221,7 +235,7 @@ Catalog:
       file: "knowledge/domains/ide_tools/google_antigravity/guide_ag_003_context-manager_koda.yml"
       status: published
 
-    - urn: "urn:knowledge:koda:codex:doc-official:1.0.0"
+    - urn: "urn:knowledge:koda:codex:doc-codex-official:1.0.0"
       title: "Codex Official Documentation (KODA)"
       description: "Official OpenAI Codex documentation telegrafized for KODA"
       file: "knowledge/domains/ide_tools/codex/doc_codex_001_official_koda.yml"
