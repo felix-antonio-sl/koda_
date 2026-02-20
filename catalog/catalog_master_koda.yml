@@ -1,325 +1,276 @@
-# KODA Knowledge Catalog - Master Registry
-# Central inventory of all KODA artifacts
-
 _manifest:
-  urn: "urn:knowledge:koda:catalog:master:1.0.0"
+  urn: urn:knowledge:koda:catalog:master-koda:1.0.0
   federation:
     visibility: public
-    license: "CC-BY-4.0"
+    license: CC-BY-4.0
   provenance:
-    created_by: "FS"
-    created_at: "2025-11-25"
-    last_modified_at: "2026-01-29"
-
+    created_by: FS
+    created_at: '2025-11-25'
+    last_modified_at: '2026-01-29'
 ID: KODA-CATALOG-MASTER-01
 Version: 1.2.0
 Status: Published
-Version-Notes: "v1.2.0 - Restored full content in life-master, agent-spec, agent-construct (organic restoration preserving modernizations)"
-
+Version-Notes: v1.2.0 - Restored full content in life-master, agent-spec, agent-construct (organic restoration preserving
+  modernizations)
 Catalog:
   Core_Guides:
-    - urn: "urn:knowledge:koda:core:quickstart:1.0.0"
-      title: "KODA Quickstart Guide"
-      file: "knowledge/core/guide_core_000_quickstart_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:spec:1.0.0"
-      title: "KODA/Spec Specification"
-      file: "knowledge/core/guide_core_001_koda-spec_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:transform:1.0.0"
-      title: "KODA Transformation Methodology"
-      file: "knowledge/core/guide_core_002_koda-transform_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:hub-federation:1.0.0"
-      title: "KODA Hub & Federation Guide"
-      file: "knowledge/core/guide_core_003_koda-hub-federation_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:life:1.0.0"
-      title: "KODA/Life Management Guide"
-      file: "knowledge/core/guide_core_004_koda-life-master_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:agent:1.0.0"
-      title: "KODA/Agent Protocol Specification"
-      file: "knowledge/core/guide_core_005_koda-agent-spec_koda.yml"
-      status: published
-    - urn: "urn:knowledge:koda:core:agent-construct:1.0.0"
-      title: "KODA/Agent Construction Methodology"
-      file: "knowledge/core/guide_core_006_koda-agent-construct_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:test:1.0.0"
-      title: "KODA/Test Framework Specification"
-      file: "knowledge/core/guide_core_007_koda-test-spec_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:schema-versioning:1.0.0"
-      title: "Schema Versioning Policy"
-      file: "knowledge/core/guide_core_008_schema-versioning_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:tooling:1.0.0"
-      title: "KODA/Tooling Specification"
-      file: "knowledge/core/guide_core_009_koda-tooling-spec_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:skills-federation:1.0.0"
-      title: "KODA/Skills Federation Protocol"
-      file: "knowledge/core/guide_core_010_skills-federation_koda.yml"
-      status: published
-
+  - urn: urn:knowledge:koda:core:quickstart:1.0.0
+    title: KODA Quickstart Guide
+    file: knowledge/core/guide_core_000_quickstart_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:spec:1.0.0
+    title: KODA/Spec Specification
+    file: knowledge/core/guide_core_001_koda-spec_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:transform:1.0.0
+    title: KODA Transformation Methodology
+    file: knowledge/core/guide_core_002_koda-transform_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:hub-federation:1.0.0
+    title: KODA Hub & Federation Guide
+    file: knowledge/core/guide_core_003_koda-hub-federation_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:life:1.0.0
+    title: KODA/Life Management Guide
+    file: knowledge/core/guide_core_004_koda-life-master_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:agent:1.0.0
+    title: KODA/Agent Protocol Specification
+    file: knowledge/core/guide_core_005_koda-agent-spec_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:agent-construct:1.0.0
+    title: KODA/Agent Construction Methodology
+    file: knowledge/core/guide_core_006_koda-agent-construct_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:test:1.0.0
+    title: KODA/Test Framework Specification
+    file: knowledge/core/guide_core_007_koda-test-spec_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:schema-versioning:1.0.0
+    title: Schema Versioning Policy
+    file: knowledge/core/guide_core_008_schema-versioning_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:tooling:1.0.0
+    title: KODA/Tooling Specification
+    file: knowledge/core/guide_core_009_koda-tooling-spec_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:core:skills-federation:1.0.0
+    title: KODA/Skills Federation Protocol
+    file: knowledge/core/guide_core_010_skills-federation_koda.yml
+    status: published
   Schemas:
-    - urn: "urn:knowledge:koda:core:agent-schema:1.0.0"
-      title: "KODA/Agent JSON Schema"
-      file: "schemas/koda-agent-schema-1.0.0.json"
-      status: published
-
-    - urn: "urn:knowledge:koda:core:tooling-schema:1.0.0"
-      title: "KODA/Tooling JSON Schema"
-      file: "schemas/koda-tooling-schema-1.0.0.json"
-      status: published
-
+  - urn: urn:knowledge:koda:core:agent-schema:1.0.0
+    title: KODA/Agent JSON Schema
+    file: schemas/koda-agent-schema-1.0.0.json
+    status: published
+  - urn: urn:knowledge:koda:core:tooling-schema:1.0.0
+    title: KODA/Tooling JSON Schema
+    file: schemas/koda-tooling-schema-1.0.0.json
+    status: published
   Agents:
-    - urn: "urn:knowledge:koda:agents:architect:1.0.0"
-      title: "KODA Architect Agent"
-      description: "Official agent embodying the KODA Framework"
-      file: "agents/knowledge-architect/agent_koda_architect.yaml"
-      status: published
-      primary: true
-
-    - urn: "urn:knowledge:koda:agents:transformer:1.0.0"
-      title: "KODA Transformer Agent"
-      description: "Specialist for document transformation and KODA artifact auditing"
-      file: "agents/koda-transformer/agent_koda_transformer.yaml"
-      status: published
-
-    - urn: "urn:knowledge:koda:agents:smith:1.0.0"
-      title: "KODA Smith Agent"
-      description: "Specialist for building KODA-compliant agent definitions"
-      file: "agents/koda-smith/agent_koda_smith.yaml"
-      status: published
-
-    - urn: "urn:knowledge:koda:agents:guardian:1.0.0"
-      title: "KODA Guardian Agent"
-      description: "Representative, defender, and evangelist of the KODA Framework"
-      file: "agents/koda-guardian/agent_koda_guardian.yaml"
-      status: published
-
-    - urn: "urn:knowledge:koda:agents:tester:1.0.0"
-      title: "KODA Tester Agent"
-      description: "Specialist for testing KODA-compliant agents with simulation capabilities"
-      file: "agents/koda-tester/agent_koda_tester.yaml"
-      status: published
-
-    - urn: "urn:knowledge:koda:agents:sim-orchestrator:1.0.0"
-      title: "KODA Sim Orchestrator Agent"
-      description: "Higher-Order Agent for simulated testing with transparent evidence marking"
-      file: "agents/koda-sim-orchestrator/agent_koda_sim_orchestrator.yaml"
-      status: published
-      higher_order: true
-
-    - urn: "urn:knowledge:koda:agents:orquestador-generico:1.0.0"
-      title: "KODA Orquestador Genérico"
-      description: "Higher-Order Agent para orquestación multi-agente sobre catálogos federados"
-      file: "agents/orquestador-generico/agent_orquestador_generico.yaml"
-      status: published
-      higher_order: true
-
-    - urn: "urn:knowledge:koda:agents:ci-assistant:1.0.0"
-      title: "KODA CI Assistant Agent"
-      description: "Specialist for CI/CD workflows explanation, debugging and optimization"
-      file: "agents/koda-ci-assistant/agent_koda_ci_assistant.yaml"
-      status: published
-
-    - urn: "urn:knowledge:koda:agents:taskmaster:1.0.0"
-      title: "KODA Taskmaster Agent"
-      description: "Specialist for project and task management using GitHub Issues and Projects"
-      file: "agents/koda-taskmaster/agent_koda_taskmaster.yaml"
-      status: published
-
-    - urn: "urn:knowledge:koda:agents:cartographer:1.0.0"
-      title: "KODA Cartographer Agent"
-      description: "Specialist for transforming chaotic sources into elegant data models (ESCUCHAR→MAPEAR→ELEVAR→CRISTALIZAR)"
-      file: "agents/koda-cartographer/agent_koda_cartographer.yaml"
-      status: published
-
+  - urn: urn:knowledge:koda:agents:architect:1.0.0
+    title: KODA Architect Agent
+    description: Official agent embodying the KODA Framework
+    file: agents/knowledge-architect/agent_koda_architect.yaml
+    status: published
+    primary: true
+  - urn: urn:knowledge:koda:agents:transformer:1.0.0
+    title: KODA Transformer Agent
+    description: Specialist for document transformation and KODA artifact auditing
+    file: agents/koda-transformer/agent_koda_transformer.yaml
+    status: published
+  - urn: urn:knowledge:koda:agents:smith:1.0.0
+    title: KODA Smith Agent
+    description: Specialist for building KODA-compliant agent definitions
+    file: agents/koda-smith/agent_koda_smith.yaml
+    status: published
+  - urn: urn:knowledge:koda:agents:guardian:1.0.0
+    title: KODA Guardian Agent
+    description: Representative, defender, and evangelist of the KODA Framework
+    file: agents/koda-guardian/agent_koda_guardian.yaml
+    status: published
+  - urn: urn:knowledge:koda:agents:tester:1.0.0
+    title: KODA Tester Agent
+    description: Specialist for testing KODA-compliant agents with simulation capabilities
+    file: agents/koda-tester/agent_koda_tester.yaml
+    status: published
+  - urn: urn:knowledge:koda:agents:sim-orchestrator:1.0.0
+    title: KODA Sim Orchestrator Agent
+    description: Higher-Order Agent for simulated testing with transparent evidence marking
+    file: agents/koda-sim-orchestrator/agent_koda_sim_orchestrator.yaml
+    status: published
+    higher_order: true
+  - urn: urn:knowledge:koda:agents:orquestador-generico:1.0.0
+    title: KODA Orquestador Genérico
+    description: Higher-Order Agent para orquestación multi-agente sobre catálogos federados
+    file: agents/orquestador-generico/agent_orquestador_generico.yaml
+    status: published
+    higher_order: true
+  - urn: urn:knowledge:koda:agents:ci-assistant:1.0.0
+    title: KODA CI Assistant Agent
+    description: Specialist for CI/CD workflows explanation, debugging and optimization
+    file: agents/koda-ci-assistant/agent_koda_ci_assistant.yaml
+    status: published
+  - urn: urn:knowledge:koda:agents:taskmaster:1.0.0
+    title: KODA Taskmaster Agent
+    description: Specialist for project and task management using GitHub Issues and Projects
+    file: agents/koda-taskmaster/agent_koda_taskmaster.yaml
+    status: published
+  - urn: urn:knowledge:koda:agents:cartographer:1.0.0
+    title: KODA Cartographer Agent
+    description: Specialist for transforming chaotic sources into elegant data models (ESCUCHAR→MAPEAR→ELEVAR→CRISTALIZAR)
+    file: agents/koda-cartographer/agent_koda_cartographer.yaml
+    status: published
   Registry:
-    - urn: "urn:knowledge:koda:registry:namespaces:latest"
-      title: "KODA Registry Namespaces"
-      description: "Federation registry of namespaces"
-      file: "registry/namespaces.yml"
-      status: published
-
+  - urn: urn:knowledge:koda:core:namespaces:latest
+    title: KODA Registry Namespaces
+    description: Federation registry of namespaces
+    file: registry/namespaces.yml
+    status: published
   Tooling_Workflows:
-    - urn: "urn:knowledge:koda:tooling:workflows:agent-audit:latest"
-      title: "KODA Agent Audit Workflow"
-      description: "Agent audit workflow implementation"
-      file: "scripts/audit_agents.py"
-      status: published
-
+  - urn: urn:knowledge:koda:tools:agent-audit:latest
+    title: KODA Agent Audit Workflow
+    description: Agent audit workflow implementation
+    file: scripts/audit_agents.py
+    status: published
   Skills:
-    - urn: "urn:knowledge:koda:skills:koda-artifact-helper:1.0.0"
-      title: "Skill: KODA Artifact Helper"
-      description: "Asiste en la creación y validación de artefactos KODA-compliant"
-      file: "skills/koda/koda-artifact-helper/SKILL.md"
-      status: published
-
-    - urn: "urn:knowledge:koda:skills:context-manager:1.0.0"
-      title: "Skill: Context Manager"
-      description: "Gestiona snapshots, handoffs y esqueletos de contexto"
-      file: "skills/own/context-manager/SKILL.md"
-      status: published
-
-    - urn: "urn:knowledge:koda:skills:crear-skill:1.0.0"
-      title: "Skill: Crear Skill"
-      description: "Generador de estructuras para nuevas skills KODA"
-      file: "skills/own/crear-skill/SKILL.md"
-      status: published
-
-    - urn: "urn:knowledge:koda:skills:crear-artefacto:1.0.0"
-      title: "Skill: Crear Artefacto KODA"
-      description: "Genera nuevos artefactos de conocimiento (Guides, KB Articles) estándar KODA/Spec."
-      file: "skills/koda/crear-artefacto/SKILL.md"
-      status: published
-
-    - urn: "urn:knowledge:koda:skills:crear-agente:1.0.0"
-      title: "Skill: Crear Agente KODA"
-      description: "Automatiza la creación de nuevos agentes siguiendo el estándar KODA/Agent"
-      file: "skills/koda/crear-agente/SKILL.md"
-      status: published
-
-    - urn: "urn:knowledge:koda:skills:arquitecto-gore:1.0.0"
-      title: "Skill: Arquitecto GORE (Light)"
-      description: "Capacidades de modelado institucional GORE y análisis de tensiones ontológicas (Light)"
-      file: "skills/own/arquitecto-gore/SKILL.md"
-      status: published
-
-    - urn: "urn:knowledge:koda:skills:data-modeling:1.0.0"
-      title: "Skill: Data Modeling"
-      description: "ERDs, data dictionaries, and structured data models (Conceptual/Logical/Physical)"
-      file: "skills/own/data-modeling/SKILL.md"
-      status: published
-
-    - urn: "urn:knowledge:koda:skills:database-design:1.0.0"
-      title: "Skill: Database Design"
-      description: "Community skill for database selection, ORM choice, and schema design principles"
-      file: "skills/community/database-design/SKILL.md"
-      status: published
-
+  - urn: urn:knowledge:koda:skills:koda-artifact-helper:1.0.0
+    title: 'Skill: KODA Artifact Helper'
+    description: Asiste en la creación y validación de artefactos KODA-compliant
+    file: skills/koda/koda-artifact-helper/SKILL.md
+    status: published
+  - urn: urn:knowledge:koda:skills:context-manager:1.0.0
+    title: 'Skill: Context Manager'
+    description: Gestiona snapshots, handoffs y esqueletos de contexto
+    file: skills/own/context-manager/SKILL.md
+    status: published
+  - urn: urn:knowledge:koda:skills:crear-skill:1.0.0
+    title: 'Skill: Crear Skill'
+    description: Generador de estructuras para nuevas skills KODA
+    file: skills/own/crear-skill/SKILL.md
+    status: published
+  - urn: urn:knowledge:koda:skills:crear-artefacto:1.0.0
+    title: 'Skill: Crear Artefacto KODA'
+    description: Genera nuevos artefactos de conocimiento (Guides, KB Articles) estándar KODA/Spec.
+    file: skills/koda/crear-artefacto/SKILL.md
+    status: published
+  - urn: urn:knowledge:koda:skills:crear-agente:1.0.0
+    title: 'Skill: Crear Agente KODA'
+    description: Automatiza la creación de nuevos agentes siguiendo el estándar KODA/Agent
+    file: skills/koda/crear-agente/SKILL.md
+    status: published
+  - urn: urn:knowledge:koda:skills:arquitecto-gore:1.0.0
+    title: 'Skill: Arquitecto GORE (Light)'
+    description: Capacidades de modelado institucional GORE y análisis de tensiones ontológicas (Light)
+    file: skills/own/arquitecto-gore/SKILL.md
+    status: published
+  - urn: urn:knowledge:koda:skills:data-modeling:1.0.0
+    title: 'Skill: Data Modeling'
+    description: ERDs, data dictionaries, and structured data models (Conceptual/Logical/Physical)
+    file: skills/own/data-modeling/SKILL.md
+    status: published
+  - urn: urn:knowledge:koda:skills:database-design:1.0.0
+    title: 'Skill: Database Design'
+    description: Community skill for database selection, ORM choice, and schema design principles
+    file: skills/community/database-design/SKILL.md
+    status: published
   IDE_Tools:
-    - urn: "urn:knowledge:koda:claude:use-claude-code-vscode:1.0.0"
-      title: "Use Claude Code in VS Code"
-      description: "Installation, configuration and usage guide for Claude Code VS Code extension"
-      file: "knowledge/domains/ide_tools/claude/guide_011_claude-code-vscode_koda.yml"
-      status: draft
-
-    - urn: "urn:knowledge:koda:antigravity:doc-antigravity-official:1.0.0"
-      title: "Antigravity Official Documentation (KODA)"
-      description: "KODA/Spec rendering of Antigravity official documentation (draft)."
-      file: "knowledge/domains/ide_tools/google_antigravity/doc_oficial_ag_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:antigravity:manual-ag-fx-v2:2.0.0"
-      title: "Manual AG FX v2 (KODA)"
-      description: "Manual de orquestación avanzada en Google Antigravity (Artifact-First + R.A.P.S. 2.0) (draft)."
-      file: "knowledge/domains/ide_tools/google_antigravity/manual_ag_fx_v2_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:antigravity:guide-context-manager:3.0.0"
-      title: "Guide: Context Manager (KODA)"
-      description: "Official guide for Context Management (Snapshots, Handoffs, Skeletons)"
-      file: "knowledge/domains/ide_tools/google_antigravity/guide_ag_003_context-manager_koda.yml"
-      status: published
-
-    - urn: "urn:knowledge:koda:codex:doc-codex-official:1.0.0"
-      title: "Codex Official Documentation (KODA)"
-      description: "Official OpenAI Codex documentation telegrafized for KODA"
-      file: "knowledge/domains/ide_tools/codex/doc_codex_001_official_koda.yml"
-      status: published
-
+  - urn: urn:knowledge:koda:tools:use-claude-code-vscode:1.0.0
+    title: Use Claude Code in VS Code
+    description: Installation, configuration and usage guide for Claude Code VS Code extension
+    file: knowledge/domains/ide_tools/claude/guide_011_claude-code-vscode_koda.yml
+    status: draft
+  - urn: urn:knowledge:koda:tools:doc-antigravity-official:1.0.0
+    title: Antigravity Official Documentation (KODA)
+    description: KODA/Spec rendering of Antigravity official documentation (draft).
+    file: knowledge/domains/ide_tools/google_antigravity/doc_oficial_ag_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:tools:manual-ag-fx-v2:2.0.0
+    title: Manual AG FX v2 (KODA)
+    description: Manual de orquestación avanzada en Google Antigravity (Artifact-First + R.A.P.S. 2.0) (draft).
+    file: knowledge/domains/ide_tools/google_antigravity/manual_ag_fx_v2_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:tools:guide-context-manager:3.0.0
+    title: 'Guide: Context Manager (KODA)'
+    description: Official guide for Context Management (Snapshots, Handoffs, Skeletons)
+    file: knowledge/domains/ide_tools/google_antigravity/guide_ag_003_context-manager_koda.yml
+    status: published
+  - urn: urn:knowledge:koda:tools:doc-codex-official:1.0.0
+    title: Codex Official Documentation (KODA)
+    description: Official OpenAI Codex documentation telegrafized for KODA
+    file: knowledge/domains/ide_tools/codex/doc_codex_001_official_koda.yml
+    status: published
   Domains:
-    # Federated namespaces - external knowledge bases registered in KODA ecosystem
-    - namespace: gorenuble
-      urn: "urn:knowledge:gorenuble:catalog:master:1.0.0"
-      title: "Gobierno Regional de Ñuble"
-      description: "KB institucional GORE Ñuble - escalable a otros GOREs de Chile"
-      type: institutional
-      resolver: "../gorenuble/.knowledge-resolver.yml"
-      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/gorenuble/main/"
-      artifacts_count: 31
-      status: active
-      registered: "2025-12-09"
-
-    - namespace: korvo
-      urn: "urn:knowledge:korvo:catalog:master:1.0.0"
-      title: "Korvo Namespace (Personal)"
-      description: "Espacio personal de gestión de vida - productividad, bienestar, metas"
-      type: personal
-      resolver: "../korvo/.knowledge-resolver.yml"
-      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/korvo/main/"
-      artifacts_count: 1
-      status: active
-      registered: "2025-12-09"
-
-    - namespace: fxsl
-      urn: "urn:knowledge:fxsl:catalog:master:1.0.0"
-      title: "fxsl Namespace (Personal)"
-      description: "Base de conocimiento personal y learnings"
-      type: personal
-      resolver: "../fxsl/.knowledge-resolver.yml"
-      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/fxsl/main/"
-      artifacts_count: 66
-      status: active
-      registered: "2026-01-20"
-
-    - namespace: sanixai
-      urn: "urn:knowledge:sanixai:catalog:master:1.0.0"
-      title: "SanixAI Namespace (Commercial)"
-      description: "Proyectos comerciales/serios bajo SanixAI"
-      type: commercial
-      resolver: "../sanixai/.knowledge-resolver.yml"
-      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/sanixai/main/"
-      artifacts_count: 1
-      status: active
-      registered: "2026-01-20"
-
-    - namespace: tde
-      urn: "urn:knowledge:tde:catalog:master:1.0.0"
-      title: "Transformación Digital del Estado"
-      description: "TDE - Transformación Digital del Estado de Chile"
-      type: institutional
-      resolver: "../tde/.knowledge-resolver.yml"
-      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/tde/main/"
-      status: active
-      registered: "2025-11-25"
-
-    - namespace: goreos
-      urn: "urn:knowledge:goreos:catalog:master:1.0.0"
-      title: "GORE OS"
-      description: "GORE OS - Sistema Operativo de Gobernanza Regional (Turbo Monorepo)"
-      type: institutional
-      resolver: "../gore_os/.knowledge-resolver.yml"
-      fallback: null
-      status: active
-      registered: "2025-12-23"
-
-    - namespace: orko
-      urn: "urn:knowledge:orko:catalog:master:1.0.0"
-      title: "ORKO"
-      description: "ORKO - Organizational Knowledge Ontology: Complexity, Tamed"
-      type: framework
-      resolver: "../orko_/.knowledge-resolver.yml"
-      fallback: "https://raw.githubusercontent.com/felix-antonio-sl/orko_/main/"
-      status: active
-      registered: "2025-12-02"
-
+  - namespace: gorenuble
+    urn: urn:knowledge:koda:catalog:master-koda:1.0.0
+    title: Gobierno Regional de Ñuble
+    description: KB institucional GORE Ñuble - escalable a otros GOREs de Chile
+    type: institutional
+    resolver: ../gorenuble/.knowledge-resolver.yml
+    fallback: https://raw.githubusercontent.com/felix-antonio-sl/gorenuble/main/
+    artifacts_count: 31
+    status: active
+    registered: '2025-12-09'
+  - namespace: korvo
+    urn: urn:knowledge:koda:catalog:master-koda:1.0.0
+    title: Korvo Namespace (Personal)
+    description: Espacio personal de gestión de vida - productividad, bienestar, metas
+    type: personal
+    resolver: ../korvo/.knowledge-resolver.yml
+    fallback: https://raw.githubusercontent.com/felix-antonio-sl/korvo/main/
+    artifacts_count: 1
+    status: active
+    registered: '2025-12-09'
+  - namespace: fxsl
+    urn: urn:knowledge:koda:catalog:master-koda:1.0.0
+    title: fxsl Namespace (Personal)
+    description: Base de conocimiento personal y learnings
+    type: personal
+    resolver: ../fxsl/.knowledge-resolver.yml
+    fallback: https://raw.githubusercontent.com/felix-antonio-sl/fxsl/main/
+    artifacts_count: 66
+    status: active
+    registered: '2026-01-20'
+  - namespace: sanixai
+    urn: urn:knowledge:koda:catalog:master-koda:1.0.0
+    title: SanixAI Namespace (Commercial)
+    description: Proyectos comerciales/serios bajo SanixAI
+    type: commercial
+    resolver: ../sanixai/.knowledge-resolver.yml
+    fallback: https://raw.githubusercontent.com/felix-antonio-sl/sanixai/main/
+    artifacts_count: 1
+    status: active
+    registered: '2026-01-20'
+  - namespace: tde
+    urn: urn:knowledge:koda:catalog:master-koda:1.0.0
+    title: Transformación Digital del Estado
+    description: TDE - Transformación Digital del Estado de Chile
+    type: institutional
+    resolver: ../tde/.knowledge-resolver.yml
+    fallback: https://raw.githubusercontent.com/felix-antonio-sl/tde/main/
+    status: active
+    registered: '2025-11-25'
+  - namespace: goreos
+    urn: urn:knowledge:koda:catalog:master-koda:1.0.0
+    title: GORE OS
+    description: GORE OS - Sistema Operativo de Gobernanza Regional (Turbo Monorepo)
+    type: institutional
+    resolver: ../gore_os/.knowledge-resolver.yml
+    fallback: null
+    status: active
+    registered: '2025-12-23'
+  - namespace: orko
+    urn: urn:knowledge:koda:catalog:master-koda:1.0.0
+    title: ORKO
+    description: 'ORKO - Organizational Knowledge Ontology: Complexity, Tamed'
+    type: framework
+    resolver: ../orko_/.knowledge-resolver.yml
+    fallback: https://raw.githubusercontent.com/felix-antonio-sl/orko_/main/
+    status: active
+    registered: '2025-12-02'
   Gist:
-    - urn: "urn:knowledge:fxsl:gist:guide-onto-gist-001-audit-protocol:1.0.0"
-      title: "Protocolo de Auditoría Ontológica 360° (Gist)"
-      description: "Protocolo exhaustivo para auditoría de ontologías (Pragmático, Estructural, Semántico, Sintáctico)"
-      file: "knowledge/domains/gist/guide_onto_gist_001_audit_protocol_koda.yml"
-      status: draft
+  - urn: urn:knowledge:koda:core:fx-guide-onto-gist-001-audit-protocol:1.0.0
+    title: Protocolo de Auditoría Ontológica 360° (Gist)
+    description: Protocolo exhaustivo para auditoría de ontologías (Pragmático, Estructural, Semántico, Sintáctico)
+    file: knowledge/domains/gist/guide_onto_gist_001_audit_protocol_koda.yml
+    status: draft
